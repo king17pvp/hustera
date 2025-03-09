@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "AvantGarde-Bold";
+    src: url("./assets/fonts/ITC Avant Garde Gothic Bold.otf") format("opentype");
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: "AvantGarde-Book";
+    src: url("./assets/fonts/ITC Avant Garde Gothic CE.otf") format("opentype");
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: "AvantGarde-Medium";
+    src: url("./assets/fonts/ITC Avant Garde Gothic Medium.otf") format("opentype");
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  /* Example utility class */
+  .font-avant-bold {
+    font-family: "AvantGarde-Bold", sans-serif;
+  }
+  
+  .font-avant-book {
+    font-family: "AvantGarde-Book", sans-serif;
+  }
+  
+  .font-avant-medium {
+    font-family: "AvantGarde-Medium", sans-serif;
+  }
+  
