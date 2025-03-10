@@ -1,5 +1,6 @@
 import React from "react";
 import Homepage from "./pages/Homepage";
+import CourseListing from "./pages/CourseListing"
 
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
@@ -128,13 +129,7 @@ const sampleStats = [
 
 const App = () => {
   return (
-    <Homepage
-      categories={sampleCategories}
-      courses={sampleCourses}
-      testimonials={sampleTestimonials}
-      threads={sampleThreads}
-      stats={sampleStats}
-    />
+    <CourseListing />
   );
 };
 

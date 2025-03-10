@@ -4,7 +4,7 @@ import logo from "../assets/logo2.png"; // Import correct logo
 const Footer = () => {
   return (
     <footer className="flex-col justify-center bg-gray-100 py-12">
-      <div className="mx-auto max-w-[1720px] flex justify-center text-gray-600 space-x-43">
+      <div className="mx-auto max-w-[1680px] flex justify-center text-gray-600 space-x-43">
         {/* Left Section - Enlarged Logo & Description */}
         <div className="w-1/5 flex-col">
           <img src={logo} alt="Hustera Logo" className="h-20 mb-2" /> {/* Increased size */}
@@ -44,13 +44,13 @@ const Footer = () => {
               Address: 1 Dai Co Viet, Bach Khoa, Hai Ba Trung, Ha Noi, Viet Nam
             </p>
             <p className="mt-2 text-xl">Tel: + (84) 911674187</p>
-            <p className="mt-1 text-xl">Mail: khue.nvn225519@sis.hust.edu.vn</p>
+            <p className="mt-1 text-xl">Mail: khue.nvn225504@sis.hust.edu.vn</p>
           </div>
         </div>
       </div>
 
       {/* Bottom Copyright */}
-      <div className="max-w-[1700px] mx-auto justify-center text-center text-lg text-gray-500 mt-10 border-t-2 border-zinc-300 pt-5">
+      <div className="max-w-[1680px] mx-auto justify-center text-center text-lg text-gray-500 mt-10 border-t-2 border-zinc-300 pt-5">
         Copyright © 2025 HUSTera | Powered by HQKDA
       </div>
     </footer>
