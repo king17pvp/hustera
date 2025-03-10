@@ -12,15 +12,15 @@ const CourseCard = ({ thumbnailUrl, category, title, author, duration, students,
       <img 
         src={thumbnailUrl} 
         alt="Category Thumbnail" 
-        className="w-full h-85 object-cover rounded-t-3xl mb-2"
+        className="w-full h-85 object-cover rounded-t-3xl"
       />
 
       {/* Course Info (Flexible Container) */}
-      <div className="p-6 flex-grow flex flex-col">
+      <div className="p-7 flex-grow flex flex-col">
         <p className="text-gray-500 mb-1">
           by <span className="text-black font-semibold">{author}</span>
         </p>
-        <h3 className="text-black font-bold text-2xl transition-colors duration-200 group-hover:text-blue-500">
+        <h3 className="text-black font-avant-medium font-bold text-2xl transition-colors duration-200 group-hover:text-blue-700">
           {title}
         </h3>
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../assets/logo1.png"; // Import the logo
+import logo from "../assets/logo1.png"; 
 
 const Navbar = () => {
   const [active, setActive] = useState("Home");
@@ -7,10 +7,10 @@ const Navbar = () => {
   const navItems = ["Home", "Courses", "Forum", "FAQs"];
 
   return (
-    <nav className="w-full max-w-[1680px] mx-auto flex justify-center items-center py-0 bg-white">
+    <nav className="w-full h-20 max-w-[1680px] mx-auto flex justify-center items-center py-0 bg-white">
       {/* Logo Section */}
       <div className="w-1/3 flex justify-start">
-        <img src={logo} alt="Hustera Logo" className="h-12 w-auto" />
+        <img src={logo} alt="Hustera Logo" className="h-15 w-auto" />
       </div>
 
       {/* Navigation Links (Centered) */}
@@ -20,7 +20,7 @@ const Navbar = () => {
             <button
               key={item}
               onClick={() => setActive(item)}
-              className={`w-32 px-6 py-5 text-xl font-semibold text-center transition-colors duration-300 cursor-pointer ${
+              className={`w-36 px-6 py-5 h-20 text-xl font-avant-medium text-center transition-colors duration-300 cursor-pointer ${
                 active === item
                   ? "bg-gray-200 text-blue-600"
                   : "text-black hover:bg-gray-200"
@@ -33,8 +33,8 @@ const Navbar = () => {
       </div>
 
       {/* Login/Register Button (Right Aligned) */}
-      <div className="w-1/3 flex justify-end">
-        <button className="px-9 py-3 text-xl font-semibold text-white bg-blue-600 rounded-full hover:bg-blue-700 transition cursor-pointer">
+      <div className="w-1/3 flex  justify-end">
+        <button className="px-9 py-3 text-xl font-avant-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition cursor-pointer">
           Login
         </button>
       </div>
