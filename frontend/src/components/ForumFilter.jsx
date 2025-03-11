@@ -66,9 +66,9 @@ const ForumFilter = ({ categories, tags }) => {
             <button
               key={tag}
               onClick={() => toggleTag(tag)}
-              className={`px-4 py-2 rounded-xl text-lg border transition ${
+              className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${
                 selectedFilters.tags.includes(tag)
-                  ? "bg-gray-200 border-gray-600"
+                  ? "bg-gray-800 border-gray-800 text-white"
                   : "bg-white border-gray-300 hover:bg-gray-100"
               }`}
             >

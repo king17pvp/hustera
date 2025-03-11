@@ -4,7 +4,7 @@ import logo from "../assets/logo2.png"; // Import correct logo
 const Footer = () => {
   return (
     <footer className="flex-col justify-center bg-gray-100 py-12">
-      <div className="mx-auto max-w-[1680px] flex justify-center text-gray-600 space-x-43">
+      <div className="mx-auto max-w-[1690px] flex justify-center text-gray-600 space-x-43">
         {/* Left Section - Enlarged Logo & Description */}
         <div className="w-1/5 flex-col">
           <img src={logo} alt="Hustera Logo" className="h-20 mb-2" /> {/* Increased size */}
@@ -14,7 +14,7 @@ const Footer = () => {
         </div>
 
         {/* Middle Section - Links */}
-        <div className="flex space-x-43">
+        <div className="flex space-x-40">
           {/* Get Help */}
           <div>
             <h3 className="font-avant-medium font-bold text-2xl text-gray-900">GET HELP</h3>

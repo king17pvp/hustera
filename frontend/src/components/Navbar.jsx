@@ -1,17 +1,27 @@
 import { useState } from "react";
-import logo from "../assets/logo1.png"; 
+import logo from "../assets/logo1.png";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ currentState }) => {
   const [active, setActive] = useState(currentState);
-
-  const navItems = [{ title: "Home", path: "/" }, 
-                    { title: "Courses", path: "/courses" }, 
-                    { title: "Forum", path: "/forum"}, 
-                    { title: "FAQs", path: "/faqs"},
-                  ];
-
   const navigate = useNavigate();
+
+  const navItems = [
+    { title: "Home", path: "/" },
+    { title: "Courses", path: "/courses" },
+    { title: "Forum", path: "/forum" },
+    { title: "FAQs", path: "/faqs" },
+  ];
+
+  const handleNavClick = (item) => {
+    navigate(item.path);
+    setActive(item.title);
+  };
+
+  const handleLoginClick = () => {
+    setActive(null); 
+    navigate("/login");
+  };
 
   return (
     <nav className="w-full h-20 max-w-[1680px] mx-auto flex justify-center items-center py-0 bg-white">
@@ -26,7 +36,7 @@ const Navbar = ({ currentState }) => {
           {navItems.map((item, index) => (
             <button
               key={index}
-              onClick={() => {navigate(item.path), setActive(item.title)}}
+              onClick={() => handleNavClick(item)}
               className={`w-36 px-6 py-5 h-20 text-xl font-avant-medium text-center transition-colors duration-300 cursor-pointer ${
                 active === item.title
                   ? "bg-gray-200 text-blue-600"
@@ -40,8 +50,11 @@ const Navbar = ({ currentState }) => {
       </div>
 
       {/* Login/Register Button (Right Aligned) */}
-      <div className="w-1/3 flex  justify-end">
-        <button className="px-9 py-3 text-xl font-avant-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition cursor-pointer">
+      <div className="w-1/3 flex justify-end">
+        <button
+          onClick={handleLoginClick}
+          className="px-9 py-3 text-xl font-avant-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition cursor-pointer"
+        >
           Login
         </button>
       </div>
