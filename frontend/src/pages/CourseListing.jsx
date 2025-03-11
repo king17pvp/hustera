@@ -101,7 +101,7 @@ const CourseListing = () => {
   
     return (
       <>
-        <Navbar />
+        <Navbar currentState="Courses"/>
         <Breadcrumb paths={["Homepage", "Courses"]} />
   
         {/* Center Everything */}

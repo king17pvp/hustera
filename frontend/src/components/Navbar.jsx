@@ -1,10 +1,17 @@
 import { useState } from "react";
 import logo from "../assets/logo1.png"; 
+import { useNavigate } from "react-router-dom";
 
-const Navbar = () => {
-  const [active, setActive] = useState("Home");
+const Navbar = ({ currentState }) => {
+  const [active, setActive] = useState(currentState);
 
-  const navItems = ["Home", "Courses", "Forum", "FAQs"];
+  const navItems = [{ title: "Home", path: "/" }, 
+                    { title: "Courses", path: "/courses" }, 
+                    { title: "Forum", path: "/forum"}, 
+                    { title: "FAQs", path: "/faqs"},
+                  ];
+
+  const navigate = useNavigate();
 
   return (
     <nav className="w-full h-20 max-w-[1680px] mx-auto flex justify-center items-center py-0 bg-white">
@@ -16,17 +23,17 @@ const Navbar = () => {
       {/* Navigation Links (Centered) */}
       <div className="w-1/3 flex justify-center">
         <div className="flex space-x-0">
-          {navItems.map((item) => (
+          {navItems.map((item, index) => (
             <button
-              key={item}
-              onClick={() => setActive(item)}
+              key={index}
+              onClick={() => {navigate(item.path), setActive(item.title)}}
               className={`w-36 px-6 py-5 h-20 text-xl font-avant-medium text-center transition-colors duration-300 cursor-pointer ${
-                active === item
+                active === item.title
                   ? "bg-gray-200 text-blue-600"
                   : "text-black hover:bg-gray-200"
               }`}
             >
-              {item}
+              {item.title}
             </button>
           ))}
         </div>

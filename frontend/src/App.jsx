@@ -1,6 +1,8 @@
 import React from "react";
 import Homepage from "./pages/Homepage";
 import CourseListing from "./pages/CourseListing"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ThreadListing from "./pages/ThreadListing";
 
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
@@ -129,7 +131,20 @@ const sampleStats = [
 
 const App = () => {
   return (
-    <CourseListing />
+    <>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Homepage 
+                                    courses={sampleCourses}
+                                    categories={sampleCategories}
+                                    testimonials={sampleTestimonials}
+                                    threads={sampleThreads}
+                                    stats={sampleStats}/>}/>
+        <Route path="/courses" element={<CourseListing />}/>
+        <Route path="/forum" element={<ThreadListing />} />
+      </Routes>
+    </BrowserRouter>
+    </>
   );
 };
 

@@ -11,9 +11,10 @@ import ForumCard from "../components/ForumCard";
 import StatCard from "../components/StatCard";
 
 const Homepage = ({ categories, courses, testimonials, threads, stats }) => {
+  
   return (
     <>
-      <Navbar />
+      <Navbar currentState="Home"/>
       <HeroSection />
 
       {/* Categories Section */}
