@@ -2,7 +2,7 @@ import React from "react";
 
 const CategoryCard = ({ iconPath, title, courseCount }) => {
   return (
-    <div className="bg-white h-80 w-80 rounded-3xl p-6 flex flex-col items-center text-center justify-center transition-transform duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer group border border-gray-200">
+    <div className="bg-white h-80 w-80 rounded-3xl p-6 flex flex-col items-center text-center justify-center transition-transform duration-300 hover:shadow-xl hover:-translate-y-2 hover:bg-gray-50 cursor-pointer group border border-gray-200">
       {/* Icon (Image) */}
       <img src={iconPath} alt={title} className="mb-6 w-15 h-15" />
 
