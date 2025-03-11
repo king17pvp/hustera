@@ -2,7 +2,7 @@ import React from "react";
 
 const CourseCard = ({ thumbnailUrl, category, title, author, duration, students, price }) => {
   return (
-    <div className="relative bg-white rounded-4xl overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-3 w-135 h-140 cursor-pointer flex flex-col group border border-gray-200">
+    <div className="relative bg-white rounded-4xl overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-3 hover:bg-gray-50 w-135 h-140 cursor-pointer flex flex-col group border border-gray-200">
       {/* Badge */}
       <div className="absolute top-6 left-6 bg-gray-800 text-white px-4 py-2 rounded-xl">
         {category}

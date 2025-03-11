@@ -2,7 +2,7 @@ import React from "react";
 
 const CourseCardHorizontal = ({ thumbnailUrl, category, title, author, duration, students, levels, lessons, price }) => {
   return (
-    <div className="group relative h-80 w-310 flex bg-white rounded-2xl overflow-hidden border border-gray-200 transition-transform duration-300 hover:shadow-2xl hover:-translate-y-2 cursor-pointer">
+    <div className="group relative h-80 w-310 flex bg-white rounded-2xl overflow-hidden border border-gray-200 transition-transform duration-300 hover:shadow-2xl hover:-translate-y-2 hover:bg-gray-50 cursor-pointer">
       {/* Left: Image + Category Badge */}
       <div className="relative w-140 bg-gray-100">
         <img

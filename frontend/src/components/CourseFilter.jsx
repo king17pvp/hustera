@@ -98,7 +98,7 @@ const RadioCheckbox = ({ label, count, checked, onChange }) => (
   <label className="flex justify-between items-center cursor-pointer text-xl mb-3">
     <div className="flex items-center space-x-3">
       <input 
-        type="checkbox" 
+        type="radio" 
         checked={checked} 
         onChange={onChange} 
         className="w-5 h-5 cursor-pointer" 
@@ -113,7 +113,7 @@ const Checkbox = ({ label, checked, onChange }) => (
   <label className="flex justify-between items-center cursor-pointer text-xl mb-3">
     <div className="flex items-center space-x-3">
       <input 
-        type="checkbox" 
+        type="radio" 
         checked={checked} 
         onChange={onChange} 
         className="w-5 h-5 cursor-pointer" 
