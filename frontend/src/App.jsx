@@ -3,6 +3,8 @@ import Homepage from "./pages/Homepage";
 import CourseListing from "./pages/CourseListing"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ThreadListing from "./pages/ThreadListing";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
@@ -142,6 +144,9 @@ const App = () => {
                                     stats={sampleStats}/>}/>
         <Route path="/courses" element={<CourseListing />}/>
         <Route path="/forum" element={<ThreadListing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
       </Routes>
     </BrowserRouter>
     </>
