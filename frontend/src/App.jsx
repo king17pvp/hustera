@@ -6,7 +6,7 @@ import ThreadListing from "./pages/ThreadListing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import FAQs from "./pages/FAQs";
-
+import CourseSingle from "./pages/CourseSingle.jsx";
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
   { iconPath: "icons/development.png", title: "Development", courseCount: 22 },
@@ -22,6 +22,7 @@ const sampleCategories = [
 
 const sampleCourses = [
   {
+    courseId: 1,
     thumbnailUrl: "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220714150931/JavaScript-Introduction.jpg",
     category: "Programming",
     title: "Intro to JavaScript",
@@ -29,6 +30,13 @@ const sampleCourses = [
     duration: "3 Weeks",
     students: 150,
     price: 29.99,
+    lessons: 20,
+    quizzes: 3,
+    description: "LearnPress is a comprehensive WordPress LMS Plugin...",
+    image: "/learnpress-banner.png",
+    level: "All Levels",
+    originalPrice: 59.0,
+    discountedPrice: 49.0
   },
   {
     thumbnailUrl: "https://beecrowd.com/wp-content/uploads/2024/04/2022-07-19-Melhores-cursos-de-Python.jpg",
@@ -144,6 +152,7 @@ const App = () => {
                                     threads={sampleThreads}
                                     stats={sampleStats}/>}/>
         <Route path="/courses" element={<CourseListing />}/>
+        <Route path="/courses/1" element={<CourseSingle courses={sampleCourses[0]} />} />
         <Route path="/forum" element={<ThreadListing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
