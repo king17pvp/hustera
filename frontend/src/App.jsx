@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ThreadListing from "./pages/ThreadListing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import FAQs from "./pages/FAQs";
 
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
@@ -146,7 +147,8 @@ const App = () => {
         <Route path="/forum" element={<ThreadListing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
+        <Route path="/faqs" element={<FAQs />} />
+        
       </Routes>
     </BrowserRouter>
     </>
