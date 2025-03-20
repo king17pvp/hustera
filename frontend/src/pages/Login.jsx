@@ -1,8 +1,7 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
-import RegisterBox from "../components/RegisterBox";
-import loginBanner from "../assets/loginbanner.png"; // Import the image
+import loginBanner from "../assets/loginbanner.png"; 
 import LoginBox from "../components/LoginBox";
 
 const Login = () => {
@@ -11,25 +10,25 @@ const Login = () => {
       <Navbar currentState={null} />
       <Breadcrumb paths={["Homepage", "Login"]} />
 
-      {/* Main Content: Image (3/5) + Login Box (2/5) */}
-      <div className="flex-grow flex justify-center items-center">
-        <div className="flex w-4/5 max-w-[1680px]">
-          
-          {/* Image Section (3/5) */}
-          <div className="relative w-3/5 flex justify-center">
+      {/* Main Content Container */}
+      <div className="flex-grow flex justify-center items-center px-6 py-10 mb-15">
+        <div className="flex w-full max-w-[1680px] items-center justify-center gap-12">
+
+          {/* Image Section (Larger but Responsive) */}
+          <div className="hidden md:flex flex-[1.15] justify-center items-center min-w-0">
             <img
               src={loginBanner}
               alt="Login Banner"
-              className="absolute top-[-190px] left-110 transform -translate-x-1/2 w-[900px] h-auto object-cover rounded-xl"
+              className="max-w-[800px] md:max-w-[900px] w-full h-auto object-contain rounded-xl"
             />
           </div>
 
-          {/* Login Box Section (2/5) */}
-          <div className="w-2/5 flex flex-col justify-center items-center mr-11">
-            {/* Welcome Text */}
-            <h2 className="text-5xl font-avant-medium font-semibold text-gray-800">Welcome Back !</h2>
+          {/* Login Box Section */}
+          <div className="flex-[0.8] flex flex-col justify-center items-center min-w-0">
+            <h2 className="text-4xl md:text-5xl font-avant-medium font-semibold text-gray-800 mb-6">
+              Welcome Back!
+            </h2>
 
-            {/* Login Box */}
             <LoginBox />
           </div>
 
