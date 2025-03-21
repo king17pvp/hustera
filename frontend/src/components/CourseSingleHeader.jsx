@@ -1,48 +1,51 @@
-import React, { useState } from "react";
+import React from "react";
 
-
-const CourseSingleHeader = ({course}) => {
-  // const [activeTab, setActiveTab] = useState("Curriculum");
-
+const CourseSingleHeader = ({ course }) => {
   return (
-    <div className="bg-black text-white p-6 flex relative h-72">
-      {/* Course Info Section*/}
-      <div className="flex-1 ml-70 mt-12">
-        <span className="bg-gray-700 text-white px-3 py-1 rounded-full ">
-          {course.category}
-        </span>
-        <span className="ml-2 text-gray-400">by {course.author}</span>
-        <h1 className="text-5xl font-bold mt-2">{course.title}</h1>
-        <div className="flex space-x-4 text-lg text-gray-400 mt-2">
-          <span>📅 {course.duration}</span>
-          <span>👨‍🎓 {course.students} Students</span>
-          <span>📊 {course.level}</span>
-          <span>📖 {course.lessons} Lessons</span>
-          <span>📝 {course.quizzes} Quizzes</span>
-        </div>
-      </div>
-
-      {/* Course Pricing Section */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg max-w-sm text-center">
-        {/* Image Section */}
-        <div>
-          <img src={course.image} alt="Course Preview" className="w-full rounded-lg" />
-        </div>
-
-        {/* Price & Button Section */}
-        <div className="mt-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <p className="text-gray-500 line-through text-lg">${course.originalPrice}</p>
-            <p className="text-2xl font-bold text-red-600">${course.discountedPrice}</p>
+    <div className="bg-black text-white p-6 relative h-75 flex justify-center items-center">
+      <div className="max-w-[1680px] w-full flex justify-between items-center relative">
+        {/* Course Info Section */}
+        <div className="text-left max-w-[1100px]">
+          <div className="flex items-center space-x-4">
+            <span className="bg-gray-700 text-xl text-white px-4 py-2 rounded-xl">
+              {course.category}
+            </span>
+            <span className="text-xl text-gray-400">by {course.author}</span>
           </div>
-          <button className="bg-blue-600 text-white py-2 px-4 rounded-full text-lg font-semibold">
-            Start Now
-          </button>
+          <h1 className="text-5xl leading-[1.2] font-avant-medium font-bold mt-3">
+            {course.title}
+          </h1>
+          <div className="flex space-x-4 text-lg text-gray-400 mt-4">
+            <span>📅 {course.duration}</span>
+            <span>👨‍🎓 {course.students} Students</span>
+            <span>📊 {course.level}</span>
+            <span>📖 {course.lessons} Lessons</span>
+            <span>📝 {course.quizzes} Quizzes</span>
+          </div>
+        </div>
+
+        {/* Course Pricing Section (Falling Out of Bounds) */}
+        <div className="absolute right-0 bottom-5 translate-y-1/2 bg-white rounded-2xl shadow-lg max-w-[510px] h-95 text-center z-10">
+          {/* Image Section */}
+          <div>
+            <img
+              src={course.image}
+              alt="Course Preview"
+              className="w-full h-70 object-cover rounded-t-xl"
+            />
+          </div>
+
+          {/* Price & Button Section */}
+          <div className="p-6 ml-15 mr-15 flex justify-between items-center">
+            <p className="text-2xl font-avant-medium font-bold text-gray-700">${course.discountedPrice}</p>
+            <button className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition">
+              Start Now
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default CourseSingleHeader;
