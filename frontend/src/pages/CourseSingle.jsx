@@ -20,9 +20,42 @@ const sampleCourse = {
   discountedPrice: 49.99,
   tabs: {
     Overview: "LearnPress is one of the best WordPress LMS Plugins for creating and selling online courses.",
-    Curriculum: "This course includes 20 lessons and 3 quizzes designed to help you master LearnPress.",
-    Instructor: "John Doe is a WordPress expert with over 10 years of experience in LMS development.",
-    Reviews: "No comments yet! You be the first to comment."
+    Curriculum: [
+      {
+        title: "Lessons With Video Content",
+        videos: [
+          { title: "Introduction to LearnPress", duration: "12:30", url: "https://www.youtube.com/embed/1jF5l2hMkWA", isLocked: false },
+          { title: "Installing LearnPress", duration: "10:05", url: "https://www.youtube.com/embed/2jK1R9bXTVc", isLocked: false },
+          { title: "First Course Setup", duration: "2:25", url: "https://www.youtube.com/embed/3aQ15eHgUJ8", isLocked: true }
+        ]
+      },
+      {
+        title: "Advanced LearnPress",
+        videos: [
+          { title: "Adding Custom Quizzes", duration: "8:45", url: "https://www.youtube.com/embed/4bD1Rxh3K9s", isLocked: false },
+          { title: "Integrating Payment Methods", duration: "6:30", url: "https://www.youtube.com/embed/5n3L6Rxx9fM", isLocked: true }
+        ]
+      }
+    ],
+    Instructor: {
+      name: "ThimPress",
+      bio: "LearnPress is a comprehensive WordPress LMS Plugin for WordPress.",
+      totalStudents: 156,
+      totalCourses: 20,
+      iconUrl: "",
+      socials: {
+        facebook: "https://facebook.com/ThimPress",
+        pinterest: "https://pinterest.com/ThimPress",
+        twitter: "https://twitter.com/ThimPress",
+        instagram: "https://instagram.com/ThimPress",
+        youtube: "https://youtube.com/ThimPress"
+      }
+    },
+    Reviews: [
+      { user: "Laura Hipster", date: "October 03, 2022", comment: "This course was incredibly helpful!", userImage: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250" },
+      { user: "Mark Johnson", date: "September 29, 2022", comment: "Loved the hands-on approach.", userImage: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250" },
+      { user: "Sophie Lee", date: "September 15, 2022", comment: "Perfect for beginners!", userImage: "" }
+    ]
   }
 };
 
