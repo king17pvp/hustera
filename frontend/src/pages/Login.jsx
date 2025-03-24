@@ -1,7 +1,7 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
-import loginBanner from "../assets/loginbanner.png"; 
+import loginBanner from "../assets/loginbanner.png";
 import LoginBox from "../components/LoginBox";
 
 const Login = () => {

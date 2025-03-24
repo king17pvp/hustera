@@ -1,12 +1,15 @@
 import React from "react";
 import Homepage from "./pages/Homepage";
 import CourseListing from "./pages/CourseListing"
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ThreadListing from "./pages/ThreadListing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import FAQs from "./pages/FAQs";
 import CourseSingle from "./pages/CourseSingle.jsx";
+import { useSelector } from 'react-redux';
+
+
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
   { iconPath: "icons/development.png", title: "Development", courseCount: 22 },
@@ -141,24 +144,41 @@ const sampleStats = [
 ];
 
 const App = () => {
+
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+
   return (
     <>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Homepage 
-                                    courses={sampleCourses}
-                                    categories={sampleCategories}
-                                    testimonials={sampleTestimonials}
-                                    threads={sampleThreads}
-                                    stats={sampleStats}/>}/>
-        <Route path="/courses" element={<CourseListing />}/>
-        <Route path="/courses/1" element={<CourseSingle courses={sampleCourses[0]} />} />
-        <Route path="/forum" element={<ThreadListing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/faqs" element={<FAQs />} />
-        
-      </Routes>
+      <BrowserRouter>
+        <Routes>
+          {!isAuthenticated ?
+            (
+              <>
+                <Route path='*' element={<Navigate to="/login" replace />} />
+                <Route path='/login' element={<Login />} />
+                <Route path='/register' element={<Register />} />
+              </>
+            )
+            :
+            (
+              <>
+                <Route path="/" element={<Homepage
+                  courses={sampleCourses}
+                  categories={sampleCategories}
+                  testimonials={sampleTestimonials}
+                  threads={sampleThreads}
+                  stats={sampleStats} />} />
+                <Route path="/courses" element={<CourseListing />} />
+                <Route path="/courses/1" element={<CourseSingle courses={sampleCourses[0]} />} />
+                <Route path="/forum" element={<ThreadListing />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/faqs" element={<FAQs />} />
+              </>
+            )}
+
+        </Routes>
     </BrowserRouter>
     </>
   );
