@@ -2,7 +2,7 @@ import React from "react";
 
 const StatCard = ({ stats, title }) => {
   return (
-    <div className="bg-gray-100 h-60 w-95 rounded-3xl p-6 flex flex-col items-center text-center justify-center transition-transform duration-300 border border-gray-100">
+    <div className="bg-gray-100 h-60 w-101 rounded-3xl p-6 flex flex-col items-center text-center justify-center transition-transform duration-300 border border-gray-100">
       {/* Course Count */}
       <p className="text-blue-800 font-avant-medium font-bold text-4xl transition-colors duration-200 mb-2">{stats}</p>
       
