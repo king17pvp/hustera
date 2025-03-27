@@ -28,15 +28,6 @@ const sampleThread = {
   "tags": ["python", "dictionary", "merge"],
   "score": 124,
   "content": "I'm trying to merge two Python dictionaries. I want to combine their keys and values into one. What is the most Pythonic way to do this in Python 3.9 or later?",
-  "comments": [
-    {
-      "comment_id": 1001,
-      "author": "py_fan",
-      "content": "Are there any edge cases we should consider like overlapping keys?",
-      "score": 12,
-      "created_utc": "2025-03-23T12:30:00Z"
-    }
-  ],
   "answers": [
     {
       "answer_id": 2001,

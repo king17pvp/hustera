@@ -1,74 +1,25 @@
 import React, { useState } from "react";
-import { ArrowUp, ArrowDown, MessageCircle } from "lucide-react";
+import { ArrowUp, ArrowDown } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 const ForumComment = ({ comments: initialComments }) => {
   const [comments, setComments] = useState(initialComments || []);
-  const [replyToId, setReplyToId] = useState(null);
-  const [replyText, setReplyText] = useState("");
-
-  const handleReply = (parentId) => {
-    setReplyToId(parentId);
-  };
-
-  const handleReplySubmit = () => {
-    if (!replyText.trim()) return;
-
-    const newComment = {
-      comment_id: Date.now(),
-      author: "You",
-      content: replyText,
-      score: 0,
-      replyTo: replyToId
-    };
-
-    setComments([...comments, newComment]);
-    setReplyText("");
-    setReplyToId(null);
-  };
 
   return (
     <div className="bg-gray-50 p-3 rounded mt-2 border">
       <h4 className="font-medium mb-2">Comments</h4>
 
-      {comments.map((comment, idx) => (
+      {comments.map((comment) => (
         <CommentItem
           key={comment.comment_id}
           comment={comment}
-          onReply={() => handleReply(comment.comment_id)}
         />
       ))}
-
-      {/* 🧠 Only show the reply box at the last comment */}
-      {comments.length > 0 && replyToId && (
-        <div className="flex items-start gap-3 mt-4 text-sm text-gray-600">
-          {/* Placeholder voting UI for consistency */}
-          <div className="flex flex-col items-center text-gray-400">
-            <ArrowUp size={16} />
-            <ArrowDown size={16} />
-          </div>
-
-          {/* Reply Textarea */}
-          <div className="flex-1">
-            <textarea
-              value={replyText}
-              onChange={(e) => setReplyText(e.target.value)}
-              className="w-full border rounded p-2 text-sm"
-              placeholder="Write your reply..."
-            />
-            <button
-              onClick={handleReplySubmit}
-              className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs"
-            >
-              Post Reply
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-const CommentItem = ({ comment, onReply }) => {
+const CommentItem = ({ comment }) => {
   const [score, setScore] = useState(comment.score);
   const [vote, setVote] = useState(null);
 
@@ -107,6 +58,7 @@ const CommentItem = ({ comment, onReply }) => {
           size={16}
           onClick={handleUpvote}
         />
+        <span className="font-medium text-medium">{score}</span>
         <ArrowDown
           className={`cursor-pointer hover:text-blue-500 ${vote === "down" ? "text-blue-500" : ""}`}
           size={16}
@@ -117,22 +69,14 @@ const CommentItem = ({ comment, onReply }) => {
       {/* Comment Content */}
       <div className="flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-gray-500 font-medium">Score: {score}</span>
-          <span>
-            <span className="font-semibold">{comment.author}</span>: {comment.content}
-            {comment.replyTo && (
-              <span className="text-xs text-gray-400 ml-2">(in reply)</span>
-            )}
-          </span>
+          {/* <span className="text-xs text-gray-500 font-medium">{score}</span> */}
+          <div className="whitespace-pre-wrap">
+            <span className="font-semibold">{comment.author}</span>
+            <ReactMarkdown className="prose prose-sm mt-1">
+              {`\n${comment.content}`}
+            </ReactMarkdown>
+          </div>
         </div>
-
-        {/* Reply Button */}
-        <button
-          className="flex items-center gap-1 text-xs text-blue-600 mt-1 hover:underline w-fit"
-          onClick={onReply}
-        >
-          <MessageCircle size={14} /> Reply
-        </button>
       </div>
     </div>
   );
