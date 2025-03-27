@@ -35,9 +35,9 @@ const CourseFilter = ({ categories, instructors }) => {
     <div className="w-85 p-6 text-black">
       {/* Course Category (Single Selection) */}
       <FilterSection title="Course Category">
-        {categories.map(({ name, count }) => (
+        {categories.map(({ name, index, count }) => (
           <RadioCheckbox
-            key={name}
+            key={index}
             label={name}
             count={count}
             checked={selectedFilters.category === name}

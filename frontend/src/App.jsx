@@ -8,8 +8,7 @@ import Register from "./pages/Register";
 import FAQs from "./pages/FAQs";
 import CourseSingle from "./pages/CourseSingle.jsx";
 import { useSelector } from 'react-redux';
-
-
+import ForumSingle from "./pages/ForumSingle.jsx";
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
   { iconPath: "icons/development.png", title: "Development", courseCount: 22 },
@@ -22,7 +21,50 @@ const sampleCategories = [
   { iconPath: "icons/science.png", title: "Science", courseCount: 35 },
   { iconPath: "icons/network.png", title: "Network", courseCount: 18 },
 ];
-
+const sampleThread = {
+  "question_id": 987654,
+  "title": "How do I merge two dictionaries in Python?",
+  "author": "codeMaster77",
+  "created_utc": "2025-03-23T12:15:00Z",
+  "tags": ["python", "dictionary", "merge"],
+  "score": 124,
+  "content": "I'm trying to merge two Python dictionaries. I want to combine their keys and values into one. What is the most Pythonic way to do this in Python 3.9 or later?",
+  "answers": [
+    {
+      "answer_id": 2001,
+      "author": "devStack",
+      "created_utc": "2025-03-23T13:00:00Z",
+      "content": "In Python 3.9 and later, you can use the merge operator `|`:\n```python\ndict1 = {'a': 1, 'b': 2}\ndict2 = {'b': 3, 'c': 4}\nmerged = dict1 | dict2\n```\nThis will result in `{'a': 1, 'b': 3, 'c': 4}` — keys in the second dict will override those in the first.",
+      "score": 182,
+      "is_accepted": true,
+      "comments": [
+        {
+          "comment_id": 1002,
+          "author": "py_noob",
+          "content": "That `|` operator is new to me, thanks!",
+          "score": 9,
+          "created_utc": "2025-03-23T13:15:00Z"
+        }, 
+        {
+          "comment_id": 1001,
+          "author": "py_fan",
+          "content": "Are there any edge cases we should consider like overlapping keys?",
+          "score": 12,
+          "created_utc": "2025-03-23T12:30:00Z"
+        }
+      ]
+    },
+    {
+      "answer_id": 2002,
+      "author": "oldTimer",
+      "created_utc": "2025-03-23T13:45:00Z",
+      "content": "If you're using Python < 3.9, you can merge using:\n```python\nmerged = {**dict1, **dict2}\n```\nIt's clean and works well, though `dict2` values still overwrite `dict1` in case of key collisions.",
+      "score": 97,
+      "is_accepted": false,
+      "comments": []
+    }
+  ]
+};
 const sampleCourses = [
   {
     courseId: 1,

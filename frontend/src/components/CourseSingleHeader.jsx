@@ -15,7 +15,7 @@ const CourseSingleHeader = ({ course }) => {
           <h1 className="text-5xl leading-[1.2] font-avant-medium font-bold mt-3">
             {course.title}
           </h1>
-          <div className="flex space-x-4 text-lg text-gray-400 mt-4">
+          <div className="flex space-x-4 text-[20px] text-gray-400 mt-4">
             <span>📅 {course.duration}</span>
             <span>👨‍🎓 {course.students} Students</span>
             <span>📊 {course.level}</span>
@@ -38,7 +38,7 @@ const CourseSingleHeader = ({ course }) => {
           {/* Price & Button Section */}
           <div className="p-6 ml-15 mr-15 flex justify-between items-center">
             <p className="text-2xl font-avant-medium font-bold text-gray-700">${course.discountedPrice}</p>
-            <button className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition">
+            <button className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition cursor-pointer">
               Start Now
             </button>
           </div>
