@@ -1,15 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import ForumComment from "./ForumComment";
 import { ArrowUp, ArrowDown } from "lucide-react";
 
 const ForumQuestion = ({ thread }) => {
+  const [score, setScore] = useState(thread.score);
+  const [userVote, setUserVote] = useState(null); // 'up', 'down', or null
+  
+  const handleUpvote = () => {
+    if (vote === "up") {
+      setVote(null);
+      setScore(score - 1);
+    } else if (vote === "down") {
+      setVote("up");
+      setScore(score + 2);
+    } else {
+      setVote("up");
+      setScore(score + 1);
+    }
+  };
+
+  const handleDownvote = () => {
+    if (vote === "down") {
+      setVote(null);
+      setScore(score + 1);
+    } else if (vote === "up") {
+      setVote("down");
+      setScore(score - 2);
+    } else {
+      setVote("down");
+      setScore(score - 1);
+    }
+  };
+
   return (
     <div className="mb-10 border-b pb-6 flex gap-6">
       {/* Voting Section */}
       <div className="flex flex-col items-center text-gray-500">
-        <ArrowUp className="cursor-pointer hover:text-orange-500" />
-        <span className="font-medium text-lg">{thread.score}</span>
-        <ArrowDown className="cursor-pointer hover:text-blue-500" />
+        <ArrowUp
+          className={`cursor-pointer hover:text-orange-500 ${
+            userVote === "up" ? "text-orange-500" : ""
+          }`}
+          onClick={handleUpvote}
+        />
+        <span className="font-medium text-lg">{score}</span>
+        <ArrowDown
+          className={`cursor-pointer hover:text-blue-500 ${
+            userVote === "down" ? "text-blue-500" : ""
+          }`}
+          onClick={handleDownvote}
+        />
       </div>
 
       {/* Question Content */}
@@ -31,9 +70,9 @@ const ForumQuestion = ({ thread }) => {
           ))}
         </div>
 
-        {thread.comments.length > 0 && (
+        {/* {thread.comments.length > 0 && (
           <ForumComment comments={thread.comments} />
-        )}
+        )} */}
       </div>
     </div>
   );
