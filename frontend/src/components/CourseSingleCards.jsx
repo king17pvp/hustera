@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import CourseVideoOverlay from "./CourseVideoOverlay";
 import {FaStar, FaReply, FaChevronLeft, FaChevronRight, FaCheck, FaLock, FaTimes, FaUsers, FaBookOpen, FaFacebook, FaPinterest, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 
 const CourseSingleCards = ({ course }) => {
   const [activeTab, setActiveTab] = useState("Overview");
   const [expandedSections, setExpandedSections] = useState({});
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [videoTab, setVideoTab] = useState("Notes");
+
   const defaultInstructorImage = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250";
   const [currentPage, setCurrentPage] = useState(1);
   const reviewsPerPage = 3;
@@ -261,27 +264,16 @@ const CourseSingleCards = ({ course }) => {
           )}
         </div>
       </div>
-      {/* Video Modal - Dark Overlay with Reduced Opacity */}
-      {selectedVideo && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-10 flex justify-center items-center z-50"
-          onClick={closeVideo} // Clicking outside closes the modal
-        >
-          <div className="relative p-4 rounded-lg shadow-lg w-[80%] max-w-4xl" onClick={(e) => e.stopPropagation()}>
-            <button className="absolute top-5 right-5 text-2xl text-gray-700 hover:text-blue" onClick={closeVideo}>
-              <FaTimes />
-            </button>
-            <iframe
-              className="rounded-lg w-full h-[500px]"
-              src={selectedVideo}
-              title="Selected Lesson"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
-      )}
+      <CourseVideoOverlay
+        course={course}
+        selectedVideo={selectedVideo}
+        closeVideo={closeVideo}
+        handleVideoClick={(video) => {
+          if (!video.isLocked) setSelectedVideo(video.url);
+        }}
+        expandedSections={expandedSections}
+        toggleSection={toggleSection}
+      />
 
       {/* Comment Section (Now placed directly below the tabbed content) */}
       <div className="mt-10">
