@@ -17,12 +17,12 @@ const ForumSingle = ({ thread }) => {
 
       <div className="flex-1">
         <Breadcrumb paths={["Homepage", "Forum", thread.title]} />
-        <div className="flex-1 max-w-[1280px] mx-auto px-4 py-12">
+        <div className="flex-1 max-w-[1680px] mx-auto px-4 py-12">
           <ForumQuestion thread={thread} />
 
           {/* Answers */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">
+            <h2 className="text-3xl font-avant-medium font-semibold mb-4">
               {thread.answers.length} Answers
             </h2>
             {thread.answers.map((answer) => {
@@ -77,10 +77,10 @@ const ForumSingle = ({ thread }) => {
               return (
                 <div
                   key={answer.answer_id}
-                  className={`flex gap-6 border rounded p-4 mb-6 ${
+                  className={`flex gap-6 border rounded-xl p-4 mb-6 ${
                     answer.is_accepted
-                      ? "border-green-500 bg-green-50"
-                      : "border-gray-300"
+                      ? "border-blue-400 bg-blue-50"
+                      : "border-gray-600"
                   }`}
                 >
                   {/* Voting Section */}
@@ -91,7 +91,7 @@ const ForumSingle = ({ thread }) => {
                       }`}
                       onClick={handleUpvote}
                     />
-                    <span className="font-medium text-lg">{score}</span>
+                    <span className="font-semibold text-2xl">{score}</span>
                     <ArrowDown
                       className={`cursor-pointer hover:text-blue-500 ${
                         userVote === "down" ? "text-blue-500" : ""
@@ -101,19 +101,19 @@ const ForumSingle = ({ thread }) => {
                   </div>
 
                   {/* Answer Content */}
-                  <div className="flex-1">
+                  <div className="flex-1 pr-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-700">
+                      <span className="text-[18px] text-gray-700">
                         Answered by <strong>{answer.author}</strong> on{" "}
                         {new Date(answer.created_utc).toLocaleString()}
                       </span>
                       {answer.is_accepted && (
-                        <span className="text-green-700 text-sm font-semibold">
+                        <span className="text-green-700 text-xl font-semibold mt-2">
                           ✔ Accepted
                         </span>
                       )}
                     </div>
-                    <div className="prose max-w-none text-gray-800 mb-2">
+                    <div className="prose max-w-none text-gray-800 text-xl mb-2">
                       <ReactMarkdown>{answer.content}</ReactMarkdown>
                     </div>
                     {/* Comments */}
@@ -121,10 +121,10 @@ const ForumSingle = ({ thread }) => {
 
                     {/* Reply Toggle */}
                     <div
-                      className="flex items-center text-sm text-gray-600 cursor-pointer hover:text-gray-900 mt-2"
+                      className="flex items-center text-xl font-semibold text-gray-600 cursor-pointer hover:text-gray-900 mt-3"
                       onClick={() => setShowReply(!showReply)}
                     >
-                      <MessageCircle className="w-4 h-4 mr-1" /> Reply
+                      <MessageCircle className="w-5 h-5 mr-2" /> Reply
                     </div>
 
                     {showReply && (
