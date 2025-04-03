@@ -42,7 +42,7 @@ const ForumQuestion = ({ thread }) => {
           }`}
           onClick={handleUpvote}
         />
-        <span className="font-medium text-lg">{score}</span>
+        <span className="font-avant_medium font-semibold text-2xl">{score}</span>
         <ArrowDown
           className={`cursor-pointer hover:text-blue-500 ${
             userVote === "down" ? "text-blue-500" : ""
@@ -53,17 +53,17 @@ const ForumQuestion = ({ thread }) => {
 
       {/* Question Content */}
       <div className="flex-1">
-        <h1 className="text-2xl font-semibold mb-2">{thread.title}</h1>
-        <div className="text-sm text-gray-500 mb-1">
+        <h1 className="text-4xl font-avant-medium font-semibold mb-2">{thread.title}</h1>
+        <div className="text-[17px] text-gray-500 mb-3">
           Asked by <span className="font-medium">{thread.author}</span> on{" "}
           {new Date(thread.created_utc).toLocaleString()}
         </div>
-        <div className="mb-3 text-gray-700 whitespace-pre-wrap">{thread.content}</div>
-        <div className="flex flex-wrap gap-2 text-sm mb-4">
+        <div className="mb-3 text-gray-700 text-xl whitespace-pre-wrap">{thread.content}</div>
+        <div className="flex flex-wrap gap-2 text-lg mb-4">
           {thread.tags.map((tag) => (
             <span
               key={tag}
-              className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
+              className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
             >
               #{tag}
             </span>

@@ -6,8 +6,8 @@ const ForumComment = ({ comments: initialComments }) => {
   const [comments, setComments] = useState(initialComments || []);
 
   return (
-    <div className="bg-gray-50 p-3 rounded mt-2 border">
-      <h4 className="font-medium mb-2">Comments</h4>
+    <div className="bg-gray-50 p-4 rounded-xl mt-2 border border-gray-600">
+      <h4 className="font-semibold font-avant-medium mb-2 text-xl">Comments</h4>
 
       {comments.map((comment) => (
         <CommentItem
@@ -50,18 +50,18 @@ const CommentItem = ({ comment }) => {
   };
 
   return (
-    <div className="flex items-start gap-3 mb-3 text-sm text-gray-600">
+    <div className="flex items-start gap-3 mb-3 text-xl text-gray-600">
       {/* Vote Controls */}
       <div className="flex flex-col items-center text-gray-400">
         <ArrowUp
           className={`cursor-pointer hover:text-orange-500 ${vote === "up" ? "text-orange-500" : ""}`}
-          size={16}
+          size={18}
           onClick={handleUpvote}
         />
         <span className="font-medium text-medium">{score}</span>
         <ArrowDown
           className={`cursor-pointer hover:text-blue-500 ${vote === "down" ? "text-blue-500" : ""}`}
-          size={16}
+          size={18}
           onClick={handleDownvote}
         />
       </div>
@@ -71,8 +71,8 @@ const CommentItem = ({ comment }) => {
         <div className="flex flex-wrap items-center gap-2">
           {/* <span className="text-xs text-gray-500 font-medium">{score}</span> */}
           <div className="whitespace-pre-wrap">
-            <span className="font-semibold">{comment.author}</span>
-            <ReactMarkdown className="prose prose-sm mt-1">
+            <span className="font-semibold text-xl">{comment.author}</span>
+            <ReactMarkdown className="prose prose-sm text-lg mt-1">
               {`\n${comment.content}`}
             </ReactMarkdown>
           </div>
