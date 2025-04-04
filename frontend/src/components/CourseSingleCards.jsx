@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import CourseVideoOverlay from "./CourseVideoOverlay";
 import {FaStar, FaReply, FaChevronLeft, FaChevronRight, FaCheck, FaLock, FaTimes, FaUsers, FaBookOpen, FaFacebook, FaPinterest, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 
 const CourseSingleCards = ({ course }) => {
   const [activeTab, setActiveTab] = useState("Overview");
   const [expandedSections, setExpandedSections] = useState({});
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [videoTab, setVideoTab] = useState("Notes");
+
   const defaultInstructorImage = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250";
   const [currentPage, setCurrentPage] = useState(1);
   const reviewsPerPage = 3;
@@ -63,18 +66,18 @@ const CourseSingleCards = ({ course }) => {
           ))}
         </div>
 
-        <div className="p-8 font-avant-medium text-[18px] text-gray-700 bg-gray-100">
+        <div className="p-8 font-avant-medium text-[20px] text-gray-700 bg-gray-100">
           {activeTab === "Instructor" ? (
-            <div className="bg-gray p-6 rounded-lg shadow-lg">
+            <div className="bg-gray p-2">
               {/* Instructor Info */}
               <div className="flex items-center">
                 <img
                   src={course.tabs.Instructor.iconUrl || defaultInstructorImage}
                   alt="Instructor"
-                  className="w-24 h-24 rounded-lg object-cover mr-6"
+                  className="w-35 h-35 rounded-lg object-cover mr-6"
                 />
                 <div>
-                  <h2 className="text-2xl font-bold">{course.tabs.Instructor.name}</h2>
+                  <h2 className="text-3xl font-bold">{course.tabs.Instructor.name}</h2>
                   <p className="text-gray-600">{course.tabs.Instructor.bio}</p>
                   <div className="mt-2">
                     <div className="flex items-center text-gray-700">
@@ -125,9 +128,9 @@ const CourseSingleCards = ({ course }) => {
             <div className="space-y-4">
               {/* Curriculum - Expandable */}
               {course.tabs.Curriculum.map((section, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-md p-4 border">
+                <div key={index} className="bg-white rounded-xl shadow-md p-4 border-gray-200">
                   <button
-                    className="w-full flex justify-between items-center text-lg font-semibold text-black"
+                    className="w-full flex justify-between items-center px-2 py-1 text-[22px] text-black cursor-pointer"
                     onClick={() => toggleSection(index)}
                   >
                     <span>{section.title}</span>
@@ -138,22 +141,22 @@ const CourseSingleCards = ({ course }) => {
 
                   {/* Lessons - Expandable */}
                   {expandedSections[index] && (
-                    <div className="mt-3 space-y-3">
+                    <div className="mt-3 space-y-4">
                       {section.videos.map((video, vidIndex) => (
                         <div
                           key={vidIndex}
-                          className="flex justify-between items-center bg-gray-100 p-3 rounded-md cursor-pointer"
+                          className="flex justify-between items-center bg-gray-100 px-6 py-4 rounded-xl cursor-pointer group ml-2 mr-2"
                           onClick={() => handleVideoClick(video)}
                         >
                           <span
-                            className={`text-gray-700 font-semibold ${
+                            className={`text-gray-800 text-[19px] ${
                               video.isLocked ? "cursor-not-allowed" : "cursor-pointer"
                             }`}
                           >
                             {video.title}
                           </span>
                           <div className="flex items-center space-x-3">
-                            <span className="text-gray-600">{video.duration}</span>
+                            <span className="text-gray-600 px-2 text-[20px]">{video.duration}</span>
                             {video.isLocked ? (
                               <FaLock className="text-gray-400" />
                             ) : (
@@ -203,7 +206,7 @@ const CourseSingleCards = ({ course }) => {
               {/* Reviews List */}
               <div className="mt-6 space-y-6">
                 {currentReviews.map((review, index) => (
-                  <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+                  <div key={index} className="bg-white p-4 rounded-xl">
                     <div className="flex items-center">
                       <img
                         src={review.userImage || "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"}
@@ -211,12 +214,12 @@ const CourseSingleCards = ({ course }) => {
                         className="w-12 h-12 rounded-full object-cover mr-4"
                       />
                       <div>
-                        <h4 className="font-bold">{review.user}</h4>
-                        <p className="text-gray-500 text-sm">{review.date}</p>
+                        <h4 className="font-semibold text-[23px]">{review.user}</h4>
+                        <p className="text-gray-500 text-lg">{review.date}</p>
                       </div>
                     </div>
                     <p className="mt-2 text-gray-700">{review.comment}</p>
-                    <button className="text-red-500 flex items-center mt-2">
+                    <button className="text-red-500 flex items-center mt-2 cursor-pointer">
                       <FaReply className="mr-2" /> Reply
                     </button>
                   </div>
@@ -261,27 +264,16 @@ const CourseSingleCards = ({ course }) => {
           )}
         </div>
       </div>
-      {/* Video Modal - Dark Overlay with Reduced Opacity */}
-      {selectedVideo && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-10 flex justify-center items-center z-50"
-          onClick={closeVideo} // Clicking outside closes the modal
-        >
-          <div className="relative p-4 rounded-lg shadow-lg w-[80%] max-w-4xl" onClick={(e) => e.stopPropagation()}>
-            <button className="absolute top-5 right-5 text-2xl text-gray-700 hover:text-blue" onClick={closeVideo}>
-              <FaTimes />
-            </button>
-            <iframe
-              className="rounded-lg w-full h-[500px]"
-              src={selectedVideo}
-              title="Selected Lesson"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
-      )}
+      <CourseVideoOverlay
+        course={course}
+        selectedVideo={selectedVideo}
+        closeVideo={closeVideo}
+        handleVideoClick={(video) => {
+          if (!video.isLocked) setSelectedVideo(video.url);
+        }}
+        expandedSections={expandedSections}
+        toggleSection={toggleSection}
+      />
 
       {/* Comment Section (Now placed directly below the tabbed content) */}
       <div className="mt-10">
