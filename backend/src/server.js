@@ -5,6 +5,7 @@ const db = require('./config/db');
 const registerRoutes = require('./routes/registerRoutes');
 const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes');
+const forumRoutes = require('./routes/forumRoutes');
 const app = express();
 const searchRoutes = require('./routes/searchRoutes');
 // Middleware
@@ -34,6 +35,7 @@ app.use('/register', registerRoutes);
 app.use('/auth', authRoutes);
 app.use('/courses', courseRoutes);
 app.use('/search', searchRoutes);
+app.use('/forum', forumRoutes);
 // Start Server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
