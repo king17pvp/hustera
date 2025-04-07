@@ -187,8 +187,7 @@ const sampleStats = [
 
 const App = () => {
 
-  // const { isAuthenticated } = useSelector((state) => state.auth);
-  const isAuthenticated = true;
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   return (
     <>
@@ -213,6 +212,7 @@ const App = () => {
                   stats={sampleStats} />} />
                 <Route path="/courses" element={<CourseListing />} />
                 <Route path="/courses/1" element={<CourseSingle courses={sampleCourses[0]} />} />
+                <Route path="/forum/1" element={<ForumSingle thread={sampleThread} />} />
                 <Route path="/forum" element={<ThreadListing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
