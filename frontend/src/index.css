@@ -22,4 +22,77 @@
 .font-avant-medium {
   font-family: "AvantGarde-Medium", sans-serif;
 }
-  
+
+/* Styles for curriculum preview */
+.curriculum-week {
+  transition: all 0.3s ease;
+}
+
+.curriculum-week:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.resource-item {
+  transition: all 0.2s ease;
+}
+
+.resource-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Styles for lecture content */
+.lecture-content h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1a202c;
+}
+
+.lecture-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #2d3748;
+}
+
+.lecture-content p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+.lecture-content ul,
+.lecture-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.lecture-content ul li,
+.lecture-content ol li {
+  margin-bottom: 0.5rem;
+}
+
+.lecture-content ul {
+  list-style-type: disc;
+}
+
+.lecture-content ol {
+  list-style-type: decimal;
+}
+
+.lecture-content pre {
+  background-color: #f7fafc;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.lecture-content code {
+  font-family: Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.9em;
+}
+
+.lecture-content pre code {
+  color: #2d3748;
+}

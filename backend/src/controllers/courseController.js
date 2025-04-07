@@ -1,28 +1,124 @@
-const coursesService = require("../services/courseService");
+const courseService = require("../services/courseService");
 
 exports.getCourses = async (req, res) => {
     try {
-        const filters = {
-            category: req.query.category || "",
-            instructor: req.query.instructor || "",
-            level: req.query.level || "",
-            price: req.query.price || "",
-            page: parseInt(req.query.page) || 1,
-            limit: parseInt(req.query.limit) || 6
-        };
-
-        const data = await coursesService.getCourses(filters);
-        res.status(200).json({ success: true, ...data });
+        const { category, instructor, level, price, page, limit } = req.query;
+        const results = await courseService.getCourses({
+            category,
+            instructor,
+            level,
+            price,
+            page,
+            limit,
+        });
+        res.json({
+            success: true,
+            courses: results.courses,
+            totalPages: results.totalPages,
+        });
     } catch (error) {
+        console.error("Error in course controller:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
 exports.getFilters = async (req, res) => {
     try {
-        const filterData = await coursesService.getFilters();
-        res.status(200).json({ success: true, ...filterData });
+        const filters = await courseService.getFilters();
+        res.json({ success: true, ...filters });
     } catch (error) {
+        console.error("Error in getting filters:", error);
         res.status(500).json({ success: false, message: error.message });
     }
+};
+
+exports.createCourse = async (req, res) => {
+    try {
+        const courseData = req.body;
+        
+        // Basic validation
+        if (!courseData.title || !courseData.description || !courseData.category || 
+            !courseData.price || !courseData.duration || !courseData.level) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required course fields"
+            });
+        }
+
+        // Add instructor ID from authenticated user
+        courseData.instructor_ID = req.user.user_ID;
+
+        const courseId = await courseService.createCourse(courseData);
+        res.status(201).json({
+            success: true,
+            message: "Course created successfully",
+            courseId
+        });
+    } catch (error) {
+        console.error("Error in creating course:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.getCourseById = async (req, res) => {
+    try {
+        const courseId = req.params.id;
+        const course = await courseService.getCourseById(courseId);
+        if (!course) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
+        res.json({ success: true, course });
+    } catch (error) {
+        console.error("Error in getting course by id:", error);
+        // Return a more user-friendly error
+        res.status(500).json({ 
+            success: false, 
+            message: "Unable to retrieve course details. Please try again later." 
+        });
+    }
+};
+
+exports.createLecture = async (req, res) => {
+  try {
+    const { weekId, title, content, orderIndex } = req.body;
+    
+    if (!weekId || !title || !content) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields for lecture"
+      });
+    }
+
+    const lectureId = await courseService.createLecture(
+      weekId, 
+      title, 
+      content,
+      orderIndex || 1
+    );
+    
+    res.status(201).json({
+      success: true,
+      message: "Lecture created successfully",
+      lectureId
+    });
+  } catch (error) {
+    console.error("Error creating lecture:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getLectureById = async (req, res) => {
+  try {
+    const lectureId = req.params.id;
+    const lecture = await courseService.getLectureById(lectureId);
+    
+    if (!lecture) {
+      return res.status(404).json({ success: false, message: "Lecture not found" });
+    }
+    
+    res.json({ success: true, lecture });
+  } catch (error) {
+    console.error("Error getting lecture:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 };

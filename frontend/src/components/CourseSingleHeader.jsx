@@ -1,6 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const CourseSingleHeader = ({ course }) => {
+  const navigate = useNavigate();
+  
+  const handleStartCourse = () => {
+    navigate(`/courses/${course.courseID}/learn`);
+  };
+  
   return (
     <div className="bg-black text-white p-6 relative h-75 flex justify-center items-center">
       <div className="max-w-[1680px] w-full flex justify-between items-center relative">
@@ -24,7 +31,7 @@ const CourseSingleHeader = ({ course }) => {
           </div>
         </div>
 
-        {/* Course Pricing Section (Falling Out of Bounds) */}
+        {/* Course Pricing Section */}
         <div className="absolute right-0 bottom-5 translate-y-1/2 bg-white rounded-2xl shadow-lg max-w-[510px] h-95 text-center z-10">
           {/* Image Section */}
           <div>
@@ -38,7 +45,10 @@ const CourseSingleHeader = ({ course }) => {
           {/* Price & Button Section */}
           <div className="p-6 ml-15 mr-15 flex justify-between items-center">
             <p className="text-2xl font-avant-medium font-bold text-gray-700">${course.discountedPrice}</p>
-            <button className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition cursor-pointer">
+            <button 
+              className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition cursor-pointer"
+              onClick={handleStartCourse}
+            >
               Start Now
             </button>
           </div>

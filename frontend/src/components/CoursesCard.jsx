@@ -1,8 +1,33 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const CourseCard = ({ thumbnailUrl, category, title, author, duration, students, price }) => {
+const CourseCard = ({ courseID, thumbnailUrl, category, title, author, duration, students, price }) => {
+  const navigate = useNavigate();
+  
+  const handleCardClick = () => {
+    navigate(`/courses/${courseID}`);
+  };
+  
+  // Hàm xây dựng URL hình ảnh
+  const getImageUrl = (url) => {
+    if (!url) {
+      return "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220714150931/JavaScript-Introduction.jpg";
+    }
+    
+    // Nếu đã là URL đầy đủ, sử dụng nó
+    if (url.startsWith('http')) {
+      return url;
+    }
+    
+    // Thêm tiền tố server
+    return `http://localhost:5000${url}`;
+  };
+  
   return (
-    <div className="relative bg-white rounded-4xl overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-3 hover:bg-gray-50 w-135 h-140 cursor-pointer flex flex-col group border border-gray-200">
+    <div 
+      className="relative bg-white rounded-4xl overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-3 hover:bg-gray-50 w-135 h-140 cursor-pointer flex flex-col group border border-gray-200"
+      onClick={handleCardClick}
+    >
       {/* Badge */}
       <div className="absolute top-6 left-6 bg-gray-800 text-white px-4 py-2 rounded-xl">
         {category}
@@ -10,9 +35,13 @@ const CourseCard = ({ thumbnailUrl, category, title, author, duration, students,
 
       {/* Thumbnail */}
       <img 
-        src={thumbnailUrl} 
+        src={getImageUrl(thumbnailUrl)}
         alt="Category Thumbnail" 
         className="w-full h-85 object-cover rounded-t-3xl"
+        onError={(e) => {
+          console.error('Image failed to load:', e.target.src);
+          e.target.src = "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220714150931/JavaScript-Introduction.jpg";
+        }}
       />
 
       {/* Course Info (Flexible Container) */}

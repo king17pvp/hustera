@@ -13,3 +13,12 @@ exports.createUser = async (email, password, role) => {
 
     return {id: result.insertId, email: email, role: role};
 };
+
+exports.createUserInfo = async (userId, name, gender) => {
+    const [result] = await db.query(
+        'INSERT INTO user_info (user_ID, name, gender) VALUES (?, ?, ?)',
+        [userId, name, gender]
+    );
+
+    return result.insertId;
+};

@@ -1,11 +1,13 @@
 // frontend/src/pages/CourseListing.jsx
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CourseCardHorizontal from "../components/CourseCardHorizontal";
 import Breadcrumb from "../components/BreadCrumb";
 import SearchBar from "../components/SectionHeader";
+import CreateCourseForm from "../components/CreateCourseForm";
 
 // Pagination Component
 const Pagination = ({ totalPages, currentPage, onPageChange }) => {
@@ -150,10 +152,12 @@ const CourseListing = () => {
   const [filterData, setFilterData] = useState({ categories: [], instructors: [] });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  // Use "instructor" as the key for email filtering
   const [filters, setFilters] = useState({ category: "", instructor: "", level: "", price: "" });
   const [loading, setLoading] = useState(true);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
   // Extract search query from URL if present
   const searchParams = new URLSearchParams(location.search);
@@ -172,11 +176,13 @@ const CourseListing = () => {
           const params = new URLSearchParams({
             page: currentPage,
             limit: 6,
-            category: filters.category,
-            instructor: filters.instructor,
-            level: filters.level,
-            price: filters.price,
           });
+          
+          if (filters.category) params.append('category', filters.category);
+          if (filters.instructor) params.append('instructor', filters.instructor);
+          if (filters.level) params.append('level', filters.level);
+          if (filters.price) params.append('price', filters.price);
+          
           endpoint = `http://localhost:5000/courses?${params.toString()}`;
         }
         const response = await fetch(endpoint);
@@ -227,21 +233,40 @@ const CourseListing = () => {
       <div className="flex justify-center w-full">
         <div className="flex flex-col md:flex-row justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
           <div className="w-full md:w-3/4">
-            <SearchBar title="All Courses" />
-            {loading ? (
-              <p>Loading courses...</p>
-            ) : courses.length > 0 ? (
-              <div className="grid grid-cols-1 gap-7">
-                {courses.map((course) => (
-                  <CourseCardHorizontal key={course.courseID} {...course} />
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-gray-600">No courses available</p>
-            )}
-            <div className="mt-6 flex justify-center">
-              <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
+            <div className="flex justify-between items-center mb-6">
+              <SearchBar title="All Courses" />
+              <button
+                onClick={() => setShowCreateForm(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Create Course
+              </button>
             </div>
+
+            {showCreateForm ? (
+              <CreateCourseForm />
+            ) : (
+              <>
+                {loading ? (
+                  <p>Loading courses...</p>
+                ) : courses.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-7">
+                    {courses.map((course) => (
+                      <CourseCardHorizontal key={course.courseID} {...course} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-gray-600">No courses available</p>
+                )}
+                <div className="mt-6 flex justify-center">
+                  <Pagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    onPageChange={setCurrentPage}
+                  />
+                </div>
+              </>
+            )}
           </div>
           <div className="w-full md:w-1/4">
             <InlineCourseFilter filterData={filterData} setFilters={setFilters} />

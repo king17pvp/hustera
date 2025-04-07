@@ -11,7 +11,6 @@ const LoginBox = () => {
   const [attemptedLogin, setAttemptedLogin] = useState(false);
   const [error, setError] = useState('');
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,22 +22,43 @@ const LoginBox = () => {
   };
 
   const handleLogin = async (e) => {
+    e.preventDefault();
     setAttemptedLogin(true);
+    
     if (!form.email || !form.password) {
       setError('Please fill in all fields');
       return;
-    };
-
-    e.preventDefault();
-    try {
-      setAttemptedLogin(false);
-      const response = await axios.post('http://localhost:5000/auth', form);
-      dispatch(login(response.data.user));
-      navigate('/');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Incorrect email or password');
     }
-  }
+
+    try {
+      console.log('Attempting login with:', form);
+      const response = await axios.post('http://localhost:5000/auth/login', form);
+      console.log('Login response:', response.data);
+      
+      if (response.data.success) {
+        // Store auth data
+        const authData = {
+          user: response.data.user,
+          token: response.data.token
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('authData', JSON.stringify(authData));
+        
+        // Update Redux state
+        dispatch(login(authData));
+        
+        // Navigate to home
+        navigate('/');
+      } else {
+        setError(response.data.message || 'Login failed');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      console.error('Error response:', err.response);
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    }
+  };
 
   return (
     <div className="min-w-2xl max-w-2xl mx-auto mt-10 mb-10 p-8 bg-white rounded-2xl border border-gray-300">
@@ -89,7 +109,7 @@ const LoginBox = () => {
         {/* Links */}
         <div className="text-lg font-avant-medium text-center mt-2">
           <button
-            onClick={() => navigate("/register")} // Navigate to register page
+            onClick={() => navigate("/register")}
             className="text-blue-600 hover:underline cursor-pointer bg-transparent border-none"
           >
             Create new account

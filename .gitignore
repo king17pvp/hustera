@@ -1,0 +1,16 @@
+# Ignore all images in the /bugs folder
+bugs/*.png
+bugs/*.jpg
+bugs/*.jpeg
+bugs/*.gif
+bugs/*.webp
+
+# Optional: Ignore OS/system stuff
+.DS_Store
+Thumbs.db
+
+# Node or Python project? Add these if applicable
+node_modules/
+.env
+__pycache__/
+*.pyc

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Images</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .image-test { margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; }
+        .success { color: green; }
+        .error { color: red; }
+        img { max-width: 300px; max-height: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Image Loading Debug Tool</h1>
+    
+    <div class="image-test">
+        <h2>Test 1: Direct Path</h2>
+        <p>Testing: <code>/public/images/default-course-thumbnail.jpg</code></p>
+        <img src="http://localhost:5000/public/images/default-course-thumbnail.jpg" 
+             alt="Test 1" 
+             onload="this.parentNode.innerHTML += '<p class=\'success\'>Success! Image loaded correctly.</p>'"
+             onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error! Image failed to load.</p>'">
+    </div>
+
+    <div class="image-test">
+        <h2>Test 2: Images Path</h2>
+        <p>Testing: <code>/images/default-course-thumbnail.jpg</code></p>
+        <img src="http://localhost:5000/images/default-course-thumbnail.jpg" 
+             alt="Test 2" 
+             onload="this.parentNode.innerHTML += '<p class=\'success\'>Success! Image loaded correctly.</p>'"
+             onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error! Image failed to load.</p>'">
+    </div>
+
+    <div class="image-test">
+        <h2>Test 3: No Public Prefix</h2>
+        <p>Testing: <code>/default-course-thumbnail.jpg</code></p>
+        <img src="http://localhost:5000/default-course-thumbnail.jpg" 
+             alt="Test 3" 
+             onload="this.parentNode.innerHTML += '<p class=\'success\'>Success! Image loaded correctly.</p>'"
+             onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error! Image failed to load.</p>'">
+    </div>
+
+    <div class="image-test">
+        <h2>Test 4: Raw Path From Database</h2>
+        <div id="dbTest">
+            <p>Enter image path from database: <input type="text" id="dbPath" value="/public/images/default-course-thumbnail.jpg"></p>
+            <button onclick="testDbPath()">Test Path</button>
+            <div id="dbResult"></div>
+        </div>
+    </div>
+
+    <script>
+        function testDbPath() {
+            const path = document.getElementById('dbPath').value;
+            const resultDiv = document.getElementById('dbResult');
+            
+            resultDiv.innerHTML = `<p>Testing: <code>${path}</code></p>`;
+            
+            const img = document.createElement('img');
+            img.src = `http://localhost:5000${path}`;
+            img.alt = "Database Path Test";
+            
+            img.onload = () => {
+                resultDiv.innerHTML += `<p class="success">Success! Image loaded correctly.</p>`;
+                resultDiv.appendChild(img);
+            };
+            
+            img.onerror = () => {
+                resultDiv.innerHTML += `<p class="error">Error! Image failed to load.</p>`;
+            };
+            
+            resultDiv.appendChild(img);
+        }
+    </script>
+</body>
+</html>

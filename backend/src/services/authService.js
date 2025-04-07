@@ -13,5 +13,9 @@ exports.login = async (email, password) => {
         throw new Error('Incorrect password');
     }
 
-    return {id: user.id, email: user.email};
+    return {
+        user_ID: user.user_ID,
+        email: user.email,
+        role: user.role
+    };
 }
