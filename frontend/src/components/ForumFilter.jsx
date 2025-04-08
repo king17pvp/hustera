@@ -26,7 +26,7 @@ const ForumFilter = ({ categories, tags }) => {
   };
 
   return (
-    <div className="w-85 p-6 text-black">
+    <div className="w-100 px-3 text-black">
       {/* Category Section */}
       <FilterSection title="Thread Category">
         {categories.map(({ name, count }) => (

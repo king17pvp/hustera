@@ -19,7 +19,7 @@ const SearchBar = ({ title }) => {
   };
 
   return (
-    <div className="flex justify-between items-center w-full py-10">
+    <div className="flex justify-between items-center w-full mt-10 mb-6">
       <h1 className="text-5xl font-avant-medium font-bold">{title}</h1>
       <form onSubmit={handleSearch} className="relative w-90">
         <input
