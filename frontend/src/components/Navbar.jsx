@@ -111,12 +111,14 @@ const Navbar = ({ currentState }) => {
               isDropdownOpen ? "opacity-100 visible" : "opacity-0 invisible"
             }`}
           >
-            <button className="block w-full px-7 py-3 text-left text-[23px] hover:bg-gray-200 cursor-pointer">
+            <button 
+              onClick={() => navigate("/settings")}
+              className="block w-full px-7 py-2 text-left text-[21px] hover:bg-gray-200 cursor-pointer">
               Settings
             </button>
             <button
               onClick={handleLogout}
-              className="block w-full px-7 py-3 text-left text-[23px] text-red-600 hover:bg-gray-200 cursor-pointer"
+              className="block w-full px-7 py-2 text-left text-[21px] text-red-600 hover:bg-gray-200 cursor-pointer"
             >
               Logout
             </button>
