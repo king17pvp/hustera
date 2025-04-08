@@ -1,47 +1,60 @@
 import React from "react";
 
-const ForumCardHorizontal = ({ thumbnailUrl, title, date, description, tags }) => {
+const ForumCardHorizontal = ({
+  title,
+  date,
+  description, // thread content
+  tags,
+  views,
+  answers,
+  votes,
+  author,
+}) => {
   return (
-    <div className="group relative h-80 w-310 flex bg-white rounded-2xl overflow-hidden border border-gray-200 transition-transform duration-300 hover:shadow-2xl hover:-translate-y-2 hover:bg-gray-50 cursor-pointer">
-      {/* Left: Image */}
-      <div className="relative min-w-140 max-w-140 bg-gray-100">
-        <img
-          src={thumbnailUrl}
-          alt="Forum Thumbnail"
-          className="w-full h-full object-cover"
-        />
+    <div className="flex w-full max-w-[1230px] border border-gray-200 rounded-xl px-6 py-6 hover:shadow-md hover:-translate-y-1 transition cursor-pointer bg-white group">
+      {/* Left: Stats */}
+      <div className="flex flex-col justify-center items-end text-right mr-6 min-w-20 space-y-1">
+        <div className="text-lg font-avant-medium text-gray-900">
+          <span className="font-semibold">{votes}</span> votes
+        </div>
+        <div className="text-lg font-avant-medium text-gray-400">
+          <span className="font-semibold">{answers}</span> answers
+        </div>
+        <div className="text-lg font-avant-medium text-gray-400">
+          <span className="font-semibold">{views}</span> views
+        </div>
       </div>
 
-      {/* Right: Forum Details */}
-      <div className="p-7 flex flex-col flex-grow">
-        <h3 className="text-3xl max-w-155 font-avant-medium font-bold text-black mt-2 transition-colors duration-200 group-hover:text-blue-700">
+      {/* Right: Content */}
+      <div className="flex-1 ml-3">
+        {/* Title */}
+        <h3 className="text-blue-600 text-[25px] font-avant-medium font-semibold group-hover:text-blue-800">
           {title}
         </h3>
 
-        {/* Forum Info */}
-        <div className="flex-col items-center text-gray-500 text-lg mt-3 space-x-3 flex-wrap">
-          <p className="text-gray-500 text-xl mt-2">📅 {date}</p>
-          <p className="text-gray-700 text-xl mt-4">{description}</p>
-        </div>
+        {/* Description */}
+        <p className="text-gray-600 text-xl mt-1 line-clamp-2">
+          {description}
+        </p>
 
-        {/* Spacer to push content down */}
-        <div className="flex-grow"></div>
-
-        {/* Separating Line */}
-        <div className="border-t border-gray-200 my-3"></div>
-
-        {/* Tags Section */}
-        <div className="flex items-center gap-2 mt-2">
-          <span className="text-black font-semibold text-xl">Tags:</span>
-          <div className="flex flex-wrap gap-3">
+        {/* Tags + Author */}
+        <div className="flex justify-between items-center mt-3">
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2">
             {tags.map((tag, index) => (
               <span
                 key={index}
-                className="bg-gray-200 text-gray-700 px-4 py-1 rounded-full text-lg font-semibold"
+                className="bg-gray-100 text-gray-700 px-4 py-1 rounded-full text-[18px] font-medium"
               >
                 {tag}
               </span>
             ))}
+          </div>
+
+          {/* Author Info */}
+          <div className="text-[18px] text-gray-500">
+            <span className="font-avant-medium text-blue-500 group-hover:text-blue-800">{author}</span>{" "}
+            asked on {date}
           </div>
         </div>
       </div>
