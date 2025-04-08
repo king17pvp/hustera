@@ -6,9 +6,11 @@ import ThreadListing from "./pages/ThreadListing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import FAQs from "./pages/FAQs";
+import UserSettings from "./pages/UserSettings";
 import CourseSingle from "./pages/CourseSingle.jsx";
 import { useSelector } from 'react-redux';
 import ForumSingle from "./pages/ForumSingle.jsx";
+
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
   { iconPath: "icons/development.png", title: "Development", courseCount: 22 },
@@ -186,10 +188,7 @@ const sampleStats = [
 ];
 
 const App = () => {
-
-  // const { isAuthenticated } = useSelector((state) => state.auth);
-  const isAuthenticated = true;
-
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   return (
     <>
@@ -219,6 +218,7 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/faqs" element={<FAQs />} />
+                <Route path="/settings" element={<UserSettings />} />
               </>
             )}
 

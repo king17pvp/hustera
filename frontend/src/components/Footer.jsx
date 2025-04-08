@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import logo from "../assets/logo2.png";
 
 const Footer = () => {
+  const navigate = useNavigate(); // Initialize navigate
+
   return (
     <footer className="flex-col justify-center bg-gray-100 py-12">
       <div className="mx-auto max-w-[1690px] flex justify-center text-gray-600 space-x-43">
@@ -20,8 +23,8 @@ const Footer = () => {
           <div>
             <h3 className="font-avant-medium font-bold text-2xl text-gray-900">GET HELP</h3>
             <ul className="mt-2 space-y-2 text-sm">
-              <li><a href="/forum" className="hover:text-blue-600 text-xl transition">Latest Threads</a></li>
-              <li><a href="/faqs" className="hover:text-blue-600 text-xl transition">FAQs</a></li>
+              <li><button onClick={() => navigate("/forum")} className="hover:text-blue-600 text-xl transition cursor-pointer">Latest Threads</button></li>
+              <li><button onClick={() => navigate("/faqs")} className="hover:text-blue-600 text-xl transition cursor-pointer">FAQs</button></li>
             </ul>
           </div>
 
@@ -29,11 +32,11 @@ const Footer = () => {
           <div>
             <h3 className="font-avant-medium font-bold text-2xl text-gray-900">PROGRAMS</h3>
             <ul className="mt-2 space-y-2 text-sm">
-              <li><a href="#" className="hover:text-blue-600 text-xl transition">Art & Design</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-xl transition">Business</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-xl transition">IT & Software</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-xl transition">Languages</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-xl transition">Programming</a></li>
+              <li><button onClick={() => navigate("/courses")} className="hover:text-blue-600 text-xl transition cursor-pointer">Art & Design</button></li>
+              <li><button onClick={() => navigate("/courses")} className="hover:text-blue-600 text-xl transition cursor-pointer">Business</button></li>
+              <li><button onClick={() => navigate("/coursese")} className="hover:text-blue-600 text-xl transition cursor-pointer">IT & Software</button></li>
+              <li><button onClick={() => navigate("/courses")} className="hover:text-blue-600 text-xl transition cursor-pointer">Languages</button></li>
+              <li><button onClick={() => navigate("/courses")} className="hover:text-blue-600 text-xl transition cursor-pointer">Programming</button></li>
             </ul>
           </div>
 

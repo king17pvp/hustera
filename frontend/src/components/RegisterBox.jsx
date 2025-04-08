@@ -31,9 +31,12 @@ const RegisterBox = () => {
     if (!form.email || !form.password || !form.role || !form.confirmPassword) {
       setError('Please fill in all fields');
       return;
-    };
-    
+    } 
 
+    if (form.password !== form.confirmPassword && form.password && form.confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
 
     e.preventDefault();
     try {
@@ -46,16 +49,6 @@ const RegisterBox = () => {
     }
   }
 
-  // Validate passwords using useEffect
-  useEffect(() => {
-    if (confirmPassword.length > 0) {
-      if (password !== confirmPassword) {
-        setPasswordError("Passwords do not match!");
-      } else {
-        setPasswordError("");
-      }
-    }
-  }, [password, confirmPassword]);
 
   return (
     <div className="min-w-2xl max-w-2xl mx-auto mt-10 mb-10 p-8 bg-white rounded-2xl border border-gray-300">
