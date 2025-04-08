@@ -10,6 +10,7 @@ import UserSettings from "./pages/UserSettings";
 import CourseSingle from "./pages/CourseSingle.jsx";
 import { useSelector } from 'react-redux';
 import ForumSingle from "./pages/ForumSingle.jsx";
+import CourseUpload from "./pages/CourseUpload.jsx";
 
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
@@ -188,7 +189,8 @@ const sampleStats = [
 ];
 
 const App = () => {
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  // const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const isAuthenticated = true;
 
   return (
     <>
@@ -219,6 +221,7 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/faqs" element={<FAQs />} />
                 <Route path="/settings" element={<UserSettings />} />
+                <Route path="/courses/upload" element={<CourseUpload />} />
               </>
             )}
 
