@@ -1,6 +1,8 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Trash2, X } from "lucide-react";
 import React, { useState } from "react";
@@ -13,6 +15,7 @@ const CourseUpload = () => {
   const [phase, setPhase] = useState(1);
   const [direction, setDirection] = useState(1);
   const [validationErrors, setValidationErrors] = useState([]);
+  const navigate = useNavigate();
   const [basicInfo, setBasicInfo] = useState({
     title: "",
     description: "",
@@ -139,7 +142,56 @@ const CourseUpload = () => {
     }),
   };
 
+  const submitCourse = async () => {
+    const data = {
+      title: basicInfo.title,
+      description: basicInfo.description,
+      category: basicInfo.category,
+      tags: basicInfo.tags.split(",").map(tag => tag.trim()),
+      price: basicInfo.price,
+      difficulty: basicInfo.difficulty,
+      thumbnail: basicInfo.thumbnail, // Base64-encoded thumbnail
+      curriculum,
+    };
 
+    try {
+      const response = await axios.post("https://your-backend-api.com/courses", data);
+
+      if (response.status === 200) {
+        alert("Course submitted successfully!");
+        console.log("Response:", response.data);
+        setBasicInfo({
+          title: "",
+          description: "",
+          category: "",
+          tags: "",
+          price: "",
+          thumbnail: "",
+          difficulty: "Beginner",
+        });
+        setCurriculum([
+          {
+            title: "",
+            videos: [
+              {
+                title: "",
+                url: "",
+              },
+            ],
+          },
+        ]);
+        setErrors({});
+        setValidationErrors([]);
+        navigate("/courses"); // Redirect to courses page after successful submission
+      } else {
+        alert("Failed to submit course. Please try again.");
+        console.error("Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error submitting course:", error);
+      alert("An error occurred while submitting the course.");
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -194,6 +246,7 @@ const CourseUpload = () => {
                       name="title"
                       placeholder="Enter course title"
                       className={`w-full font-avant-medium text-[19px] text-gray-600 border-3 px-5 py-3 rounded-xl ${errors.title ? "border-red-500" : "border-gray-700"}`}
+                      maxLength={100}
                       value={basicInfo.title}
                       onChange={handleBasicInfoChange}
                     />
@@ -207,6 +260,7 @@ const CourseUpload = () => {
                       placeholder="Enter course description"
                       className={`w-full font-avant-medium text-[19px] text-gray-600 border-3 px-5 py-3 rounded-xl resize-none ${errors.description ? "border-red-500" : "border-gray-700"}`}
                       rows={5}
+                      maxLength={350}
                       value={basicInfo.description}
                       onChange={handleBasicInfoChange}
                     />
@@ -370,7 +424,7 @@ const CourseUpload = () => {
                   <div className={`w-full h-90 border-3 border-dashed rounded-xl flex items-center justify-center text-gray-400 ${errors.thumbnail ? "border-red-500" : "border-gray-700"}`}>
                     {basicInfo.thumbnail ? (
                       <img
-                        src={URL.createObjectURL(basicInfo.thumbnail)}
+                        src={basicInfo.thumbnail}
                         alt="Thumbnail preview"
                         className="w-full h-full object-fill rounded-xl p-1"
                       />
@@ -390,7 +444,11 @@ const CourseUpload = () => {
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            setBasicInfo((prev) => ({ ...prev, thumbnail: file }));
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setBasicInfo((prev) => ({ ...prev, thumbnail: reader.result })); // Store Base64 string
+                            };
+                            reader.readAsDataURL(file); // Read file as Base64
                           }
                         }}
                       />
@@ -576,43 +634,60 @@ const CourseUpload = () => {
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="space-y-8"
             >
-              {/* Basic Info Section */}
-              <div className="bg-white rounded-2xl p-6 border-3 border-gray-700 space-y-3">
-                <h3 className="text-3xl font-avant-medium font-semibold text-black">📘 Basic Information</h3>
-                <div className="text-[21px] font-avant-medium text-gray-600 space-y-1 pl-2">
-                  <p><strong className="text-black">Title:</strong> {basicInfo.title}</p>
-                  <p><strong className="text-black">Description:</strong> {basicInfo.description}</p>
-                  <p>
-                    <strong className="text-black">Category:</strong>{" "}
-                    {basicInfo.category
-                      .split("-")
-                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                      .join(" ")}
-                  </p>
-                  <p>
-                    <strong className="text-black">Tags:</strong>{" "}
-                    {basicInfo.tags
-                      .split(",")
-                      .map(tag =>
-                        tag
-                          .trim()
-                          .split("-")
-                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                          .join(" ")
-                      )
-                      .join(", ")}
-                  </p>
-                  <p>
-                    <strong className="text-black">Price:</strong>{" "}
-                    {basicInfo.price.charAt(0).toUpperCase() + basicInfo.price.slice(1)}
-                  </p>
-                  <p>
-                    <strong className="text-black">Difficulty:</strong>{" "}
-                    {basicInfo.difficulty
-                      .split("-")
-                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                      .join(" ")}
-                  </p>
+              {/* Basic Info and Thumbnail Section */}
+              <div className="flex space-x-6 items-start">
+                {/* Basic Info Section */}
+                <div className="bg-white rounded-2xl p-6 border-3 border-gray-700 space-y-3 flex-1 overflow-hidden">
+                  <h3 className="text-3xl font-avant-medium font-semibold text-black">📘 Basic Information</h3>
+                  <div className="text-[21px] font-avant-medium text-gray-600 space-y-2 pl-2">
+                    <p><strong className="text-black">Title:</strong> {basicInfo.title}</p>
+                    <p><strong className="text-black">Description:</strong> {basicInfo.description}</p>
+                    <p>
+                      <strong className="text-black">Category:</strong>{" "}
+                      {basicInfo.category
+                        .split("-")
+                        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(" ")}
+                    </p>
+                    <p>
+                      <strong className="text-black">Tags:</strong>{" "}
+                      {basicInfo.tags
+                        .split(",")
+                        .map(tag =>
+                          tag
+                            .trim()
+                            .split("-")
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(" ")
+                        )
+                        .join(", ")}
+                    </p>
+                    <p>
+                      <strong className="text-black">Price:</strong>{" "}
+                      {basicInfo.price.charAt(0).toUpperCase() + basicInfo.price.slice(1)}
+                    </p>
+                    <p>
+                      <strong className="text-black">Difficulty:</strong>{" "}
+                      {basicInfo.difficulty
+                        .split("-")
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(" ")}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Thumbnail Section */}
+                <div className="bg-white rounded-2xl p-1 border-4 border-dashed border-gray-700 flex-col items-center justify-center w-[36%]">
+                  <h3 className="text-3xl px-4 py-3 font-avant-medium font-semibold text-black">📷 Thumbnail Picture</h3>
+                  {basicInfo.thumbnail ? (
+                    <img
+                      src={basicInfo.thumbnail}
+                      alt="Thumbnail preview"
+                      className="w-full h-95 rounded-xl"
+                    />
+                  ) : (
+                    <span className="text-center font-avant-medium text-xl text-gray-400">No thumbnail uploaded</span>
+                  )}
                 </div>
               </div>
 
@@ -644,6 +719,7 @@ const CourseUpload = () => {
                 </button>
 
                 <button
+                  onClick={submitCourse}
                   className="text-green-600 font-avant-medium font-semibold text-2xl flex items-center gap-1 group transition cursor-pointer"
                 >
                   Submit Course
