@@ -6,6 +6,7 @@ import ForumFilter from "../components/ForumFilter";
 import SearchBar from "../components/SectionHeader";
 import Pagination from "../components/Pagination";
 import faqImage from "../assets/faqs.png"; 
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const sampleThreads = [
@@ -136,6 +137,7 @@ const tags = ["Free courses", "Marketing", "Idea", "LMS", "LearnPress", "Instruc
 const ThreadListing = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 10;
+  const navigate = useNavigate();
 
   return (
     <>
@@ -152,7 +154,9 @@ const ThreadListing = () => {
 
             {/* "Start a New Thread" Button */}
             <div className="flex justify-end mb-6">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-avant-medium py-2 px-5 rounded-xl shadow-md transition duration-300 cursor-pointer">
+              <button 
+                onClick={() => navigate("/forum/upload")}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-avant-medium py-2 px-5 rounded-xl shadow-md transition duration-300 cursor-pointer">
                 + Start a New Thread
               </button>
             </div>
