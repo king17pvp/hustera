@@ -29,11 +29,11 @@ const ForumFilter = ({ categories, tags }) => {
     <div className="w-100 px-3 text-black">
       {/* Category Section */}
       <FilterSection title="Thread Category">
-        {categories.map(({ name, count }) => (
+        {categories.map(({ name, thread_count}) => (
           <RadioCheckbox
             key={name}
             label={name}
-            count={count}
+            count={thread_count}
             checked={selectedFilters.category === name}
             onChange={() => handleSingleSelect("category", name)}
           />
