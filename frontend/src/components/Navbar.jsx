@@ -113,12 +113,12 @@ const Navbar = ({ currentState }) => {
           >
             <button 
               onClick={() => navigate("/settings")}
-              className="block w-full px-7 py-2 text-left text-[21px] hover:bg-gray-200 cursor-pointer">
+              className="block w-full px-7 py-2 text-left text-[21px] font-avant-medium hover:bg-gray-200 cursor-pointer">
               Settings
             </button>
             <button
               onClick={handleLogout}
-              className="block w-full px-7 py-2 text-left text-[21px] text-red-600 hover:bg-gray-200 cursor-pointer"
+              className="block w-full px-7 py-2 text-left text-[21px] font-avant-medium text-red-600 hover:bg-gray-200 cursor-pointer"
             >
               Logout
             </button>

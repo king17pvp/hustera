@@ -9,7 +9,6 @@ import faqImage from "../assets/faqs.png";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-
 const sampleThreads = [
   {
     title: "Best Online Courses 2025",
@@ -217,11 +216,13 @@ const ThreadListing = () => {
     useEffect(() => {
       console.log("Updated filterData:", filterData);
     }, [filterData]);
+
+  const navigate = useNavigate();
+
   return (
     <>
       <Navbar currentState="Forum" />
       <Breadcrumb paths={["Homepage", "Forum"]} />
-      
       {/* Center Everything */}
       <div className="flex justify-center w-full">
         <div className="flex justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
@@ -232,13 +233,14 @@ const ThreadListing = () => {
 
             {/* "Start a New Thread" Button */}
             <div className="flex justify-end mb-6">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-avant-medium py-2 px-5 rounded-xl shadow-md transition duration-300 cursor-pointer">
+              <button 
+                onClick={() => navigate("/forum/upload")}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-avant-medium py-2 px-5 rounded-xl shadow-md transition duration-300 cursor-pointer">
                 + Start a New Thread
               </button>
             </div>
 
-            {/* Courses Grid (6x1) */}
-            
+            {/* Courses Grid (6x1) */}           
             <div className="grid grid-rows-9 gap-5">
               {loading ? (
                 <p>Loading threads...</p> // This will show when loading is true
@@ -249,6 +251,7 @@ const ThreadListing = () => {
               ) : (
                 <p className="text-center text-gray-600">No threads available</p> // This will show if no threads are found
               )}
+
             </div>
 
             {/* Pagination Below Courses */}
@@ -284,6 +287,7 @@ const ThreadListing = () => {
 
             {/* Course Filters */}
             <ForumFilter categories={filterData.categories} tags={filterData.tags} />
+
             
             <div className="mt-20">
               <img

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import CourseVideoOverlay from "./CourseVideoOverlay";
-import {FaStar, FaReply, FaChevronLeft, FaChevronRight, FaCheck, FaLock, FaTimes, FaUsers, FaBookOpen, FaFacebook, FaPinterest, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaStar, FaReply, FaChevronLeft, FaChevronRight, FaCheck, FaLock, FaTimes, FaUsers, FaBookOpen, FaFacebook, FaPinterest, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 
 const CourseSingleCards = ({ course }) => {
   const [activeTab, setActiveTab] = useState("Overview");
   const [expandedSections, setExpandedSections] = useState({});
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videoTab, setVideoTab] = useState("Notes");
+  const [rating, setRating] = useState(0);
+  const [hovered, setHovered] = useState(0);
+
 
   const defaultInstructorImage = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250";
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,7 +27,7 @@ const CourseSingleCards = ({ course }) => {
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   const currentReviews = course.tabs.Reviews.slice(indexOfFirstReview, indexOfLastReview);
-  
+
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -149,9 +152,8 @@ const CourseSingleCards = ({ course }) => {
                           onClick={() => handleVideoClick(video)}
                         >
                           <span
-                            className={`text-gray-800 text-[19px] ${
-                              video.isLocked ? "cursor-not-allowed" : "cursor-pointer"
-                            }`}
+                            className={`text-gray-800 text-[19px] ${video.isLocked ? "cursor-not-allowed" : "cursor-pointer"
+                              }`}
                           >
                             {video.title}
                           </span>
@@ -206,25 +208,37 @@ const CourseSingleCards = ({ course }) => {
               {/* Reviews List */}
               <div className="mt-6 space-y-6">
                 {currentReviews.map((review, index) => (
-                  <div key={index} className="bg-white p-4 rounded-xl">
+                  <div key={index} className="bg-white px-6 py-4 rounded-xl">
                     <div className="flex items-center">
                       <img
                         src={review.userImage || "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"}
                         alt="User"
-                        className="w-12 h-12 rounded-full object-cover mr-4"
+                        className="w-13 h-13 rounded-full object-cover mr-4"
                       />
                       <div>
                         <h4 className="font-semibold text-[23px]">{review.user}</h4>
                         <p className="text-gray-500 text-lg">{review.date}</p>
                       </div>
                     </div>
+
+                    {/* Comment content */}
                     <p className="mt-2 text-gray-700">{review.comment}</p>
-                    <button className="text-red-500 flex items-center mt-2 cursor-pointer">
-                      <FaReply className="mr-2" /> Reply
-                    </button>
+
+                    {/* Star rating */}
+                    <div className="flex mt-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <FaStar
+                          key={star}
+                          size={25}
+                          className="mr-1"
+                          color={review.rating >= star ? "#facc15" : "#d1d5db"} // yellow-400 : gray-300
+                        />
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
+
 
               {/* Pagination */}
               <div className="mt-6 flex justify-center items-center space-x-3">
@@ -239,9 +253,8 @@ const CourseSingleCards = ({ course }) => {
                   <button
                     key={index}
                     onClick={() => paginate(index + 1)}
-                    className={`px-3 py-1 rounded-md ${
-                      currentPage === index + 1 ? "bg-black text-white" : "text-black hover:bg-gray-200"
-                    }`}
+                    className={`px-3 py-1 rounded-md ${currentPage === index + 1 ? "bg-black text-white" : "text-black hover:bg-gray-200"
+                      }`}
                   >
                     {index + 1}
                   </button>
@@ -249,11 +262,10 @@ const CourseSingleCards = ({ course }) => {
                 <button
                   onClick={() => paginate(currentPage + 1)}
                   disabled={currentPage === Math.ceil(course.tabs.Reviews.length / reviewsPerPage)}
-                  className={`p-2 rounded-md ${
-                    currentPage === Math.ceil(course.tabs.Reviews.length / reviewsPerPage)
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-black hover:bg-gray-200"
-                  }`}
+                  className={`p-2 rounded-md ${currentPage === Math.ceil(course.tabs.Reviews.length / reviewsPerPage)
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-black hover:bg-gray-200"
+                    }`}
                 >
                   <FaChevronRight />
                 </button>
@@ -278,29 +290,39 @@ const CourseSingleCards = ({ course }) => {
       {/* Comment Section (Now placed directly below the tabbed content) */}
       <div className="mt-10">
         <h2 className="text-[30px] font-avant-medium font-semibold">Leave A Comment</h2>
-        <h2 className="text-[19px]">Your email will not be published. Required fields are marked*</h2>
-        <form className="mt-5 space-y-4">
-          {/* Name & Email in the same row */}
-          <div className="grid grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Name*"
-              className="w-full border px-5 py-3 text-[18px] rounded-xl"
-            />
-            <input
-              type="email"
-              placeholder="Email*"
-              className="w-full border px-5 py-3 text-[18px] rounded-xl"
-            />
+        <form className="mt-2 space-y-4">
+          {/* Star Rating System */}
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-[22px] font-avant-medium">Your Rating:</span>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <FaStar
+                  key={star}
+                  size={32}
+                  className="cursor-pointer transition-colors duration-200"
+                  color={(hovered || rating) >= star ? "#facc15" : "#d1d5db"} // yellow-400 : gray-300
+                  onMouseEnter={() => setHovered(star)}
+                  onMouseLeave={() => setHovered(0)}
+                  onClick={() => setRating(star)}
+                />
+              ))}
+            </div>
+
+            {/* Inline Satisfaction Label */}
+            {(hovered || rating) > 0 && (
+              <span className="text-[22px] text-black font-medium">
+                {["😞 Very Bad", "😕 Bad", "😐 Okay", "🙂 Good", "🤩 Excellent"][(hovered || rating) - 1]}
+              </span>
+            )}
           </div>
+
+
 
           {/* Comment field below */}
           <textarea
             placeholder="Comment"
-            className="w-[1100px] h-[120px] border px-5 py-3 text-[18px] rounded-xl resize-none"
+            className="w-[1100px] h-[120px] border px-5 py-3 text-[20px] rounded-xl resize-none"
           ></textarea>
-
-
 
           {/* Post Comment Button */}
           <button className="bg-blue-600 text-white text-[18px] font-avant-medium px-5 py-3 rounded-xl cursor-pointer">
