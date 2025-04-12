@@ -7,7 +7,7 @@ import SearchBar from "../components/SectionHeader";
 import Pagination from "../components/Pagination";
 import faqImage from "../assets/faqs.png"; 
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 
 const sampleThreads = [
   {
