@@ -42,6 +42,20 @@ exports.getForumOnClick = async ({ threadId }) => {
   };
 };
 
+exports.getForum = async ({category, searchQuery, sortBy, page}) => {
+  try {
+    const threads = await forumModel.getForum(category, searchQuery, sortBy, page);
+    return threads;
+  } catch (err) {
+    console.error('Error in forumService.getForum:', err);
+    throw err;
+  }
+}
+
 exports.addAnswerToThread = async ({ threadId, userId, content }) => {
   return await forumModel.insertAnswer({ threadId, userId, content });
+};
+
+exports.getFilters = async () => {
+  return await forumModel.getFilters();
 };

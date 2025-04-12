@@ -6,8 +6,8 @@ import ForumFilter from "../components/ForumFilter";
 import SearchBar from "../components/SectionHeader";
 import Pagination from "../components/Pagination";
 import faqImage from "../assets/faqs.png"; 
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const sampleThreads = [
   {
@@ -135,15 +135,94 @@ const instructors = [
 const tags = ["Free courses", "Marketing", "Idea", "LMS", "LearnPress", "Instructor"];
 
 const ThreadListing = () => {
+  const [threads, setThreads] = useState([]);
+  const [filterData, setFilterData] = useState({ categories: [], tags: []});
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 10;
+  const [totalPages, setTotalPages] = useState(1);
+  const [filters, setFilters] = useState({category: "", tags: ""});
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+
+  // Extract search query from URL if present (same as CourseListing)
+  const searchParams = new URLSearchParams(location.search);
+  const titleQuery = searchParams.get("title");
+  useEffect(() => {
+    const fetchThreads = async () => {
+      try {
+        setLoading(true);
+        let endpoint = "";
+        if (titleQuery) {
+          // When there's a search query, use the /search endpoint
+          endpoint = `http://localhost:5000/forum?title=${encodeURIComponent(titleQuery)}&page=${currentPage}`;
+        } else {
+          // Otherwise, use the regular /forum endpoint with filters
+          const params = new URLSearchParams({
+            page: currentPage,
+            searchQuery: titleQuery,
+            category: filters.category,
+            tag: filters.tag
+          });
+          // console.log({
+          //   page: currentPage,
+          //   search: titleQuery,
+          //   category: filters.category,
+          //   tag: filters.tag
+          // });
+          endpoint = `http://localhost:5000/forum?${params.toString()}`;
+        }
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        console.log("Fetched threads data:", data);
+        if (data.success) {
+          setThreads(data.threads);
+          setTotalPages(data.totalPages);
+        } else {
+          console.error("Failed to fetch threads:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching threads:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchThreads();
+  }, [currentPage, filters, location.search, titleQuery]);
+
+  // Fetch available filters (categories, instructors, tags)
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/forum/filters");
+        const data = await response.json();
+        // console.log("Fetched filter data:", data);
+        if (data.success) {
+          console.log("Fetched successfully!");
+          setFilterData({
+            categories: data.categories,
+            tags: data.tags.map(tags => tags.tag_name),
+          });
+          
+        } else {
+          console.error("Failed to fetch filters:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching filters:", error);
+      }
+    };
+
+    fetchFilters();
+  }, []);
+    useEffect(() => {
+      console.log("Updated filterData:", filterData);
+    }, [filterData]);
+
   const navigate = useNavigate();
 
   return (
     <>
       <Navbar currentState="Forum" />
       <Breadcrumb paths={["Homepage", "Forum"]} />
-
       {/* Center Everything */}
       <div className="flex justify-center w-full">
         <div className="flex justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
@@ -161,11 +240,18 @@ const ThreadListing = () => {
               </button>
             </div>
 
-            {/* Courses Grid (6x1) */}
+            {/* Courses Grid (6x1) */}           
             <div className="grid grid-rows-9 gap-5">
-              {sampleThreads.slice(0, 9).map((thread, index) => (
-                <ForumCardHorizontal key={index} {...thread} />
-              ))}
+              {loading ? (
+                <p>Loading threads...</p> // This will show when loading is true
+              ) : Array.isArray(threads) && threads.length > 0 > 0 ? (
+                threads.slice(0, 9).map((thread, index) => (
+                  <ForumCardHorizontal key={index} {...thread} />
+                ))
+              ) : (
+                <p className="text-center text-gray-600">No threads available</p> // This will show if no threads are found
+              )}
+
             </div>
 
             {/* Pagination Below Courses */}
@@ -200,7 +286,8 @@ const ThreadListing = () => {
             </div>
 
             {/* Course Filters */}
-            <ForumFilter categories={categories} instructors={instructors} tags={tags} />
+            <ForumFilter categories={filterData.categories} tags={filterData.tags} />
+
             
             <div className="mt-20">
               <img

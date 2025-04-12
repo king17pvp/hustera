@@ -36,3 +36,36 @@ exports.postAnswer = async (req, res) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 };
+
+exports.getForum = async (req, res) => {
+  try {
+    const {category, searchQuery, sortBy, page} = req.query;
+    const filters = {
+      category: req.query.category || "",
+      sortBy: req.query.sortBy || "",
+      page: parseInt(req.query.page) || 1,
+      tags: req.query.tags || ""
+    };
+    console.log(filters);
+    const threads = await forumService.getForum({
+      category,
+      searchQuery,
+      sortBy,
+      page: parseInt(page) || 1,
+    });
+
+    res.status(200).json({ success: true, ...threads });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+exports.getFilters = async (req, res) => {
+  try {
+    const filters = await forumService.getFilters();
+    res.status(200).json({ success: true, ...filters });
+  } catch (err) {
+    console.error('Error in getFilters:', err);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
