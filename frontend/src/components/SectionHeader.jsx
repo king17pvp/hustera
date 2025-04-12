@@ -2,6 +2,10 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+// frontend/src/components/SectionHeader.jsx
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 const SearchBar = ({ title }) => {
   const [searchInput, setSearchInput] = useState('');
   const navigate = useNavigate();
@@ -43,6 +47,14 @@ const SearchBar = ({ title }) => {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0a7 7 0 1 0-9.9 0 7 7 0 0 0 9.9 0" />
           </svg>
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default SearchBar;
+
         </button>
       </form>
     </div>

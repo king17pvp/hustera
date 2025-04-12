@@ -278,4 +278,10 @@ const CourseListing = () => {
   );
 };
 
+      </div>
+      <Footer />
+    </>
+  );
+};
+
 export default CourseListing;

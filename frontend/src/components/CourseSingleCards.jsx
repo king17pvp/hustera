@@ -254,6 +254,7 @@ const CourseSingleCards = ({ course }) => {
                 )}
               </div>
 
+
               {/* Pagination */}
               {currentReviews.length > 0 && (
                 <div className="mt-6 flex justify-center items-center space-x-3">
@@ -310,26 +311,38 @@ const CourseSingleCards = ({ course }) => {
       {/* Comment Section (Now placed directly below the tabbed content) */}
       <div className="mt-10">
         <h2 className="text-[30px] font-avant-medium font-semibold">Leave A Comment</h2>
-        <h2 className="text-[19px]">Your email will not be published. Required fields are marked*</h2>
-        <form className="mt-5 space-y-4">
-          {/* Name & Email in the same row */}
-          <div className="grid grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Name*"
-              className="w-full border px-5 py-3 text-[18px] rounded-xl"
-            />
-            <input
-              type="email"
-              placeholder="Email*"
-              className="w-full border px-5 py-3 text-[18px] rounded-xl"
-            />
+        <form className="mt-2 space-y-4">
+          {/* Star Rating System */}
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-[22px] font-avant-medium">Your Rating:</span>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <FaStar
+                  key={star}
+                  size={32}
+                  className="cursor-pointer transition-colors duration-200"
+                  color={(hovered || rating) >= star ? "#facc15" : "#d1d5db"} // yellow-400 : gray-300
+                  onMouseEnter={() => setHovered(star)}
+                  onMouseLeave={() => setHovered(0)}
+                  onClick={() => setRating(star)}
+                />
+              ))}
+            </div>
+
+            {/* Inline Satisfaction Label */}
+            {(hovered || rating) > 0 && (
+              <span className="text-[22px] text-black font-medium">
+                {["😞 Very Bad", "😕 Bad", "😐 Okay", "🙂 Good", "🤩 Excellent"][(hovered || rating) - 1]}
+              </span>
+            )}
           </div>
+
+
 
           {/* Comment field below */}
           <textarea
             placeholder="Comment"
-            className="w-[1100px] h-[120px] border px-5 py-3 text-[18px] rounded-xl resize-none"
+            className="w-[1100px] h-[120px] border px-5 py-3 text-[20px] rounded-xl resize-none"
           ></textarea>
 
           {/* Post Comment Button */}

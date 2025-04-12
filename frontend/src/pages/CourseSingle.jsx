@@ -82,6 +82,35 @@ const CourseSingle = () => {
       </div>
     );
   }
+    },
+    Reviews: [
+      {
+        user: "Laura Hipster",
+        date: "October 03, 2022",
+        comment: "This course was incredibly helpful!",
+        userImage: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+        rating: 4
+      },
+      {
+        user: "Mark Johnson",
+        date: "September 29, 2022",
+        comment: "Loved the hands-on approach.",
+        userImage: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+        rating: 3
+      },
+      {
+        user: "Sophie Lee",
+        date: "September 15, 2022",
+        comment: "Perfect for beginners!",
+        userImage: "",
+        rating: 5
+      }
+    ]
+  }
+};
+
+const CourseSingle = ({ course }) => {
+  const [activeTab, setActiveTab] = useState("Curriculum");
 
   return (
     <div className="min-h-screen flex flex-col">
