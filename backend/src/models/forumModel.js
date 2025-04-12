@@ -95,14 +95,14 @@ exports.getForum = async ({ category, searchQuery, tag, sortBy = 'latest', page 
     SELECT 
       t.thread_ID,
       t.title,
-      t.content,
+      t.content as description,
       t.category,
-      t.created_at,
+      t.created_at as date,
       ua.user_ID,
       ua.email,
-      ui.name AS author_name,
-      COUNT(DISTINCT tv.voter_ID) AS vote_count,
-      COUNT(DISTINCT ta.answer_ID) AS answer_count
+      ui.name AS author,
+      COUNT(DISTINCT tv.voter_ID) AS votes,
+      COUNT(DISTINCT ta.answer_ID) AS answers
       FROM threads t
       JOIN user_auth ua ON t.author_ID = ua.user_ID
       LEFT JOIN user_info ui ON ua.user_ID = ui.user_ID

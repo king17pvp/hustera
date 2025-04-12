@@ -54,7 +54,7 @@ exports.getForum = async (req, res) => {
       page: parseInt(page) || 1,
     });
 
-    res.status(200).json({ success: true, data: threads });
+    res.status(200).json({ success: true, ...threads });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
