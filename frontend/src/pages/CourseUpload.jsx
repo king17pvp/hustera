@@ -147,49 +147,45 @@ const CourseUpload = () => {
       title: basicInfo.title,
       description: basicInfo.description,
       category: basicInfo.category,
-      tags: basicInfo.tags.split(",").map(tag => tag.trim()),
-      price: basicInfo.price,
-      difficulty: basicInfo.difficulty,
-      thumbnail: basicInfo.thumbnail, // Base64-encoded thumbnail
-      curriculum,
+      price: basicInfo.price === "Free" ? 0 : parseFloat(basicInfo.price),
+      duration: curriculum.length, // Number of weeks
+      level: basicInfo.difficulty,
+      weeks: curriculum.map(week => ({
+        title: week.title,
+        videos: week.videos
+      }))
     };
 
     try {
-      const response = await axios.post("https://your-backend-api.com/courses", data);
+      // Get auth token from localStorage or Redux state
+      const token = localStorage.getItem('token') || (user && user.token);
+      
+      if (!token) {
+        alert("You must be logged in to create a course");
+        navigate("/login");
+        return;
+      }
 
-      if (response.status === 200) {
+      const response = await axios.post(
+        "http://localhost:5000/courses/create", 
+        data,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data.success) {
         alert("Course submitted successfully!");
-        console.log("Response:", response.data);
-        setBasicInfo({
-          title: "",
-          description: "",
-          category: "",
-          tags: "",
-          price: "",
-          thumbnail: "",
-          difficulty: "Beginner",
-        });
-        setCurriculum([
-          {
-            title: "",
-            videos: [
-              {
-                title: "",
-                url: "",
-              },
-            ],
-          },
-        ]);
-        setErrors({});
-        setValidationErrors([]);
-        navigate("/courses"); // Redirect to courses page after successful submission
+        navigate(`/courses/${response.data.courseId}`); // Navigate to the new course page
       } else {
-        alert("Failed to submit course. Please try again.");
-        console.error("Error:", response.data);
+        alert(`Failed to submit course: ${response.data.message}`);
       }
     } catch (error) {
       console.error("Error submitting course:", error);
-      alert("An error occurred while submitting the course.");
+      alert(`Error: ${error.response?.data?.message || "An unexpected error occurred"}`);
     }
   };
 

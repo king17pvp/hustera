@@ -12,4 +12,8 @@ router.post("/create", authMiddleware.verifyToken, authMiddleware.isInstructor, 
 router.post("/lecture", authMiddleware.verifyToken, authMiddleware.isInstructor, coursesController.createLecture);
 router.get("/lecture/:id", coursesController.getLectureById);
 
+// Routes cho reviews
+router.post("/:id/reviews", authMiddleware.verifyToken, coursesController.addReview);
+router.get("/:id/reviews", coursesController.getReviews);
+
 module.exports = router;

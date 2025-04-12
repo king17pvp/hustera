@@ -316,3 +316,112 @@ exports.getLectureById = async (lectureId) => {
   );
   return lectures.length > 0 ? lectures[0] : null;
 };
+
+exports.addReview = async ({ courseId, reviewerId, rating, review }) => {
+  const connection = await db.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    // Add the review
+    await connection.execute(
+      'INSERT INTO course_reviews (course_ID, reviewer_ID, rating, review) VALUES (?, ?, ?, ?)',
+      [courseId, reviewerId, rating, review]
+    );
+
+    // Get updated statistics after adding review
+    const [stats] = await connection.query(`
+      SELECT 
+        rating,
+        COUNT(*) as count,
+        COUNT(*) * 100.0 / (SELECT COUNT(*) FROM course_reviews WHERE course_ID = ?) as percentage
+      FROM course_reviews
+      WHERE course_ID = ?
+      GROUP BY rating
+      ORDER BY rating DESC
+    `, [courseId, courseId]);
+
+    await connection.commit();
+
+    const avgRating = stats.reduce((acc, curr) => 
+      acc + (curr.rating * curr.count), 0) / 
+      stats.reduce((acc, curr) => acc + curr.count, 0);
+
+    return { stats, averageRating: avgRating };
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
+exports.getCourseReviews = async (courseId) => {
+  // Get all reviews for the course
+  // const [reviews] = await db.query(`
+  //   SELECT 
+  //     r.*,
+  //     ui.name as reviewer_name,
+  //   FROM course_reviews r
+  //   JOIN user_info ui ON r.reviewer_ID = ui.user_ID
+  //   WHERE r.course_ID = ?
+  //   ORDER BY r.rated_at DESC
+  // `, [courseId]);
+  // const [reviews] = await db.query(`
+  //   SELECT 
+  //     r.* 
+  //   FROM course_reviews r
+  //   WHERE r.course_ID = ?
+  //   ORDER BY r.rated_at DESC
+  // `, [courseId]);    
+
+  const [reviews] = await db.query(`
+    SELECT 
+      r.*, 
+      ua.email
+    FROM course_reviews r
+    JOIN user_auth ua ON r.reviewer_ID = ua.user_ID
+    WHERE r.course_ID = ?
+    ORDER BY r.rated_at DESC
+  `, [courseId]);
+
+  console.log(reviews);
+  
+  
+
+  // Get rating statistics
+  const [ratingStats] = await db.query(`
+    SELECT 
+      rating,
+      COUNT(*) as count,
+      COUNT(*) * 100.0 / (SELECT COUNT(*) FROM course_reviews WHERE course_ID = ?) as percentage
+    FROM course_reviews
+    WHERE course_ID = ?
+    GROUP BY rating
+    ORDER BY rating DESC
+  `, [courseId, courseId]);
+
+  console.log({reviews, ratingStats});
+  
+
+  // If no reviews yet, provide default stats
+  if (!ratingStats.length) {
+    ratingStats = [
+      { rating: 5, count: 1, percentage: 20 },
+      { rating: 4, count: 1, percentage: 20 },
+      { rating: 3, count: 1, percentage: 20 },
+      { rating: 2, count: 1, percentage: 20 },
+      { rating: 1, count: 1, percentage: 20 }
+    ];
+  }
+
+  // Calculate average rating
+  const avgRating = ratingStats.reduce((acc, curr) => 
+    acc + (curr.rating * curr.count), 0) / 
+    ratingStats.reduce((acc, curr) => acc + curr.count, 0);
+
+  return { 
+    reviews, 
+    stats: ratingStats,
+    averageRating: avgRating 
+  };
+};

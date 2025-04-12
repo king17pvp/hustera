@@ -88,7 +88,7 @@ const CourseSingle = () => {
 
         <div className="flex flex-col items-center justify-center w-full p-6">
           <div className="w-[1680px] items-center justify-between">
-            <CourseSingleCards course={course} />
+            <CourseSingleCards course={course} setCourse={setCourse} />
           </div>
         </div>
       </div>

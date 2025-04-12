@@ -158,6 +158,8 @@ const CourseListing = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  console.log("user token", user );
+  
 
   // Extract search query from URL if present
   const searchParams = new URLSearchParams(location.search);

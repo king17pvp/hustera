@@ -30,3 +30,11 @@ exports.createLecture = async (weekId, title, content, orderIndex) => {
 exports.getLectureById = async (lectureId) => {
     return await coursesModel.getLectureById(lectureId);
 };
+
+exports.addReview = async ({ courseId, reviewerId, rating, review }) => {
+    return await coursesModel.addReview({ courseId, reviewerId, rating, review });
+};
+
+exports.getCourseReviews = async (courseId) => {
+    return await coursesModel.getCourseReviews(courseId);
+};

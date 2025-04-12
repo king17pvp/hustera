@@ -1,34 +1,49 @@
 const jwt = require('jsonwebtoken');
 
-exports.verifyToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    console.log('Auth Header:', authHeader);
+exports.verifyToken = async (req, res, next) => {
+  try {
+    const authHeader = req.headers['authorization'];
+    
+    // Log để debug
+    console.log("Auth header:", authHeader);
     
     if (!authHeader) {
-        return res.status(401).json({ success: false, message: 'No token provided' });
+      return res.status(401).json({
+        success: false,
+        message: "Authentication token is required"
+      });
     }
-
-    const token = authHeader.split(' ')[1]; // Bearer <token>
-    console.log('Extracted Token:', token);
     
+    const token = authHeader.split(' ')[1];
     if (!token) {
-        return res.status(401).json({ success: false, message: 'Invalid token format' });
+      return res.status(401).json({
+        success: false,
+        message: "Authentication token is required (format: Bearer TOKEN)"
+      });
     }
-
-    try {
-        console.log('JWT Secret:', process.env.JWT_SECRET);
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('Decoded Token:', decoded);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        console.error('Token verification error:', error);
-        return res.status(401).json({ 
-            success: false, 
-            message: 'Invalid token',
-            error: error.message 
+    
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) {
+        console.error("Token verification error:", err);
+        return res.status(403).json({
+          success: false,
+          message: err.name === 'TokenExpiredError' ? "Token has expired" : "Invalid token"
         });
-    }
+      }
+      
+      // Log để debug
+      console.log("Authenticated user:", user);
+      
+      req.user = user;
+      next();
+    });
+  } catch (error) {
+    console.error("Auth middleware error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Authentication error"
+    });
+  }
 };
 
 exports.isInstructor = (req, res, next) => {
@@ -47,4 +62,4 @@ exports.isInstructor = (req, res, next) => {
     }
 
     next();
-}; 
+};

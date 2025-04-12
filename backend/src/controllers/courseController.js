@@ -122,3 +122,52 @@ exports.getLectureById = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.addReview = async (req, res) => {
+  try {
+    const { id: courseId } = req.params;
+    const { rating, review } = req.body;
+    const reviewerId = req.user.user_ID;
+
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid rating between 1 and 5 is required"
+      });
+    }
+
+    const result = await courseService.addReview({
+      courseId,
+      reviewerId,
+      rating,
+      review
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Review added successfully",
+      stats: result.stats,
+      averageRating: result.averageRating
+    });
+  } catch (error) {
+    console.error("Error adding review:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getReviews = async (req, res) => {
+  try {
+    const { id: courseId } = req.params;
+    const result = await courseService.getCourseReviews(courseId);
+    
+    res.json({ 
+      success: true, 
+      reviews: result.reviews, 
+      stats: result.stats,
+      averageRating: result.averageRating 
+    });
+  } catch (error) {
+    console.error("Error getting reviews:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
