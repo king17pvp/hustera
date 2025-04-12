@@ -1,6 +1,8 @@
 -- Add resource_type and order_index columns to videos table
+select * from videos
+
 ALTER TABLE videos 
-ADD COLUMN resource_type ENUM('video', 'text') DEFAULT 'video',
+-- ADD COLUMN resource_type ENUM('video', 'text') DEFAULT 'video',
 ADD COLUMN order_index INT DEFAULT 0;
 
 -- Create lectures table for text-based lessons

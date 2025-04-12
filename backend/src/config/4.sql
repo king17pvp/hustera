@@ -1,0 +1,75 @@
+-- Fix database structure for proper lecture display
+
+-- 1. Ensure we have proper lectures table structure
+CREATE TABLE IF NOT EXISTS lectures (
+    lecture_ID INT PRIMARY KEY AUTO_INCREMENT,
+    week_ID INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    order_index INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (week_ID) REFERENCES weeks(week_ID) ON DELETE CASCADE
+);
+
+-- 2. Manually ensure the videos table has required columns (run once, no IF NOT EXISTS support in MySQL)
+-- Run these separately if needed:
+-- ALTER TABLE videos ADD COLUMN resource_type ENUM('video', 'text') DEFAULT 'video';
+-- ALTER TABLE videos ADD COLUMN order_index INT DEFAULT 0;
+
+-- 3. Delete existing lectures safely
+SET SQL_SAFE_UPDATES = 0;
+DELETE FROM lectures;
+SET SQL_SAFE_UPDATES = 1;
+
+-- 4. Fix videos with missing order_index
+SET SQL_SAFE_UPDATES = 0;
+UPDATE videos SET order_index = 1 WHERE order_index IS NULL OR order_index = 0;
+SET SQL_SAFE_UPDATES = 1;
+
+-- 5. Set course ID to use
+SET @course_id := 1;
+
+-- 6. Get week IDs for this course
+SELECT week_ID INTO @week1_id FROM weeks WHERE course_ID = @course_id AND week_number = 1 LIMIT 1;
+SELECT week_ID INTO @week2_id FROM weeks WHERE course_ID = @course_id AND week_number = 2 LIMIT 1;
+
+-- 7. Insert sample lectures if week IDs exist
+INSERT INTO lectures (week_ID, title, content, order_index)
+SELECT @week1_id, 'Getting Started with Web Development',
+'<h2>Getting Started with Web Development</h2><p>Welcome to the course! In this lecture, we will explore the fundamental concepts of web development and set up our development environment.</p><h3>What is Web Development?</h3><p>Web development refers to building, creating, and maintaining websites. It includes aspects such as web design, web publishing, web programming, and database management. It is the creation of an application that works over the internet (i.e., websites).</p><h3>Frontend vs Backend</h3><p>Web development is divided into two broad sections:</p><ul><li><strong>Frontend Development:</strong> It deals with the visual aspects of a website that users interact with directly. It includes HTML, CSS, and JavaScript.</li><li><strong>Backend Development:</strong> It consists of the server, application, and database that work behind the scenes to deliver information to the user. It includes languages like Node.js, Python, Ruby, and databases like MySQL.</li></ul><h3>Setting Up Your Development Environment</h3><p>For this course, you will need:</p><ol><li>A modern web browser like Chrome, Firefox, or Edge</li><li>A code editor like Visual Studio Code</li><li>Node.js installed on your computer</li></ol><h3>Your First Assignment</h3><p>Install all the required software and familiarize yourself with the VS Code interface. In the next lecture, we will dive into HTML basics.</p>',
+2
+FROM dual WHERE @week1_id IS NOT NULL;
+
+INSERT INTO lectures (week_ID, title, content, order_index)
+SELECT @week2_id, 'CSS Styling Principles',
+'<h2>CSS Styling Principles</h2><p>In this lecture, we will learn how to style our HTML documents using CSS (Cascading Style Sheets).</p><h3>What is CSS?</h3><p>CSS stands for Cascading Style Sheets. It is a style sheet language used for describing the presentation of a document written in HTML. CSS describes how elements should be rendered on screen, on paper, in speech, or on other media.</p><h3>CSS Syntax</h3><p>CSS consists of a selector and a declaration block:</p><pre><code>selector {<br>  property: value;<br>  property: value;<br>}</code></pre><h3>Ways to Insert CSS</h3><p>There are three ways to insert CSS into your HTML:</p><ol><li><strong>External CSS:</strong> Link to an external .css file</li><li><strong>Internal CSS:</strong> Use a &lt;style&gt; element in the &lt;head&gt; section</li><li><strong>Inline CSS:</strong> Use the style attribute directly in HTML elements</li></ol><h3>CSS Selectors</h3><p>CSS selectors are used to "find" (or select) the HTML elements you want to style. Here are some key selectors:</p><ul><li>Element selector (e.g., h1, p, div)</li><li>ID selector (e.g., #header, #footer)</li><li>Class selector (e.g., .button, .navigation)</li><li>Universal selector (*)</li></ul><h3>Assignment</h3><p>Create a simple webpage with HTML and style it using both internal and external CSS. Include:</p><ul><li>Different text formatting</li><li>Custom colors and backgrounds</li><li>Simple layout with margins and padding</li></ul>',
+2
+FROM dual WHERE @week2_id IS NOT NULL;
+
+-- 8. Insert sample videos only if not already present
+INSERT INTO videos (week_ID, title, url, resource_type, order_index)
+SELECT @week1_id, 'Introduction to the Course', 'https://www.youtube.com/embed/PkZNo7MFNFg', 'video', 1
+FROM dual
+WHERE @week1_id IS NOT NULL
+AND NOT EXISTS (
+    SELECT 1 FROM videos WHERE week_ID = @week1_id AND title = 'Introduction to the Course'
+);
+
+INSERT INTO videos (week_ID, title, url, resource_type, order_index)
+SELECT @week2_id, 'HTML Basics - Structure of a Webpage', 'https://www.youtube.com/embed/qz0aGYrrlhU', 'video', 1
+FROM dual
+WHERE @week2_id IS NOT NULL
+AND NOT EXISTS (
+    SELECT 1 FROM videos WHERE week_ID = @week2_id AND title = 'HTML Basics - Structure of a Webpage'
+);
+
+-- 9. Verify result
+SELECT w.week_ID, w.week_number, w.title,
+    COUNT(DISTINCT v.video_ID) AS video_count,
+    COUNT(DISTINCT l.lecture_ID) AS lecture_count
+FROM weeks w
+LEFT JOIN videos v ON v.week_ID = w.week_ID
+LEFT JOIN lectures l ON l.week_ID = w.week_ID
+WHERE w.course_ID = @course_id
+GROUP BY w.week_ID;

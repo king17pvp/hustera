@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import ForumSingle from "./pages/ForumSingle.jsx";
 import CourseUpload from "./pages/CourseUpload.jsx";
 import ForumUpload from "./pages/ForumUpload.jsx";
+import CourseContent from "./pages/CourseContent";
 
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
@@ -218,7 +219,7 @@ const App = () => {
                 <Route path="/courses/:id" element={<CourseSingle />} />
                 <Route path="/courses/:id/learn" element={<CourseContent />} />
                 <Route path="/forum/1" element={<ForumSingle thread={sampleThread} />} />
-                <Route path="/forum" element={<ThreadListing />} />
+                <Route path="/forum" element={<ForumListing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/faqs" element={<FAQs />} />

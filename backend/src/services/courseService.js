@@ -30,14 +30,3 @@ exports.createLecture = async (weekId, title, content, orderIndex) => {
 exports.getLectureById = async (lectureId) => {
     return await coursesModel.getLectureById(lectureId);
 };
-
-const coursesModel = require("../models/courseModel");
-
-exports.getCourses = async ({ category, instructor, level, price, page, limit }) => {
-    return await coursesModel.getCourses({ category, instructor, level, price, page, limit });
-};
-
-
-exports.getFilters = async () => {
-    return await coursesModel.getFilters();
-};

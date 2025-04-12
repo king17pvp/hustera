@@ -7,6 +7,8 @@ const CourseSingleCards = ({ course }) => {
   const [expandedSections, setExpandedSections] = useState({});
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videoTab, setVideoTab] = useState("Notes");
+  const [hovered, setHovered] = useState(0); 
+  const [rating, setRating] = useState(0);   
 
   const defaultInstructorImage = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250";
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,12 +62,15 @@ const CourseSingleCards = ({ course }) => {
     return type === 'video' ? <FaVideo className="mr-2 text-blue-500" /> : <FaFileAlt className="mr-2 text-green-500" />;
   };
 
+  // Define fixed tab order
+  const tabOrder = ["Overview", "Curriculum", "Instructor", "Reviews"];
+
   return (
     <div className="w-[1100px] mt-8">
       {/* Tabs Navigation */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
         <div className="flex">
-          {Object.keys(course.tabs).map((tab) => (
+          {tabOrder.map((tab) => (
             <button
               key={tab}
               className={`py-5 px-6 flex-1 text-2xl border border-gray-100 border-b-gray-200 font-avant-medium font-semibold text-center transition-all duration-200 cursor-pointer 
@@ -289,6 +294,48 @@ const CourseSingleCards = ({ course }) => {
                   </button>
                 </div>
               )}
+
+              {/* Comment Section - Only show in Reviews tab */}
+              <div className="mt-10">
+                <h2 className="text-[30px] font-avant-medium font-semibold">Leave A Comment</h2>
+                <form className="mt-2 space-y-4">
+                  {/* Star Rating System */}
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-[22px] font-avant-medium">Your Rating:</span>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <FaStar
+                          key={star}
+                          size={32}
+                          className="cursor-pointer transition-colors duration-200"
+                          color={(hovered || rating) >= star ? "#facc15" : "#d1d5db"} // yellow-400 : gray-300
+                          onMouseEnter={() => setHovered(star)}
+                          onMouseLeave={() => setHovered(0)}
+                          onClick={() => setRating(star)}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Inline Satisfaction Label */}
+                    {(hovered || rating) > 0 && (
+                      <span className="text-[22px] text-black font-medium">
+                        {["😞 Very Bad", "😕 Bad", "😐 Okay", "🙂 Good", "🤩 Excellent"][(hovered || rating) - 1]}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Comment field */}
+                  <textarea
+                    placeholder="Comment"
+                    className="w-[1100px] h-[120px] border px-5 py-3 text-[20px] rounded-xl resize-none"
+                  ></textarea>
+
+                  {/* Post Comment Button */}
+                  <button className="bg-blue-600 text-white text-[18px] font-avant-medium px-5 py-3 rounded-xl cursor-pointer">
+                    Post Comment
+                  </button>
+                </form>
+              </div>
             </div>
           ) : (
             <p>{typeof course.tabs[activeTab] === "string" ? course.tabs[activeTab] : "Content unavailable."}</p>
@@ -307,50 +354,6 @@ const CourseSingleCards = ({ course }) => {
         expandedSections={expandedSections}
         toggleSection={toggleSection}
       />
-
-      {/* Comment Section (Now placed directly below the tabbed content) */}
-      <div className="mt-10">
-        <h2 className="text-[30px] font-avant-medium font-semibold">Leave A Comment</h2>
-        <form className="mt-2 space-y-4">
-          {/* Star Rating System */}
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-[22px] font-avant-medium">Your Rating:</span>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <FaStar
-                  key={star}
-                  size={32}
-                  className="cursor-pointer transition-colors duration-200"
-                  color={(hovered || rating) >= star ? "#facc15" : "#d1d5db"} // yellow-400 : gray-300
-                  onMouseEnter={() => setHovered(star)}
-                  onMouseLeave={() => setHovered(0)}
-                  onClick={() => setRating(star)}
-                />
-              ))}
-            </div>
-
-            {/* Inline Satisfaction Label */}
-            {(hovered || rating) > 0 && (
-              <span className="text-[22px] text-black font-medium">
-                {["😞 Very Bad", "😕 Bad", "😐 Okay", "🙂 Good", "🤩 Excellent"][(hovered || rating) - 1]}
-              </span>
-            )}
-          </div>
-
-
-
-          {/* Comment field below */}
-          <textarea
-            placeholder="Comment"
-            className="w-[1100px] h-[120px] border px-5 py-3 text-[20px] rounded-xl resize-none"
-          ></textarea>
-
-          {/* Post Comment Button */}
-          <button className="bg-blue-600 text-white text-[18px] font-avant-medium px-5 py-3 rounded-xl cursor-pointer">
-            Post Comment
-          </button>
-        </form>
-      </div>
     </div>
   );
 };
