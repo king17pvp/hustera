@@ -236,7 +236,13 @@ const ThreadListing = () => {
                 <p>Loading threads...</p> // This will show when loading is true
               ) : Array.isArray(threads) && threads.length > 0 ? (
                 threads.slice(0, 9).map((thread, index) => (
-                  <ForumCardHorizontal key={index} {...thread} />
+                  <div
+                    key={index}
+                    onClick={() => navigate(`/forum/${thread.thread_ID}`)}
+                    className="cursor-pointer hover:opacity-90 transition duration-200"
+                  >
+                    <ForumCardHorizontal {...thread} />
+                  </div>
                 ))
               ) : (
                 <p className="text-center text-gray-600">No threads available</p> // This will show if no threads are found
