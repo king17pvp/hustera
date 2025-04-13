@@ -39,8 +39,9 @@ exports.postAnswer = async (req, res) => {
 
 exports.getForum = async (req, res) => {
   try {
-    const {category, searchQuery, sortBy, page} = req.query;
+    // const {category, searchQuery, sortBy, page} = req.query;
     const filters = {
+      searchQuery: req.query.searchQuery || "",
       category: req.query.category || "",
       sortBy: req.query.sortBy || "",
       page: parseInt(req.query.page) || 1,
@@ -48,13 +49,14 @@ exports.getForum = async (req, res) => {
     };
     console.log(filters);
     const threads = await forumService.getForum({
-      category,
-      searchQuery,
-      sortBy,
-      page: parseInt(page) || 1,
+      category: filters.category,
+      searchQuery: filters.searchQuery,
+      tags: filters.tags,
+      sortBy: filters.sortBy,
+      page: filters.page,
     });
 
-    res.status(200).json({ success: true, ...threads });
+    res.status(200).json({ success: true, threads: threads });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }

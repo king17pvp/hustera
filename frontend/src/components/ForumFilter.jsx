@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const ForumFilter = ({ categories, tags }) => {
+const ForumFilter = ({ categories, tags, onFilterChange }) => {
   const [selectedFilters, setSelectedFilters] = useState({
     category: "",
     sortBy: "recentComment", // Default sorting option
     tags: [],
   });
-
+  useEffect(() => {
+    if (onFilterChange) {
+      onFilterChange(selectedFilters);
+    }
+  }, [selectedFilters]);
   // Handles single-selection filters (Category, Sort By)
   const handleSingleSelect = (section, value) => {
     setSelectedFilters((prev) => ({

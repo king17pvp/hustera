@@ -139,7 +139,7 @@ const ThreadListing = () => {
   const [filterData, setFilterData] = useState({ categories: [], tags: []});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [filters, setFilters] = useState({category: "", tags: ""});
+  const [filters, setFilters] = useState({ category: "", tags: [], sortBy: "" });
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
@@ -151,25 +151,15 @@ const ThreadListing = () => {
       try {
         setLoading(true);
         let endpoint = "";
-        if (titleQuery) {
-          // When there's a search query, use the /search endpoint
-          endpoint = `http://localhost:5000/forum?title=${encodeURIComponent(titleQuery)}&page=${currentPage}`;
-        } else {
-          // Otherwise, use the regular /forum endpoint with filters
-          const params = new URLSearchParams({
-            page: currentPage,
-            searchQuery: titleQuery,
-            category: filters.category,
-            tag: filters.tag
-          });
-          // console.log({
-          //   page: currentPage,
-          //   search: titleQuery,
-          //   category: filters.category,
-          //   tag: filters.tag
-          // });
-          endpoint = `http://localhost:5000/forum?${params.toString()}`;
+        const params = new URLSearchParams();
+        params.append("page", currentPage);
+        if (titleQuery) params.append("searchQuery", titleQuery);
+        if (filters.category) params.append("category", filters.category);
+        if (filters.sortBy) params.append("sortBy", filters.sortBy);
+        if (filters.tags.length > 0) {
+          filters.tags.forEach(tag => params.append("tags", tag));
         }
+        endpoint = `http://localhost:5000/forum?${params.toString()}`;
         const response = await fetch(endpoint);
         const data = await response.json();
         console.log("Fetched threads data:", data);
@@ -244,7 +234,7 @@ const ThreadListing = () => {
             <div className="grid grid-rows-9 gap-5">
               {loading ? (
                 <p>Loading threads...</p> // This will show when loading is true
-              ) : Array.isArray(threads) && threads.length > 0 > 0 ? (
+              ) : Array.isArray(threads) && threads.length > 0 ? (
                 threads.slice(0, 9).map((thread, index) => (
                   <ForumCardHorizontal key={index} {...thread} />
                 ))
@@ -286,7 +276,7 @@ const ThreadListing = () => {
             </div>
 
             {/* Course Filters */}
-            <ForumFilter categories={filterData.categories} tags={filterData.tags} />
+            <ForumFilter categories={filterData.categories} tags={filterData.tags} onFilterChange={setFilters} />
 
             
             <div className="mt-20">
@@ -304,4 +294,3 @@ const ThreadListing = () => {
 };
 
 export default ThreadListing;
-

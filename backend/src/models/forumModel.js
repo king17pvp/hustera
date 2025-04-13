@@ -39,16 +39,24 @@ exports.getAnswersByThreadId = async (threadId) => {
 
   return rows;
 };
-exports.getForum = async ({ category, searchQuery, tag, sortBy = 'latest', page = 1}) => {
+exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page = 1}) => {
   const limit = 9;
   const offset = (page - 1) * limit; // Calculate the offset for pagination
   const params = [];
   const conditions = [];
-
+  // console.log(category);
+  // console.log(searchQuery);
+  // console.log(tags);
+  // console.log(sortBy);
+  // console.log(page);
   // Filter by category
   if (category) {
     conditions.push('t.category = ?');
     params.push(category);
+  } else {
+    searchQuery = "";
+    conditions.push('t.category LIKE ?')
+    params.push(`%%`);
   }
   const searchTerm = `%${searchQuery}%`;
   // Filter by search (title or content)
@@ -61,13 +69,29 @@ exports.getForum = async ({ category, searchQuery, tag, sortBy = 'latest', page 
 
   // Filter by tag name (join with thread_tags and tags)
   let tagJoin = '';
-  if (tag) {
+  if (tags && (Array.isArray(tags) ? tags.length > 0 : tags !== '')) {
     tagJoin = `
       JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
       JOIN tags tg ON tt.tag_ID = tg.tag_ID
     `;
-    conditions.push('tg.tag_name = ?');
-    params.push(tag);
+  
+    // Always treat tags as an array
+    const tagArray = Array.isArray(tags) ? tags : [tags];
+  
+    // Add condition
+    conditions.push(`tg.tag_name IN (${tagArray.map(() => '?').join(',')})`);
+  
+    // Add values
+    params.push(...tagArray);
+  } else {
+    let tag = '';
+    tagJoin = `
+      JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
+      JOIN tags tg ON tt.tag_ID = tg.tag_ID
+    `;
+    conditions.push('tg.tag_name LIKE ?');
+    const tagSearch = `%${tag}%`;
+    params.push(tagSearch);
   }
 
   // // Create WHERE clause
@@ -77,18 +101,19 @@ exports.getForum = async ({ category, searchQuery, tag, sortBy = 'latest', page 
   let orderByClause = 'ORDER BY t.created_at DESC'; // Default to latest threads
   let activeSelect = 't.created_at AS last_active';
 
-  // if (sortBy === 'oldest') {
-  //   orderByClause = 'ORDER BY t.created_at ASC';  // Sort by oldest
-  // } else if (sortBy === 'active') {
-  //   // Sort by most recently commented thread
-  //   activeSelect = `
-  //     GREATEST(
-  //       IFNULL(MAX(ta.created_at), 0),
-  //       t.created_at
-  //     ) AS last_active
-  //   `;
-  //   orderByClause = 'ORDER BY last_active DESC'; // Sort by most recent comment
-  // }
+  if (sortBy === 'oldest') {
+    orderByClause = 'ORDER BY t.created_at ASC';
+  } else if (sortBy === 'recentComment') {
+    activeSelect = `
+      GREATEST(
+        IFNULL(MAX(ta.created_at), 0),
+        t.created_at
+      ) AS last_active
+    `;
+    orderByClause = 'ORDER BY last_active DESC';
+  } else {
+    orderByClause = 'ORDER BY t.created_at DESC';
+  }
 
   // // SQL query to fetch threads based on the conditions and sorting
   const query = `
@@ -101,44 +126,37 @@ exports.getForum = async ({ category, searchQuery, tag, sortBy = 'latest', page 
       ua.user_ID,
       ua.email,
       ui.name AS author,
+      GROUP_CONCAT(DISTINCT tg.tag_name) AS tags,
       COUNT(DISTINCT tv.voter_ID) AS votes,
-      COUNT(DISTINCT ta.answer_ID) AS answers
+      COUNT(DISTINCT ta.answer_ID) AS answers,
+      ${activeSelect}
       FROM threads t
       JOIN user_auth ua ON t.author_ID = ua.user_ID
+      JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
+      JOIN tags tg ON tt.tag_ID = tg.tag_ID
       LEFT JOIN user_info ui ON ua.user_ID = ui.user_ID
       LEFT JOIN thread_votes tv ON t.thread_ID = tv.thread_ID
       LEFT JOIN thread_answers ta ON t.thread_ID = ta.thread_ID
+      ${whereClause}
       GROUP BY t.thread_ID
+      ${orderByClause}
       LIMIT 9;
   `;
-  // const query = `
-  //   SELECT 
-  //     t.thread_ID,
-  //     t.title,
-  //     t.content,
-  //     t.category,
-  //     t.created_at,
-  //     ua.user_ID,
-  //     ua.email,
-  //     ui.name AS author_name,
-  //     COUNT(DISTINCT tv.voter_ID) AS vote_count,
-  //     COUNT(DISTINCT ta.answer_ID) AS answer_count
-  //   FROM threads t
-  //   JOIN user_auth ua ON t.author_ID = ua.user_ID
-  //   LEFT JOIN user_info ui ON ua.user_ID = ui.user_ID
-  //   LEFT JOIN thread_votes tv ON t.thread_ID = tv.thread_ID
-  //   LEFT JOIN thread_answers ta ON t.thread_ID = ta.thread_ID
-  //   GROUP BY t.thread_ID
-  //   LIMIT 9;
-  // `;
   console.log('Executing query:', query);
   console.log('With parameters:', params);
+  console.log(tags);
+  console.log(searchQuery);
   // Add pagination parameters
-  params.push(limit, offset);
+  // params.push(limit, offset);
 
   try {
     const [rows] = await db.execute(query, params);
-    return rows;
+    const formattedRows = rows.map(row => ({
+      ...row,
+      tags: row.tags ? row.tags.split(',') : [],  // convert to array
+    }));
+    
+    return formattedRows;
   } catch (err) {
     console.error('Error executing query in getForum:', err);
     throw err;

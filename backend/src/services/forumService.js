@@ -42,9 +42,16 @@ exports.getForumOnClick = async ({ threadId }) => {
   };
 };
 
-exports.getForum = async ({category, searchQuery, sortBy, page}) => {
+exports.getForum = async ({category, searchQuery, tags, sortBy, page}) => {
   try {
-    const threads = await forumModel.getForum(category, searchQuery, sortBy, page);
+    
+    const threads = await forumModel.getForum({
+      category: category, 
+      searchQuery: searchQuery, 
+      tags: tags, 
+      sortBy: sortBy, 
+      page: page
+    });
     return threads;
   } catch (err) {
     console.error('Error in forumService.getForum:', err);
