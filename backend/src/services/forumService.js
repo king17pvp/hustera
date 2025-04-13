@@ -1,45 +1,38 @@
 const forumModel = require('../models/forumModel');
 
 exports.getForumOnClick = async ({ threadId }) => {
-  const thread = await forumModel.getThreadById(threadId);
-  if (!thread) return null;
+  try {
+    const thread = await forumModel.getThreadById(threadId);
+    if (!thread) {
+      throw new Error('Thread not found');
+    }
 
-  const answers = await forumModel.getAnswersByThreadId(threadId);
-  const answerIds = answers.map(a => a.answer_ID);
-  const comments = await forumModel.getCommentsByAnswerIds(answerIds);
-  const commentsByAnswer = comments.reduce((acc, c) => {
-    const key = c.answer_ID;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push({
-      comment_id: c.comment_ID,
-      author: c.author,
-      content: c.content,
-      score: 0, 
-      created_utc: c.created_at.toISOString()
-    });
-    return acc;
-  }, {});
+    const answers = await forumModel.getAnswersByThreadId(threadId);
 
-  const formattedAnswers = answers.map(a => ({
-    answer_id: a.answer_ID,
-    author: a.author,
-    content: a.content,
-    is_accepted: a.accepted === 'true',
-    score: a.score,
-    created_utc: a.created_at.toISOString(),
-    comments: commentsByAnswer[a.answer_ID] || []
-  }));
+    const formattedThread = {
+      question_id: thread.thread_ID,
+      title: thread.title,
+      author: thread.author,
+      created_utc: new Date(thread.created_at).toISOString(),
+      tags: thread.tags ? thread.tags.split(',') : [],
+      score: thread.score,
+      content: thread.content,
+      answers: answers.map((ans) => ({
+        answer_id: ans.answer_ID,
+        author: ans.author,
+        created_utc: new Date(ans.created_at).toISOString(),
+        content: ans.content,
+        score: ans.score,
+        is_accepted: ans.accepted === 'true',  // nếu kiểu dữ liệu là chuỗi
+        comments: [] // placeholder, nếu sau này muốn thêm comments
+      }))
+    };
 
-  return {
-    question_id: thread.thread_ID,
-    title: thread.title,
-    author: thread.author,
-    created_utc: thread.created_at.toISOString(),
-    tags: thread.tags ? thread.tags.split(',') : [],
-    score: thread.score,
-    content: thread.content,
-    answers: formattedAnswers
-  };
+    return formattedThread;
+  } catch (error) {
+    console.error('Error in forumService.getForumOnClick:', error.message);
+    throw error;
+  }
 };
 
 exports.getForum = async ({category, searchQuery, tags, sortBy, page}) => {
@@ -65,4 +58,22 @@ exports.addAnswerToThread = async ({ threadId, userId, content }) => {
 
 exports.getFilters = async () => {
   return await forumModel.getFilters();
+};
+
+exports.voteAnswer = async (answerId, userId, voteType) => {
+  if (!["upvote", "downvote"].includes(voteType)) {
+    throw new Error("Invalid vote type");
+  }
+
+  const result = await forumModel.upsertAnswerVote(answerId, userId, voteType);
+  return result;
+};
+
+exports.postAnswer = async (threadId, authorId, content) => {
+  if (!content || content.trim() === "") {
+    throw new Error("Answer content cannot be empty");
+  }
+
+  const answer = await forumModel.createAnswer(threadId, authorId, content);
+  return answer;
 };

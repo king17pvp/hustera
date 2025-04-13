@@ -39,6 +39,7 @@ exports.getAnswersByThreadId = async (threadId) => {
 
   return rows;
 };
+
 exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page = 1}) => {
   const limit = 9;
   const offset = (page - 1) * limit; // Calculate the offset for pagination
@@ -58,15 +59,13 @@ exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page
     conditions.push('t.category LIKE ?')
     params.push(`%%`);
   }
-  const searchTerm = `%${searchQuery}%`;
-  // Filter by search (title or content)
+  let searchTerm = ``;
+  conditions.push('(t.title LIKE ? OR t.content LIKE ?)');
   if (!searchQuery) {
     searchQuery = "";
-    conditions.push('(t.title LIKE ? OR t.content LIKE ?)');
-    const searchTerm = `%${searchQuery}%`;
-    params.push(searchTerm, searchTerm);  // Two parameters for LIKE
   }
-
+  searchTerm = `%${searchQuery}%`;
+  params.push(searchTerm, searchTerm);  // Two parameters for LIKE
   // Filter by tag name (join with thread_tags and tags)
   let tagJoin = '';
   if (tags && (Array.isArray(tags) ? tags.length > 0 : tags !== '')) {
@@ -164,24 +163,6 @@ exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page
 };
 
 
-exports.getCommentsByAnswerIds = async (answerIds) => {
-  if (answerIds.length === 0) return [];
-
-  const [rows] = await db.query(`
-    SELECT 
-      c.comment_ID,
-      c.answer_ID,
-      c.content,
-      c.created_at,
-      u.email AS author
-    FROM thread_answer_comments c
-    JOIN user_auth u ON u.user_ID = c.author_ID
-    WHERE c.answer_ID IN (?)
-  `, [answerIds]);
-
-  return rows;
-};
-
 exports.insertAnswer = async ({ threadId, userId, content }) => {
   const [result] = await db.query(`
     INSERT INTO thread_answers (thread_ID, author_ID, content)
@@ -217,4 +198,53 @@ exports.getFilters = async () => {
     console.error('Error in getFilters:', err);
     throw err;
   }
+};
+
+exports.upsertAnswerVote = async (answerId, userId, voteType) => {
+  // Kiểm tra đã vote chưa
+  const [existing] = await db.query(
+    `SELECT * FROM thread_answer_votes WHERE answer_ID = ? AND voter_ID = ?`,
+    [answerId, userId]
+  );
+
+  if (existing.length > 0) {
+    // Nếu voteType giống -> remove vote
+    if (existing[0].vote_type === voteType) {
+      await db.query(
+        `DELETE FROM thread_answer_votes WHERE answer_ID = ? AND voter_ID = ?`,
+        [answerId, userId]
+      );
+      return { removed: true };
+    } else {
+      // Nếu khác -> update vote
+      await db.query(
+        `UPDATE thread_answer_votes SET vote_type = ? WHERE answer_ID = ? AND voter_ID = ?`,
+        [voteType, answerId, userId]
+      );
+      return { updated: true };
+    }
+  } else {
+    // Chưa vote -> insert mới
+    await db.query(
+      `INSERT INTO thread_answer_votes (answer_ID, voter_ID, vote_type) VALUES (?, ?, ?)`,
+      [answerId, userId, voteType]
+    );
+    return { inserted: true };
+  }
+};
+
+exports.createAnswer = async (threadId, authorId, content) => {
+  const [result] = await db.query(
+    `INSERT INTO thread_answers (thread_ID, author_ID, content) VALUES (?, ?, ?)`,
+    [threadId, authorId, content]
+  );
+
+  return {
+    answer_ID: result.insertId,
+    thread_ID: threadId,
+    author_ID: authorId,
+    content,
+    created_at: new Date(), // giả định thời gian hiện tại
+    accepted: "false",
+  };
 };
