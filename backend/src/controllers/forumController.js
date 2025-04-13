@@ -3,16 +3,16 @@ const forumService = require('../services/forumService');
 exports.getForumOnClick = async (req, res) => {
   try {
     const threadId = req.params.threadId;
-    const data = await forumService.getForumOnClick({ threadId });
-
-    if (!data) {
-      return res.status(404).json({ message: 'Thread not found.' });
+    const thread = await forumService.getForumOnClick({ threadId });
+    console.log(threadId);
+    if (!thread) {
+      return res.status(404).json({ success: false, message: 'Thread not found.' });
     }
 
-    res.status(200).json(data);
+    res.status(200).json({ success: true, thread });
   } catch (err) {
     console.error('Error fetching forum thread:', err);
-    res.status(500).json({ message: 'Internal server error.' });
+    res.status(500).json({ success: false, message: 'Internal server error.' });
   }
 };
 
@@ -69,5 +69,42 @@ exports.getFilters = async (req, res) => {
   } catch (err) {
     console.error('Error in getFilters:', err);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+exports.handleVoteAnswer = async (req, res) => {
+  const { answerId } = req.params;
+  const { vote_type } = req.body;
+  const userId = req.body?.user_ID || 1;
+
+
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
+  try {
+    const result = await forumService.voteAnswer(answerId, userId, vote_type);
+    res.status(200).json({ success: true, result });
+  } catch (err) {
+    console.error("Vote error:", err.message);
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+exports.handlePostAnswer = async (req, res) => {
+  const { threadId } = req.params;
+  const { content } = req.body;
+  const authorId = req.body?.user_ID; 
+
+  if (!authorId) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
+  try {
+    const answer = await forumService.postAnswer(threadId, authorId, content);
+    res.status(201).json({ success: true, answer });
+  } catch (err) {
+    console.error("Post answer error:", err.message);
+    res.status(400).json({ success: false, message: err.message });
   }
 };
