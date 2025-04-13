@@ -20,9 +20,9 @@ const ForumCardHorizontal = ({
         <div className="text-lg font-avant-medium text-gray-400">
           <span className="font-semibold">{answers}</span> answers
         </div>
-        <div className="text-lg font-avant-medium text-gray-400">
+        {/* <div className="text-lg font-avant-medium text-gray-400">
           <span className="font-semibold">{views}</span> views
-        </div>
+        </div> */}
       </div>
 
       {/* Right: Content */}
