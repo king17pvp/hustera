@@ -1,4 +1,3 @@
-// frontend/src/pages/CourseListing.jsx
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -39,7 +38,6 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
   );
 };
 
-// Inline Course Filter Component
 const InlineCourseFilter = ({ filterData, setFilters }) => {
   const [selectedFilters, setSelectedFilters] = useState({
     category: "",
@@ -49,16 +47,14 @@ const InlineCourseFilter = ({ filterData, setFilters }) => {
   });
 
   const handleFilterClick = (type, value) => {
-    setSelectedFilters((prev) => {
-      const newValue = prev[type] === value ? "" : value;
-      setFilters((prevFilters) => ({ ...prevFilters, [type]: newValue }));
-      return { ...prev, [type]: newValue };
-    });
+    const newValue = selectedFilters[type] === value ? "" : value;
+    const updatedFilters = { ...selectedFilters, [type]: newValue };
+    setSelectedFilters(updatedFilters);
+    setFilters(updatedFilters);
   };
 
   return (
     <div>
-      {/* Category Filter */}
       <h3 className="text-lg font-bold mb-2">Categories</h3>
       <ul>
         {filterData.categories?.length > 0 ? (
@@ -81,7 +77,6 @@ const InlineCourseFilter = ({ filterData, setFilters }) => {
         )}
       </ul>
 
-      {/* Instructor Filter */}
       <h3 className="text-lg font-bold mt-4 mb-2">Instructors</h3>
       <ul>
         {filterData.instructors?.length > 0 ? (
@@ -104,7 +99,6 @@ const InlineCourseFilter = ({ filterData, setFilters }) => {
         )}
       </ul>
 
-      {/* Level Filter */}
       <h3 className="text-lg font-bold mt-4 mb-2">Levels</h3>
       <ul>
         {["Beginner", "Intermediate", "Advanced"].map((lvl, idx) => (
@@ -121,7 +115,6 @@ const InlineCourseFilter = ({ filterData, setFilters }) => {
         ))}
       </ul>
 
-      {/* Price Filter */}
       <h3 className="text-lg font-bold mt-4 mb-2">Price</h3>
       <ul>
         {[
@@ -150,14 +143,17 @@ const CourseListing = () => {
   const [filterData, setFilterData] = useState({ categories: [], instructors: [] });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  // Use "instructor" as the key for email filtering
   const [filters, setFilters] = useState({ category: "", instructor: "", level: "", price: "" });
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
-  // Extract search query from URL if present
   const searchParams = new URLSearchParams(location.search);
   const titleQuery = searchParams.get("title");
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -165,10 +161,8 @@ const CourseListing = () => {
         setLoading(true);
         let endpoint = "";
         if (titleQuery) {
-          // When there's a search query, use the /search endpoint.
           endpoint = `http://localhost:5000/search?title=${encodeURIComponent(titleQuery)}&page=${currentPage}&limit=6`;
         } else {
-          // Otherwise, use the regular courses endpoint with filters.
           const params = new URLSearchParams({
             page: currentPage,
             limit: 6,
@@ -181,7 +175,6 @@ const CourseListing = () => {
         }
         const response = await fetch(endpoint);
         const data = await response.json();
-        console.log("Fetched courses data:", data);
         if (data.success) {
           setCourses(data.courses);
           setTotalPages(data.totalPages);
@@ -196,14 +189,13 @@ const CourseListing = () => {
     };
 
     fetchCourses();
-  }, [currentPage, filters, location.search, titleQuery]);
+  }, [currentPage, filters, titleQuery]);
 
   useEffect(() => {
     const fetchFilters = async () => {
       try {
         const response = await fetch("http://localhost:5000/courses/filters");
         const data = await response.json();
-        console.log("Fetched filter data:", data);
         if (data.success) {
           setFilterData({
             categories: data.categories,

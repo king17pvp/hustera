@@ -1,15 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-const CourseCardHorizontal = ({ thumbnailUrl, category, title, author, duration, students, levels, lessons, price }) => {
+const CourseCardHorizontal = ({
+  thumbnailUrl,
+  category,
+  title,
+  instructor,     // renamed from author
+  duration,
+  level,          // renamed from levels
+  price,
+}) => {
+  
+  useEffect(() => {
+    console.log("Thumbnail URL: ", thumbnailUrl); // Debugging: Check the thumbnail URL
+  }, [thumbnailUrl]);
+
   return (
     <div className="group relative h-80 w-310 flex bg-white rounded-2xl overflow-hidden border border-gray-200 transition-transform duration-300 hover:shadow-2xl hover:-translate-y-2 hover:bg-gray-50 cursor-pointer">
       {/* Left: Image + Category Badge */}
       <div className="relative w-140 bg-gray-100">
-        <img
-          src={thumbnailUrl}
-          alt="Course Thumbnail"
-          className="w-full h-full object-cover"
-        />
+        {thumbnailUrl ? (
+          <img
+            src={thumbnailUrl}
+            alt="Course Thumbnail"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-300 flex justify-center items-center">
+            <span>Image Not Available</span>
+          </div>
+        )}
         <span className="absolute top-6 left-6 bg-gray-800 text-white px-4 py-2 rounded-xl">
           {category}
         </span>
@@ -18,18 +37,16 @@ const CourseCardHorizontal = ({ thumbnailUrl, category, title, author, duration,
       {/* Right: Course Details */}
       <div className="p-7 flex flex-col flex-grow">
         <p className="text-black">
-          by <span className="font-semibold">{author}</span>
+          by <span className="font-semibold">{instructor}</span>
         </p>
         <h3 className="text-3xl max-w-155 font-avant-medium font-bold text-black mt-2 transition-colors duration-200 group-hover:text-blue-700">
           {title}
         </h3>
 
         {/* Course Info */}
-        <div className="flex items-center text-gray-500 text-lg mt-3 space-x-3 flex-wrap">
-          <span>⏳ {duration}</span>
-          <span>🎓 {students} Students</span>
-          <span>📊 {levels}</span>
-          <span>📖 {lessons} Lessons</span>
+        <div className="flex items-center text-gray-500 text-lg mt-3 space-x-4 flex-wrap">
+          {duration && <span>⏳ {duration}</span>}
+          {level && <span>📊 {level}</span>}
         </div>
 
         {/* Spacer to push price to the bottom */}
