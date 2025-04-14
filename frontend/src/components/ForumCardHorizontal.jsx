@@ -54,7 +54,14 @@ const ForumCardHorizontal = ({
           {/* Author Info */}
           <div className="text-[18px] text-gray-500">
             <span className="font-avant-medium text-blue-500 group-hover:text-blue-800">{author}</span>{" "}
-            asked on {date}
+            asked on {new Date(date).toLocaleString("en-US", {
+              year: "numeric",
+              month: "long", // or 'short' for "Mar"
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })}
           </div>
         </div>
       </div>
