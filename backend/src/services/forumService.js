@@ -17,6 +17,7 @@ exports.getForumOnClick = async ({ threadId }) => {
       tags: thread.tags ? thread.tags.split(',') : [],
       score: thread.score,
       content: thread.content,
+      attachments: thread.image_urls || [],  // ✅ Added attachments
       answers: answers.map((ans) => ({
         answer_id: ans.answer_ID,
         author: ans.author,
@@ -24,10 +25,11 @@ exports.getForumOnClick = async ({ threadId }) => {
         content: ans.content,
         score: ans.score,
         is_accepted: ans.accepted === 'true',  // nếu kiểu dữ liệu là chuỗi
-        comments: [] // placeholder, nếu sau này muốn thêm comments
+        comments: [], // placeholder, nếu sau này muốn thêm comments
+        attachments: ans.image_urls ? ans.image_urls.split(',') : []
       }))
     };
-
+    console.log(formattedThread);
     return formattedThread;
   } catch (error) {
     console.error('Error in forumService.getForumOnClick:', error.message);
