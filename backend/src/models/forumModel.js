@@ -10,16 +10,27 @@ exports.getThreadById = async (threadId) => {
       u.email AS author,
       GROUP_CONCAT(DISTINCT tg.tag_name) AS tags,
       (SELECT COUNT(*) FROM thread_votes WHERE thread_ID = t.thread_ID AND vote_type = 'upvote') -
-      (SELECT COUNT(*) FROM thread_votes WHERE thread_ID = t.thread_ID AND vote_type = 'downvote') AS score
+      (SELECT COUNT(*) FROM thread_votes WHERE thread_ID = t.thread_ID AND vote_type = 'downvote') AS score,
+      GROUP_CONCAT(i.image_path) AS image_urls
     FROM threads t
     JOIN user_auth u ON u.user_ID = t.author_ID
     LEFT JOIN thread_tags tt ON tt.thread_ID = t.thread_ID
     LEFT JOIN tags tg ON tg.tag_ID = tt.tag_ID
+    LEFT JOIN thread_images ti ON ti.thread_ID = t.thread_ID
+    LEFT JOIN images i ON i.image_ID = ti.image_ID
     WHERE t.thread_ID = ?
     GROUP BY t.thread_ID
   `, [threadId]);
   
-  return rows[0]; 
+  const thread = rows[0];
+  // console.log(thread);
+  if (thread?.image_urls) {
+    thread.image_urls = thread.image_urls.split(',');
+  } else {
+    thread.image_urls = [];
+  }
+  return thread;
+
 };
 
 exports.getAnswersByThreadId = async (threadId) => {
@@ -31,12 +42,23 @@ exports.getAnswersByThreadId = async (threadId) => {
       a.accepted,
       u.email AS author,
       (SELECT COUNT(*) FROM thread_answer_votes av WHERE av.answer_ID = a.answer_ID AND vote_type = 'upvote') -
-      (SELECT COUNT(*) FROM thread_answer_votes av WHERE av.answer_ID = a.answer_ID AND vote_type = 'downvote') AS score
+      (SELECT COUNT(*) FROM thread_answer_votes av WHERE av.answer_ID = a.answer_ID AND vote_type = 'downvote') AS score,
+      GROUP_CONCAT(i.image_path) AS image_urls
     FROM thread_answers a
     JOIN user_auth u ON u.user_ID = a.author_ID
+    LEFT JOIN thread_answer_images tai ON tai.answer_ID = a.answer_ID
+    LEFT JOIN images i ON i.image_ID = tai.image_ID
     WHERE a.thread_ID = ?
+    GROUP BY a.answer_ID
   `, [threadId]);
 
+  // split image URLs into array per answer
+  
+  const answers = rows.map((row) => ({
+    ...row,
+    image_urls: row.image_urls ? row.image_urls.split(',') : [],
+  }));
+  // console.log(answers);
   return rows;
 };
 

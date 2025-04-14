@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ForumComment from "./ForumComment";
 import { ArrowUp, ArrowDown } from "lucide-react";
 
 const ForumQuestion = ({ thread }) => {

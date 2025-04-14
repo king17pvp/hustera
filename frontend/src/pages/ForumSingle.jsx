@@ -6,7 +6,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
 import ForumQuestion from "../components/ForumQuestion";
-import ForumComment from "../components/ForumComment";
 import ForumReplyCard from "../components/ForumReplyCard";
 import AnswerCard from "../components/AnswerCard";
 import { useSelector } from "react-redux"; 
