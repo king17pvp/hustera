@@ -1,34 +1,40 @@
 const db = require("../config/db");
 
-exports.getCourses = async ({ category, instructor, level, price, page = 1, limit = 10 }) => {
+exports.getCourses = async ({ category, instructor, level, price, title, page = 1, limit = 10 }) => {
   let baseQuery = `
     FROM courses c
     JOIN user_auth ua ON c.instructor_ID = ua.user_ID
     JOIN user_info ui ON ua.user_ID = ui.user_ID
-    JOIN images img ON c.thumbnail_ID = img.image_ID  -- Joining the images table to get the thumbnail path
+    JOIN images img ON c.thumbnail_ID = img.image_ID
     WHERE 1=1
   `;
   const queryParams = [];
+  
+  // Apply title search if provided
+  if (title) {
+    baseQuery += " AND c.title LIKE ?";
+    queryParams.push(`%${title}%`);
+  }
 
-  // 🗂️ Filter by category
+  // Filter by category
   if (category) {
     baseQuery += " AND c.category = ?";
     queryParams.push(category);
   }
 
-  // 👤 Filter by instructor name
+  // Filter by instructor name
   if (instructor) {
     baseQuery += " AND ui.name = ?";
     queryParams.push(instructor);
   }
 
-  // 🎓 Filter by course level
+  // Filter by course level
   if (level) {
     baseQuery += " AND c.level = ?";
     queryParams.push(level);
   }
 
-  // 💵 Filter by price range
+  // Filter by price range
   if (price) {
     if (price === "under30") {
       baseQuery += " AND c.price < 30";
@@ -39,7 +45,7 @@ exports.getCourses = async ({ category, instructor, level, price, page = 1, limi
     }
   }
 
-  // 🧾 Final courses query with pagination
+  // Final courses query with pagination
   const coursesQuery = `
     SELECT 
       c.course_ID AS courseID,
@@ -49,7 +55,7 @@ exports.getCourses = async ({ category, instructor, level, price, page = 1, limi
       CONCAT(c.duration, ' weeks') AS duration,
       c.level,
       c.price,
-      img.image_path AS thumbnailUrl,  -- Selecting the image path from the images table
+      img.image_path AS thumbnailUrl,
       ui.name AS instructor
     ${baseQuery}
     LIMIT ? OFFSET ?
@@ -58,7 +64,7 @@ exports.getCourses = async ({ category, instructor, level, price, page = 1, limi
   const coursesQueryParams = [...queryParams, parseInt(limit), (parseInt(page) - 1) * parseInt(limit)];
   const [courses] = await db.query(coursesQuery, coursesQueryParams);
 
-  // 📊 Get total count for pagination
+  // Get total count for pagination
   const countQuery = `SELECT COUNT(*) AS total ${baseQuery}`;
   const [countResult] = await db.query(countQuery, queryParams);
   const total = countResult[0].total;
@@ -66,11 +72,18 @@ exports.getCourses = async ({ category, instructor, level, price, page = 1, limi
   return {
     courses,
     totalPages: Math.ceil(total / limit),
+    appliedFilters: {
+      title: title || null,
+      category: category || null,
+      instructor: instructor || null,
+      level: level || null,
+      price: price || null
+    }
   };
 };
 
 exports.getFilters = async () => {
-  // ✅ Return all categories
+  // Return all categories
   const [categories] = await db.query(`
     SELECT category, COUNT(*) AS count
     FROM courses
@@ -78,7 +91,7 @@ exports.getFilters = async () => {
     ORDER BY count DESC
   `);
 
-  // 🏆 Top 3 instructors by course count
+  // Top 3 instructors by course count
   const [instructors] = await db.query(`
     SELECT ui.name AS instructor, COUNT(*) AS count
     FROM courses c
