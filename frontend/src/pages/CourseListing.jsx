@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -24,9 +25,8 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         <button
           key={idx}
           onClick={() => onPageChange(startPage + idx)}
-          className={`px-3 py-1 rounded ${
-            currentPage === startPage + idx ? "bg-blue-600 text-white" : "bg-gray-200"
-          }`}
+          className={`px-4 py-2 font-avant-medium text-gray-600 text-2xl rounded-xl cursor-pointer ${currentPage === startPage + idx ? "bg-blue-600 text-white" : "bg-gray-200"
+            }`}
         >
           {startPage + idx}
         </button>
@@ -47,28 +47,29 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
 
   return (
     <div>
-      <h3 className="text-lg font-bold mb-2">Categories</h3>
+      {/* Category Filter */}
+      <h3 className="text-3xl font-avant-medium font-bold mb-5 mt-10">Categories</h3>
       <ul>
         {filterData.categories?.length > 0 ? (
           filterData.categories.map((cat, idx) => (
             <li key={idx} className="mb-1">
               <button
                 onClick={() => handleFilterClick("category", cat.category)}
-                className={`px-2 py-1 rounded ${
-                  selectedFilters.category === cat.category
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }`}
+                className={`px-4 py-2 font-avant-medium text-gray-600 text-xl rounded-xl cursor-pointer ${selectedFilters.category === cat.category
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200"
+                  }`}
               >
                 {cat.category} ({cat.count})
               </button>
             </li>
           ))
         ) : (
-          <li>No categories</li>
+          <li className="font-avant-medium text-xl text-gray-600">No categories</li>
         )}
       </ul>
 
+      {/* Instructor Filter */}
       <h3 className="text-lg font-bold mt-4 mb-2">Instructors</h3>
       <ul>
         {filterData.instructors?.length > 0 ? (
@@ -76,11 +77,10 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
             <li key={idx} className="mb-1">
               <button
                 onClick={() => handleFilterClick("instructor", ins.instructor)}
-                className={`px-2 py-1 rounded ${
-                  selectedFilters.instructor === ins.instructor
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }`}
+                className={`px-4 py-2 font-avant-medium text-gray-600 text-xl rounded-xl cursor-pointer ${selectedFilters.instructor === ins.instructor
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200"
+                  }`}
               >
                 {ins.instructor} ({ins.count})
               </button>
@@ -91,15 +91,15 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
         )}
       </ul>
 
+      {/* Level Filter */}
       <h3 className="text-lg font-bold mt-4 mb-2">Levels</h3>
       <ul>
         {["Beginner", "Intermediate", "Advanced"].map((lvl, idx) => (
           <li key={idx} className="mb-1">
             <button
               onClick={() => handleFilterClick("level", lvl)}
-              className={`px-2 py-1 rounded ${
-                selectedFilters.level === lvl ? "bg-blue-600 text-white" : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 font-avant-medium text-gray-600 text-xl rounded-xl cursor-pointer ${selectedFilters.level === lvl ? "bg-blue-600 text-white" : "bg-gray-200"
+                }`}
             >
               {lvl}
             </button>
@@ -107,6 +107,7 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
         ))}
       </ul>
 
+      {/* Price Filter */}
       <h3 className="text-lg font-bold mt-4 mb-2">Price</h3>
       <ul>
         {[
@@ -117,9 +118,8 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
           <li key={idx} className="mb-1">
             <button
               onClick={() => handleFilterClick("price", prc.value)}
-              className={`px-2 py-1 rounded ${
-                selectedFilters.price === prc.value ? "bg-blue-600 text-white" : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 font-avant-medium text-gray-600 text-xl rounded-xl cursor-pointer ${selectedFilters.price === prc.value ? "bg-blue-600 text-white" : "bg-gray-200"
+                }`}
             >
               {prc.label}
             </button>
@@ -297,14 +297,30 @@ const CourseListing = () => {
     fetchFilters();
   }, []);
 
+  const { user } = useSelector((state) => state.auth);
+
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Navbar currentState="Courses" />
       <Breadcrumb paths={["Homepage", "Courses"]} />
-      <div className="flex justify-center w-full">
+      <div className="flex-grow flex justify-center w-full">
         <div className="flex flex-col md:flex-row justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
           <div className="w-full md:w-3/4">
             <EnhancedSearchBar onSearch={handleSearch} currentSearchTerm={searchTerm} />
+              
+            {/* 🆕 Create New Course button */}
+            {user?.role !== "student" && (
+              <div className="my-4 flex justify-end">
+                <button
+                  onClick={() => {
+                    navigate("/courses/upload");
+                  }} // Navigate to the create course page
+                  className="bg-blue-600 text-white px-4 py-2 rounded-xl font-avant-medium text-lg hover:bg-blue-700 transition cursor-pointer"
+                >
+                  + Create New Course
+                </button>
+              </div>
+            )}
             
             {/* Display active filters */}
             {(searchTerm || filters.category || filters.instructor || filters.level || filters.price) && (
@@ -382,7 +398,7 @@ const CourseListing = () => {
                 </div>
               </div>
             )}
-            
+           
             {loading ? (
               <p>Loading courses...</p>
             ) : courses.length > 0 ? (
@@ -392,7 +408,7 @@ const CourseListing = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-center text-gray-600">No courses match your criteria</p>
+              <p className="text-center font-avant-medium text-xl text-gray-600">No courses available</p>
             )}
             <div className="mt-6 flex justify-center">
               <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
@@ -408,7 +424,7 @@ const CourseListing = () => {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 
