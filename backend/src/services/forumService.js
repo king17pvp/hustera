@@ -60,8 +60,8 @@ exports.getForum = async ({category, searchQuery, tags, sortBy, page}) => {
   }
 }
 
-exports.addAnswerToThread = async ({ threadId, userId, content }) => {
-  return await forumModel.insertAnswer({ threadId, userId, content });
+exports.addAnswerToThread = async ({ threadId, userId, contents, attachments }) => {
+  return await forumModel.createAnswer(threadId, userId, contents, attachments);
 };
 
 exports.getFilters = async () => {

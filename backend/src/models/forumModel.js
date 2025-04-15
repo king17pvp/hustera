@@ -297,21 +297,45 @@ exports.upsertAnswerVote = async (answerId, userId, voteType) => {
   }
 };
 
-exports.createAnswer = async (threadId, authorId, content) => {
-  const [result] = await db.query(
-    `INSERT INTO thread_answers (thread_ID, author_ID, content) VALUES (?, ?, ?)`,
-    [threadId, authorId, content]
-  );
+exports.createAnswer = async (threadId, authorId, contents, attachments = []) => {
+  try {
+    const [result] = await db.execute(
+      `INSERT INTO thread_answers (thread_ID, author_ID, content) VALUES (?, ?, ?)`,
+      [threadId, authorId, contents]
+    );
 
-  return {
-    answer_ID: result.insertId,
-    thread_ID: threadId,
-    author_ID: authorId,
-    content,
-    created_at: new Date(), // giả định thời gian hiện tại
-    accepted: "false",
-  };
+    const answer_ID = result.insertId;
+
+    for (const base64String of attachments) {
+      const base64Data = base64String.split(';base64,').pop(); // strip prefix
+      const buffer = Buffer.from(base64Data, 'base64');
+
+      const [imgResult] = await db.execute(
+        `INSERT INTO images (image) VALUES (?)`,
+        [buffer]
+      );
+
+      const image_ID = imgResult.insertId;
+
+      await db.execute(
+        `INSERT INTO thread_answer_images (answer_ID, image_ID) VALUES (?, ?)`,
+        [answer_ID, image_ID]
+      );
+    }
+    return {
+      answer_ID,
+      thread_ID: threadId,
+      author_ID: authorId,
+      contents,
+      created_at: new Date(),
+      accepted: "false",
+    };
+  } catch (err) {
+    console.error('Error uploading thread:', err);
+    throw err;
+  }
 };
+
 
 exports.uploadForum = async (threadData, authorId) => {
   const { title, body, tags, attachments } = threadData;
