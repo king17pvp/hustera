@@ -91,20 +91,51 @@ exports.handleVoteAnswer = async (req, res) => {
   }
 };
 
-exports.handlePostAnswer = async (req, res) => {
-  const { threadId } = req.params;
-  const { content } = req.body;
-  const authorId = req.body?.user_ID; 
-
-  if (!authorId) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
-  }
-
+exports.postAnswer = async (req, res) => {
   try {
-    const answer = await forumService.postAnswer(threadId, authorId, content);
-    res.status(201).json({ success: true, answer });
+    const threadId = req.params.threadId;
+    const { user_ID: userId, content} = req.body;
+    const contents = content.content;
+    const attachments = content.attachments;
+    if (!userId || !contents) {
+      return res.status(400).json({ message: 'Missing user ID or content.' });
+    }
+
+    const result = await forumService.addAnswerToThread({
+      threadId,
+      userId,
+      contents,
+      attachments,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Answer posted successfully!',
+      answer_id: result.answer_ID,
+    });
   } catch (err) {
-    console.error("Post answer error:", err.message);
-    res.status(400).json({ success: false, message: err.message });
+    console.error('Controller Error - postAnswer:', err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+exports.uploadForum = async (req, res) => {
+  try {
+    const authorId = req.body?.user_ID;  // Assumes user is attached to req (e.g., via middleware)
+    if (!authorId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const threadData = req.body;
+    // console.log("Thread data", threadData);
+    const threadId = await forumService.uploadForum(threadData, authorId);
+    console.log(threadId);
+    res.status(201).json({
+      message: 'Thread uploaded successfully',
+      threadId: threadId,
+    });
+  } catch (error) {
+    console.error('Controller Error - uploadForum:', error);
+    res.status(500).json({ message: 'Failed to upload thread' });
   }
 };
