@@ -8,10 +8,16 @@ exports.getThreadById = async (threadId) => {
       t.content,
       t.created_at,
       u.email AS author,
-      GROUP_CONCAT(DISTINCT tg.tag_name) AS tags,
-      (SELECT COUNT(*) FROM thread_votes WHERE thread_ID = t.thread_ID AND vote_type = 'upvote') -
-      (SELECT COUNT(*) FROM thread_votes WHERE thread_ID = t.thread_ID AND vote_type = 'downvote') AS score,
-      GROUP_CONCAT(i.image_path) AS image_urls
+      tg.tag_name,
+      (
+        SELECT COUNT(*) FROM thread_votes 
+        WHERE thread_ID = t.thread_ID AND vote_type = 'upvote'
+      ) -
+      (
+        SELECT COUNT(*) FROM thread_votes 
+        WHERE thread_ID = t.thread_ID AND vote_type = 'downvote'
+      ) AS score,
+      i.image AS image_blob
     FROM threads t
     JOIN user_auth u ON u.user_ID = t.author_ID
     LEFT JOIN thread_tags tt ON tt.thread_ID = t.thread_ID
@@ -19,18 +25,32 @@ exports.getThreadById = async (threadId) => {
     LEFT JOIN thread_images ti ON ti.thread_ID = t.thread_ID
     LEFT JOIN images i ON i.image_ID = ti.image_ID
     WHERE t.thread_ID = ?
-    GROUP BY t.thread_ID
   `, [threadId]);
-  
-  const thread = rows[0];
-  // console.log(thread);
-  if (thread?.image_urls) {
-    thread.image_urls = thread.image_urls.split(',');
-  } else {
-    thread.image_urls = [];
+
+  if (!rows.length) return null;
+
+  const thread = {
+    thread_ID: rows[0].thread_ID,
+    title: rows[0].title,
+    content: rows[0].content,
+    created_at: rows[0].created_at,
+    author: rows[0].author,
+    tags: [],
+    score: rows[0].score,
+    image_urls: [],
+  };
+
+  for (const row of rows) {
+    if (row.tag_name && !thread.tags.includes(row.tag_name)) {
+      thread.tags.push(row.tag_name);
+    }
+
+    if (row.image_blob) {
+      const base64Image = `data:image/png;base64,${row.image_blob.toString('base64')}`;
+      thread.image_urls.push(base64Image);
+    }
   }
   return thread;
-
 };
 
 exports.getAnswersByThreadId = async (threadId) => {
@@ -41,25 +61,47 @@ exports.getAnswersByThreadId = async (threadId) => {
       a.created_at,
       a.accepted,
       u.email AS author,
-      (SELECT COUNT(*) FROM thread_answer_votes av WHERE av.answer_ID = a.answer_ID AND vote_type = 'upvote') -
-      (SELECT COUNT(*) FROM thread_answer_votes av WHERE av.answer_ID = a.answer_ID AND vote_type = 'downvote') AS score,
-      GROUP_CONCAT(i.image_path) AS image_urls
+      (
+        SELECT COUNT(*) FROM thread_answer_votes av 
+        WHERE av.answer_ID = a.answer_ID AND vote_type = 'upvote'
+      ) -
+      (
+        SELECT COUNT(*) FROM thread_answer_votes av 
+        WHERE av.answer_ID = a.answer_ID AND vote_type = 'downvote'
+      ) AS score,
+      i.image AS image_blob
     FROM thread_answers a
     JOIN user_auth u ON u.user_ID = a.author_ID
     LEFT JOIN thread_answer_images tai ON tai.answer_ID = a.answer_ID
     LEFT JOIN images i ON i.image_ID = tai.image_ID
     WHERE a.thread_ID = ?
-    GROUP BY a.answer_ID
   `, [threadId]);
 
-  // split image URLs into array per answer
-  
-  const answers = rows.map((row) => ({
-    ...row,
-    image_urls: row.image_urls ? row.image_urls.split(',') : [],
-  }));
-  // console.log(answers);
-  return rows;
+  // Gom từng answer_ID → mảng ảnh
+  const answerMap = {};
+
+  for (const row of rows) {
+    const answerId = row.answer_ID;
+
+    if (!answerMap[answerId]) {
+      answerMap[answerId] = {
+        answer_ID: row.answer_ID,
+        content: row.content,
+        created_at: row.created_at,
+        accepted: row.accepted,
+        author: row.author,
+        score: row.score,
+        image_urls: [],
+      };
+    }
+
+    if (row.image_blob) {
+      const base64Image = `data:image/png;base64,${row.image_blob.toString('base64')}`;
+      answerMap[answerId].image_urls.push(base64Image);
+    }
+  }
+
+  return Object.values(answerMap);
 };
 
 exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page = 1}) => {
@@ -255,18 +297,102 @@ exports.upsertAnswerVote = async (answerId, userId, voteType) => {
   }
 };
 
-exports.createAnswer = async (threadId, authorId, content) => {
-  const [result] = await db.query(
-    `INSERT INTO thread_answers (thread_ID, author_ID, content) VALUES (?, ?, ?)`,
-    [threadId, authorId, content]
-  );
+exports.createAnswer = async (threadId, authorId, contents, attachments = []) => {
+  try {
+    const [result] = await db.execute(
+      `INSERT INTO thread_answers (thread_ID, author_ID, content) VALUES (?, ?, ?)`,
+      [threadId, authorId, contents]
+    );
 
-  return {
-    answer_ID: result.insertId,
-    thread_ID: threadId,
-    author_ID: authorId,
-    content,
-    created_at: new Date(), // giả định thời gian hiện tại
-    accepted: "false",
-  };
+    const answer_ID = result.insertId;
+
+    for (const base64String of attachments) {
+      const base64Data = base64String.split(';base64,').pop(); // strip prefix
+      const buffer = Buffer.from(base64Data, 'base64');
+
+      const [imgResult] = await db.execute(
+        `INSERT INTO images (image) VALUES (?)`,
+        [buffer]
+      );
+
+      const image_ID = imgResult.insertId;
+
+      await db.execute(
+        `INSERT INTO thread_answer_images (answer_ID, image_ID) VALUES (?, ?)`,
+        [answer_ID, image_ID]
+      );
+    }
+    return {
+      answer_ID,
+      thread_ID: threadId,
+      author_ID: authorId,
+      contents,
+      created_at: new Date(),
+      accepted: "false",
+    };
+  } catch (err) {
+    console.error('Error uploading thread:', err);
+    throw err;
+  }
+};
+
+
+exports.uploadForum = async (threadData, authorId) => {
+  const { title, body, tags, attachments } = threadData;
+  let parsedTags = tags ? tags.split(',') : [];
+  try {
+    // Step 1: Insert thread
+    const [threadResult] = await db.execute(
+      `INSERT INTO threads (author_ID, title, category, content)
+       VALUES (?, ?, ?, ?)`,
+      [authorId, title, 'general', body]
+    );
+    console.log("TAGS TYPE:", typeof parsedTags, parsedTags);
+    const threadId = threadResult.insertId;
+    const uniqueTags = [...new Set(parsedTags.map(tag => tag.trim().toLowerCase()))];
+
+    
+
+    for (const tagName of uniqueTags) {
+      const [tagRows] = await db.execute(
+        `SELECT tag_ID FROM tags WHERE tag_name = ?`,
+        [tagName]
+      );
+    
+      let tagId;
+      if (tagRows.length > 0) {
+        tagId = tagRows[0].tag_ID;
+      } else {
+        const [tagInsert] = await db.execute(
+          `INSERT INTO tags (tag_name) VALUES (?)`,
+          [tagName]
+        );
+        tagId = tagInsert.insertId;
+      }
+    
+      await db.execute(
+        `INSERT INTO thread_tags (thread_ID, tag_ID) VALUES (?, ?)`,
+        [threadId, tagId]
+      );
+    }
+    for (const base64String of attachments || []) {
+      const base64Data = base64String.split(';base64,').pop();
+      const buffer = Buffer.from(base64Data, 'base64');
+
+      const [imageResult] = await db.execute(
+        `INSERT INTO images (image) VALUES (?)`,
+        [buffer]
+      );
+      const imageId = imageResult.insertId;
+
+      await db.execute(
+        `INSERT INTO thread_images (thread_ID, image_ID) VALUES (?, ?)`,
+        [threadId, imageId]
+      );
+    }
+    return threadId;
+  } catch (err) {
+    console.error('Error uploading thread:', err);
+    throw err;
+  }
 };

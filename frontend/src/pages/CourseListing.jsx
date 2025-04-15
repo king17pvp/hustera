@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CourseCardHorizontal from "../components/CourseCardHorizontal";
@@ -39,18 +38,10 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
   );
 };
 
-const InlineCourseFilter = ({ filterData, setFilters }) => {
-  const [selectedFilters, setSelectedFilters] = useState({
-    category: "",
-    instructor: "",
-    level: "",
-    price: "",
-  });
-
+const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
   const handleFilterClick = (type, value) => {
     const newValue = selectedFilters[type] === value ? "" : value;
     const updatedFilters = { ...selectedFilters, [type]: newValue };
-    setSelectedFilters(updatedFilters);
     setFilters(updatedFilters);
   };
 
@@ -139,44 +130,136 @@ const InlineCourseFilter = ({ filterData, setFilters }) => {
   );
 };
 
+// Custom SearchBar component that preserves filters
+const EnhancedSearchBar = ({ onSearch, currentSearchTerm }) => {
+  const [searchTerm, setSearchTerm] = useState(currentSearchTerm || "");
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSearch(searchTerm);
+  };
+  
+  return (
+    <div className="mb-6">
+      <h2 className="text-2xl font-bold mb-2">All Courses</h2>
+      <form onSubmit={handleSubmit} className="flex">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search courses..."
+          className="border rounded-l px-4 py-2 w-full"
+        />
+        <button 
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded-r"
+        >
+          Search
+        </button>
+      </form>
+    </div>
+  );
+};
+
 const CourseListing = () => {
   const [courses, setCourses] = useState([]);
   const [filterData, setFilterData] = useState({ categories: [], instructors: [] });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({ category: "", instructor: "", level: "", price: "" });
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const searchParams = new URLSearchParams(location.search);
-  const titleQuery = searchParams.get("title");
+  // Extract search term from URL on initial load
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const title = searchParams.get("title");
+    if (title) {
+      setSearchTerm(title);
+    }
+    
+    // Extract any filters from URL
+    const categoryParam = searchParams.get("category");
+    const instructorParam = searchParams.get("instructor");
+    const levelParam = searchParams.get("level");
+    const priceParam = searchParams.get("price");
+    
+    // Set initial filters from URL if they exist
+    setFilters({
+      category: categoryParam || "",
+      instructor: instructorParam || "",
+      level: levelParam || "",
+      price: priceParam || "",
+    });
+  }, [location.search]);
 
-  // Reset page when filters change
+  // Reset page when filters or search term change
   useEffect(() => {
     setCurrentPage(1);
-  }, [filters]);
+  }, [filters, searchTerm]);
+
+  // Handle search submission
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    updateURLWithParams(term, filters, 1);
+  };
+
+  // Update URL with current params
+  const updateURLWithParams = (title, currentFilters, page) => {
+    const params = new URLSearchParams();
+    
+    if (title) params.set("title", title);
+    if (currentFilters.category) params.set("category", currentFilters.category);
+    if (currentFilters.instructor) params.set("instructor", currentFilters.instructor);
+    if (currentFilters.level) params.set("level", currentFilters.level);
+    if (currentFilters.price) params.set("price", currentFilters.price);
+    if (page > 1) params.set("page", page.toString());
+    
+    navigate(`/courses?${params.toString()}`);
+  };
+
+  // Update filters and URL
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    updateURLWithParams(searchTerm, newFilters, 1);
+  };
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    updateURLWithParams(searchTerm, filters, page);
+  };
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        let endpoint = "";
-        if (titleQuery) {
-          endpoint = `http://localhost:5000/search?title=${encodeURIComponent(titleQuery)}&page=${currentPage}&limit=6`;
-        } else {
-          const params = new URLSearchParams({
-            page: currentPage,
-            limit: 6,
-            category: filters.category,
-            instructor: filters.instructor,
-            level: filters.level,
-            price: filters.price,
-          });
-          endpoint = `http://localhost:5000/courses?${params.toString()}`;
+        
+        // Build query parameters for the API call
+        const params = new URLSearchParams({
+          page: currentPage,
+          limit: 6
+        });
+        
+        // Add search term if exists
+        if (searchTerm) {
+          params.append("title", searchTerm);
         }
+        
+        // Add filters if they exist
+        if (filters.category) params.append("category", filters.category);
+        if (filters.instructor) params.append("instructor", filters.instructor);
+        if (filters.level) params.append("level", filters.level);
+        if (filters.price) params.append("price", filters.price);
+        
+        // Use a consistent endpoint that supports both search and filters
+        const endpoint = `http://localhost:5000/courses?${params.toString()}`;
+        
         const response = await fetch(endpoint);
         const data = await response.json();
+        
         if (data.success) {
           setCourses(data.courses);
           setTotalPages(data.totalPages);
@@ -191,7 +274,7 @@ const CourseListing = () => {
     };
 
     fetchCourses();
-  }, [currentPage, filters, titleQuery]);
+  }, [currentPage, filters, searchTerm]);
 
   useEffect(() => {
     const fetchFilters = async () => {
@@ -223,8 +306,8 @@ const CourseListing = () => {
       <div className="flex-grow flex justify-center w-full">
         <div className="flex flex-col md:flex-row justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
           <div className="w-full md:w-3/4">
-            <SearchBar title="All Courses" />
-
+            <EnhancedSearchBar onSearch={handleSearch} currentSearchTerm={searchTerm} />
+              
             {/* 🆕 Create New Course button */}
             {user?.role !== "student" && (
               <div className="my-4 flex justify-end">
@@ -238,7 +321,84 @@ const CourseListing = () => {
                 </button>
               </div>
             )}
-
+            
+            {/* Display active filters */}
+            {(searchTerm || filters.category || filters.instructor || filters.level || filters.price) && (
+              <div className="mb-4 p-3 bg-gray-100 rounded">
+                <h3 className="font-semibold mb-2">Active Filters:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {searchTerm && (
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
+                      Search: {searchTerm}
+                      <button 
+                        onClick={() => handleSearch("")} 
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {filters.category && (
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
+                      Category: {filters.category}
+                      <button 
+                        onClick={() => handleFilterChange({...filters, category: ""})} 
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {filters.instructor && (
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
+                      Instructor: {filters.instructor}
+                      <button 
+                        onClick={() => handleFilterChange({...filters, instructor: ""})} 
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {filters.level && (
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
+                      Level: {filters.level}
+                      <button 
+                        onClick={() => handleFilterChange({...filters, level: ""})} 
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {filters.price && (
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
+                      Price: {filters.price === "under30" ? "Under $30" : 
+                             filters.price === "30to50" ? "$30 - $50" : "Above $50"}
+                      <button 
+                        onClick={() => handleFilterChange({...filters, price: ""})} 
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {(searchTerm || filters.category || filters.instructor || filters.level || filters.price) && (
+                    <button
+                      onClick={() => {
+                        setSearchTerm("");
+                        setFilters({ category: "", instructor: "", level: "", price: "" });
+                        updateURLWithParams("", { category: "", instructor: "", level: "", price: "" }, 1);
+                      }}
+                      className="text-red-600 hover:text-red-800 underline text-sm"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+           
             {loading ? (
               <p>Loading courses...</p>
             ) : courses.length > 0 ? (
@@ -251,11 +411,15 @@ const CourseListing = () => {
               <p className="text-center font-avant-medium text-xl text-gray-600">No courses available</p>
             )}
             <div className="mt-6 flex justify-center">
-              <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
+              <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
             </div>
           </div>
           <div className="w-full md:w-1/4">
-            <InlineCourseFilter filterData={filterData} setFilters={setFilters} />
+            <InlineCourseFilter 
+              filterData={filterData} 
+              selectedFilters={filters} 
+              setFilters={handleFilterChange} 
+            />
           </div>
         </div>
       </div>

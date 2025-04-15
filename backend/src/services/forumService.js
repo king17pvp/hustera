@@ -8,16 +8,19 @@ exports.getForumOnClick = async ({ threadId }) => {
     }
 
     const answers = await forumModel.getAnswersByThreadId(threadId);
-
     const formattedThread = {
       question_id: thread.thread_ID,
       title: thread.title,
       author: thread.author,
       created_utc: new Date(thread.created_at).toISOString(),
-      tags: thread.tags ? thread.tags.split(',') : [],
+      tags: thread.tags ? thread.tags : [],
       score: thread.score,
       content: thread.content,
-      attachments: thread.image_urls || [],  // ✅ Added attachments
+      attachments: Array.isArray(thread.image_urls)
+      ? thread.image_urls
+      : typeof thread.image_urls === 'string'
+        ? [thread.image_urls]
+        : [],
       answers: answers.map((ans) => ({
         answer_id: ans.answer_ID,
         author: ans.author,
@@ -26,10 +29,13 @@ exports.getForumOnClick = async ({ threadId }) => {
         score: ans.score,
         is_accepted: ans.accepted === 'true',  // nếu kiểu dữ liệu là chuỗi
         comments: [], // placeholder, nếu sau này muốn thêm comments
-        attachments: ans.image_urls ? ans.image_urls.split(',') : []
+        attachments: Array.isArray(ans.image_urls)
+        ? ans.image_urls
+        : typeof ans.image_urls === 'string'
+          ? [ans.image_urls]
+          : []
       }))
     };
-    console.log(formattedThread);
     return formattedThread;
   } catch (error) {
     console.error('Error in forumService.getForumOnClick:', error.message);
@@ -54,8 +60,8 @@ exports.getForum = async ({category, searchQuery, tags, sortBy, page}) => {
   }
 }
 
-exports.addAnswerToThread = async ({ threadId, userId, content }) => {
-  return await forumModel.insertAnswer({ threadId, userId, content });
+exports.addAnswerToThread = async ({ threadId, userId, contents, attachments }) => {
+  return await forumModel.createAnswer(threadId, userId, contents, attachments);
 };
 
 exports.getFilters = async () => {
@@ -78,4 +84,14 @@ exports.postAnswer = async (threadId, authorId, content) => {
 
   const answer = await forumModel.createAnswer(threadId, authorId, content);
   return answer;
+};
+
+exports.uploadForum = async (threadData, authorId) => {
+  try {
+    const threadId = await forumModel.uploadForum(threadData, authorId);
+    return threadId;
+  } catch (error) {
+    console.error('Service Error - uploadForum:', error);
+    throw error;
+  }
 };
