@@ -57,6 +57,17 @@ const ForumQuestion = ({ thread }) => {
         </div>
         <div className="mb-3 text-gray-700 text-xl whitespace-pre-wrap">{thread.content}</div>
 
+        <div className="flex flex-wrap gap-2 text-lg mb-4">
+          {thread.tags.map((tag) => (
+            <span
+              key={tag}
+              className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+
         {/* Attachments Section */}
         {thread.attachments && thread.attachments.length > 0 && (
           <div className="mt-4">
@@ -76,18 +87,6 @@ const ForumQuestion = ({ thread }) => {
             </div>
           </div>
         )}
-
-        <div className="flex flex-wrap gap-2 text-lg mb-4">
-          {thread.tags.map((tag) => (
-            <span
-              key={tag}
-              className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
-
         {/* {thread.comments.length > 0 && (
           <ForumComment comments={thread.comments} />
         )} */}

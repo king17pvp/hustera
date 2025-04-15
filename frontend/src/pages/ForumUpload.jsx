@@ -10,27 +10,33 @@ import { ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
 
 const ForumUpload = () => {
   const [phase, setPhase] = useState(1);
-  const [threadTitle, setThreadTitle] = useState("");
-  const [threadBody, setThreadBody] = useState("");
   const [viewMode, setViewMode] = useState("Text");
-  const [attachments, setAttachments] = useState([]);
   const [basicInfo, setBasicInfo] = useState({
+    title: "",
+    body: "",
+    attachments: [],
+    category: "",
     tags: "",
   });
   const predefinedTags = ["React", "JavaScript", "Tailwind", "CSS", "HTML"];
+  const predefinedCategories = ["Programming", "Design", "Marketing", "Business", "Data Science"];
   const navigate = useNavigate();
   const [errors, setErrors] = useState({
     title: false,
     body: false,
+    category: false,
   });
 
   // Function to handle image uploads
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
-    if (file && attachments.length < 4) {
+    if (file && basicInfo.attachments.length < 4) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAttachments([...attachments, reader.result]); // Add new image to attachments state
+        setBasicInfo((prev) => ({
+          ...prev,
+          attachments: [...prev.attachments, reader.result],
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -38,16 +44,14 @@ const ForumUpload = () => {
 
   // Function to remove an image from attachments
   const handleImageRemove = (index) => {
-    const newAttachments = attachments.filter((_, i) => i !== index);
-    setAttachments(newAttachments); // Remove the image at the given index
+    setBasicInfo((prev) => ({
+      ...prev,
+      attachments: prev.attachments.filter((_, i) => i !== index),
+    }));
   };
 
   const handleToggle = () => {
     setViewMode(viewMode === "Text" ? "Preview" : "Text");
-  };
-
-  const handleTextChange = (e) => {
-    setThreadBody(e.target.value);
   };
 
   // Function to handle tag selection/deselection
@@ -63,13 +67,15 @@ const ForumUpload = () => {
   };
 
   const handleValidation = () => {
-    const titleValid = threadTitle.trim() !== "";
-    const bodyValid = threadBody.trim() !== "";
+    const titleValid = basicInfo.title.trim() !== "";
+    const bodyValid = basicInfo.body.trim() !== "";
+    const categoryValid = basicInfo.category.trim() !== "";
     setErrors({
       title: !titleValid,
       body: !bodyValid,
+      category: !categoryValid, // Set error for category
     });
-    return titleValid && bodyValid;
+    return titleValid && bodyValid && categoryValid;
   };
 
   const handleNext = () => {
@@ -85,26 +91,29 @@ const ForumUpload = () => {
 
   // Function to handle the "Submit" button in Phase 2
   const handleSubmit = async () => {
-    // Step 1: Prepare the data to be sent to the backend
     const data = {
-      title: threadTitle,
-      body: threadBody,
+      title: basicInfo.title,
+      body: basicInfo.body,
       tags: basicInfo.tags,
-      attachments: attachments, // This could be base64-encoded images
+      attachments: basicInfo.attachments,
+      category: basicInfo.category,
     };
-  
+
     try {
       // Step 2: Send the data to the backend using Axios
       const response = await axios.post("/api/forum/submit-thread", data); // Replace with your backend endpoint
-  
+
       // Step 3: Handle the response
       if (response.status === 200) {
         // Optionally, reset the form or navigate to another page after submission
         setPhase(1); // Reset to Phase 1 if needed
-        setThreadTitle(""); // Reset title
-        setThreadBody(""); // Reset body
-        setAttachments([]); // Reset attachments
-        setBasicInfo({ tags: "" }); // Reset tags
+        setBasicInfo({
+          title: "",
+          body: "",
+          attachments: [],
+          category: "",
+          tags: "",
+        });
         navigate("/forum"); // Redirect to the forum page or any other page
       } else {
         // Failure
@@ -114,21 +123,6 @@ const ForumUpload = () => {
       console.error("Error submitting thread:", error);
       alert("Failed to submit the thread. Please try again.");
     }
-  };
-
-  const slideVariants = {
-    enter: (direction) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction) => ({
-      x: direction > 0 ? -300 : 300,
-      opacity: 0,
-    }),
   };
 
   return (
@@ -168,7 +162,6 @@ const ForumUpload = () => {
             </div>
 
             {/* Form Sections (Phase Based) */}
-            {/* Form Sections (Phase Based) */}
             <div className="space-y-6">
               <AnimatePresence mode="wait">
                 {phase === 1 && (
@@ -185,11 +178,43 @@ const ForumUpload = () => {
                     <label className="block text-lg text-gray-700 font-avant-medium mt-[-18px] mb-1">Be specific and imagine you're asking a question to another person</label>
                     <input
                       type="text"
-                      value={threadTitle}
-                      onChange={(e) => setThreadTitle(e.target.value)}
+                      value={basicInfo.title}
+                      onChange={(e) =>
+                        setBasicInfo((prev) => ({ ...prev, title: e.target.value }))
+                      }
                       placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
                       className={`w-full border-3 font-avant-medium rounded-xl px-5 py-3 text-[19px] placeholder-gray-300 ${errors.title ? 'border-red-600' : 'border-gray-500'}`}
                     />
+
+                    {/* Category Selection */}
+                    <div className="mt-4 relative">
+                      <label className="block text-[26px] font-avant-medium font-semibold">
+                        Category<span className="text-red-600">*</span>
+                      </label>
+                      <label className="block text-lg text-gray-700 font-avant-medium mt-[-3px] mb-1">
+                        Select the category that best fits your thread
+                      </label>
+                      <select
+                        value={basicInfo.category || ""}
+                        onChange={(e) =>
+                          setBasicInfo((prev) => ({ ...prev, category: e.target.value }))
+                        }
+                        className={`appearance-none w-full border-3 font-avant-medium rounded-xl px-5 py-3 text-[19px] pr-10 ${errors.category ? "border-red-600" : "border-gray-500"}`}
+                      >
+                        <option value="" disabled >
+                          Select a category
+                        </option>
+                        {predefinedCategories.map((category) => (
+                          <option key={category} value={category.toLowerCase().replace(/\s/g, "-")}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                      {/* Triangle Icon */}
+                      <div className="pointer-events-none absolute right-4 top-24 transform -translate-y-1/2 text-gray-600">
+                        ▼
+                      </div>
+                    </div>
 
                     <label className="block text-[26px] font-avant-medium font-semibold">Thread Body<span className="text-red-600">*</span> <span className="text-[19px]">(Plain Text / Markdown)</span></label>
                     <label className="block text-lg text-gray-700 font-avant-medium mt-[-18px] mb-1">Include all the information someone would need to answer your question</label>
@@ -221,8 +246,10 @@ const ForumUpload = () => {
                       </div>
                     ) : (
                       <textarea
-                        value={threadBody}
-                        onChange={handleTextChange}
+                        value={basicInfo.body}
+                        onChange={(e) =>
+                          setBasicInfo((prev) => ({ ...prev, body: e.target.value }))
+                        }
                         placeholder="Start writing your question or discussion..."
                         className={`w-full border-3 font-avant-medium rounded-xl mb-[11px] px-5 py-3 text-[19px] placeholder-gray-300 h-80 resize-none ${errors.body ? 'border-red-600' : 'border-gray-500'}`}
                       />
@@ -232,9 +259,9 @@ const ForumUpload = () => {
                     <label className="block text-[26px] font-avant-medium font-semibold">Attachments</label>
                     <label className="block text-lg text-gray-700 font-avant-medium mt-[-18px] mb-1">Add up to 4 images to support your question</label>
                     <div className="mt-2 flex items-center space-x-3">
-                      {attachments.length > 0 && (
+                      {basicInfo.attachments.length > 0 && (
                         <div className="flex space-x-3 overflow-x-auto">
-                          {attachments.map((image, index) => (
+                          {basicInfo.attachments.map((image, index) => (
                             <div key={index} className="relative">
                               <img
                                 src={image}
@@ -251,7 +278,7 @@ const ForumUpload = () => {
                           ))}
                         </div>
                       )}
-                      {attachments.length < 4 && (
+                      {basicInfo.attachments.length < 4 && (
                         <div className="relative">
                           <button
                             onClick={() => document.getElementById('imageUpload').click()}
@@ -275,19 +302,19 @@ const ForumUpload = () => {
                       <label className="block mb-2 text-[23px] font-avant-medium font-semibold">Tags</label>
                       <label className="block text-lg text-gray-700 font-avant-medium mt-[-10px] mb-2">Select tags that are relevant to your thread's content</label>
                       <div className="flex flex-wrap gap-3">
-                        {predefinedTags.map((tag) => (
-                          <button
-                            key={tag}
-                            type="button"
-                            onClick={() => handleTagClick(tag)}
-                            className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${basicInfo.tags.split(",").includes(tag)
-                              ? "bg-gray-800 border-gray-800 text-white"
-                              : "bg-white border-gray-400 hover:bg-gray-100"
-                              }`}
-                          >
-                            {tag}
-                          </button>
-                        ))}
+                      {predefinedTags.map((tag) => (
+  <button
+    key={tag}
+    type="button"
+    onClick={() => handleTagClick(tag)}
+    className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${basicInfo.tags.split(",").includes(tag)
+      ? "bg-gray-800 border-gray-800 text-white"
+      : "bg-white border-gray-400 hover:bg-gray-100"
+      }`}
+  >
+    {tag}
+  </button>
+))}
                       </div>
                     </div>
                   </motion.div>
@@ -324,9 +351,9 @@ const ForumUpload = () => {
                       <div className="prose border-t border-gray-300 py-3 text-xl font-avant-medium max-w-none">
                         <ReactMarkdown>{threadBody}</ReactMarkdown>
                       </div>
-                      
+
                       {attachments.length > 0 && (
-                        
+
                         <div className="flex flex-wrap gap-4 border-t border-gray-300 pt-4">
                           <span className="text-[24px] mr-2 font-avant-medium font-semibold">Attachments:</span>
                           {attachments.map((image, idx) => (

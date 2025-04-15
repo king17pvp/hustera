@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
 import ForumQuestion from "../components/ForumQuestion";
+
 import ForumReplyCard from "../components/ForumReplyCard";
 import AnswerCard from "../components/AnswerCard";
 import { useSelector } from "react-redux"; 
@@ -19,6 +20,20 @@ const ForumSingle = () => {
   const location = useLocation();
   const { user } = useSelector((state) => state.auth);
   const [reloadFlag, setReloadFlag] = useState(false);
+
+  const thread1 = {
+    thread_id: 1,
+    title: "How to use React useState hook?",
+    author: "John Doe",
+    created_utc: "2025-04-14T10:30:00Z",
+    content: "I'm new to React and trying to understand how the `useState` hook works. Can someone explain it with an example?",
+    score: 15,
+    attachments: [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZxLXbumtxmwzqNFtu7fUfOTc39i3JlDu67w&s",
+      "https://i.ytimg.com/vi/ajKmtmPjVtc/hq2.jpg?sqp=-oaymwEoCOADEOgC8quKqQMcGADwAQH4Ab4EgALABIoCDAgAEAEYZSBSKEYwDw==&rs=AOn4CLC0Xjuim-IVR4A56Gv5BoRq600wbQ"
+    ],
+    tags: ["React", "JavaScript", "Hooks"]
+  };
 
   // Extract search query from URL if present (same as CourseListing)
   const searchParams = new URLSearchParams(location.search);
@@ -68,6 +83,7 @@ const ForumSingle = () => {
             <Breadcrumb paths={["Homepage", "Forum", thread.title]} />
             <div className="flex-1 max-w-[1680px] mx-auto px-4 py-12">
               <ForumQuestion thread={thread} />
+              <ForumQuestion thread={thread1} />
   
               {/* Answers */}
               <div>
