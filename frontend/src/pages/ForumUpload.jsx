@@ -5,6 +5,7 @@ import Breadcrumb from "../components/BreadCrumb";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux"; 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
 
@@ -17,6 +18,7 @@ const ForumUpload = () => {
   const [basicInfo, setBasicInfo] = useState({
     tags: "",
   });
+  const { user } = useSelector((state) => state.auth);
   const predefinedTags = ["React", "JavaScript", "Tailwind", "CSS", "HTML"];
   const navigate = useNavigate();
   const [errors, setErrors] = useState({
@@ -95,10 +97,17 @@ const ForumUpload = () => {
   
     try {
       // Step 2: Send the data to the backend using Axios
-      const response = await axios.post("/api/forum/submit-thread", data); // Replace with your backend endpoint
+      const response = await axios.post("http://localhost:5000/forum/uploadForum", {
+        ...data,            // hoặc title, body, tags, attachments...
+        user_ID: user?.id,  // truyền kèm user_ID nếu không dùng token
+      }, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
   
       // Step 3: Handle the response
-      if (response.status === 200) {
+      if (response.status === 201) {
         // Optionally, reset the form or navigate to another page after submission
         setPhase(1); // Reset to Phase 1 if needed
         setThreadTitle(""); // Reset title

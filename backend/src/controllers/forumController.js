@@ -108,3 +108,24 @@ exports.handlePostAnswer = async (req, res) => {
     res.status(400).json({ success: false, message: err.message });
   }
 };
+
+exports.uploadForum = async (req, res) => {
+  try {
+    const authorId = req.body?.user_ID;  // Assumes user is attached to req (e.g., via middleware)
+    if (!authorId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const threadData = req.body;
+    // console.log("Thread data", threadData);
+    const threadId = await forumService.uploadForum(threadData, authorId);
+    console.log(threadId);
+    res.status(201).json({
+      message: 'Thread uploaded successfully',
+      threadId: threadId,
+    });
+  } catch (error) {
+    console.error('Controller Error - uploadForum:', error);
+    res.status(500).json({ message: 'Failed to upload thread' });
+  }
+};
