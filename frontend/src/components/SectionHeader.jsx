@@ -1,6 +1,7 @@
 // frontend/src/components/SectionHeader.jsx
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const SearchBar = ({ title }) => {
   const [searchInput, setSearchInput] = useState('');
