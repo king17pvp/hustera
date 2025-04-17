@@ -175,7 +175,7 @@ const CourseManagement = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-white">
       <Navbar currentState={null} />
       <Breadcrumb paths={["Admin", "Course Management"]} />
 
@@ -212,7 +212,7 @@ const CourseManagement = () => {
                     <th className="px-6 pt-3 text-left text-xl font-semibold">Instructor</th>
                     <th className="px-6 pt-3 text-left text-xl font-semibold">Category</th>
                     <th className="px-6 pt-3 text-left text-xl font-semibold">Creation Date</th>
-                    <th className="px-6 pt-3 text-right text-xl font-semibold w-[250px]"></th>
+                    <th className="px-6 pt-3 text-right text-xl font-semibold w-[253px]"></th>
                   </tr>
                   <tr>
                     <th className="px-6 py-2">
@@ -282,7 +282,7 @@ const CourseManagement = () => {
                       <React.Fragment key={course.course_id}>
                         <tr className="border-b border-gray-100">
                           <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium text-gray-900">{course.course_id}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium text-gray-700">{course.title}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium font-semibold text-blue-700">{course.title}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium text-gray-700">{course.instructor}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium text-gray-700">
                             <span className="px-5 py-1 rounded-2xl bg-gray-200 text-gray-700 font-semibold text-lg">
@@ -313,7 +313,7 @@ const CourseManagement = () => {
                         </tr>
                         {expanded === course.course_id && (
                           <tr>
-                            <td colSpan="7" className="bg-gray-50 px-12 py-6 border-b">
+                            <td colSpan="7" className="bg-gray-50 px-12 py-6 border-b border-t border-gray-300 h-75">
                               <div className="grid grid-cols-1 md:grid-cols-5 gap-8 animate-fade-in-down">
                                 {/* Course Details */}
                                 <div className="md:col-span-1 flex flex-col justify-center">
