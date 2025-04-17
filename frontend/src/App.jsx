@@ -14,6 +14,7 @@ import CourseUpload from "./pages/CourseUpload.jsx";
 import ForumUpload from "./pages/ForumUpload.jsx";
 import UserManagement from "./pages/UserManagement.jsx";
 import CourseManagement from "./pages/CourseManagement.jsx";
+import ForumManagement from "./pages/ForumManagement.jsx";
 
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
@@ -229,6 +230,7 @@ const App = () => {
                 <Route path="/forum/upload" element={<ForumUpload />} />
                 <Route path="/admin/user-management" element={<UserManagement />} />
                 <Route path="/admin/course-management" element={<CourseManagement />} />
+                <Route path="/admin/forum-management" element={<ForumManagement />} />
               </>
             )}
 
