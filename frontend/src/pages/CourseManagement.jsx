@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
+import axios from "axios";
 import React from "react";
 
+// Updated mock data structure with weeks containing videos
 const mockCourses = [
   {
     course_id: "C001",
@@ -11,17 +13,110 @@ const mockCourses = [
     instructor: "Dr. Alice Nguyen",
     category: "Mathematics",
     createdAt: "2023-09-01T10:15:00Z",
-    enrolled: 95,
     rating: 4.7,
-    lessons: [
-      { title: "Introduction to Linear Algebra", completed: 92 },
-      { title: "Matrix Transformations", completed: 85 },
-      { title: "Vector Spaces", completed: 80 },
-      { title: "Eigenvalues & Eigenvectors", completed: 75 }
+    enrolled: 100, // Added enrolled count
+    weeks: [
+      {
+        week_id: "W001",
+        title: "Introduction to Linear Algebra",
+        videos: [
+          { 
+            video_id: "V001", 
+            title: "Vectors and Spaces", 
+            videoUrl: "https://example.com/video/C001/W001/V001",
+            completed: 92 
+          },
+          { 
+            video_id: "V002", 
+            title: "Linear Combinations", 
+            videoUrl: "https://example.com/video/C001/W001/V002",
+            completed: 88 
+          }
+        ]
+      },
+      {
+        week_id: "W002",
+        title: "Matrix Transformations",
+        videos: [
+          { 
+            video_id: "V003", 
+            title: "Matrix Multiplication", 
+            videoUrl: "https://example.com/video/C001/W002/V003",
+            completed: 85 
+          },
+          { 
+            video_id: "V004", 
+            title: "Matrix Inverse", 
+            videoUrl: "https://example.com/video/C001/W002/V004",
+            completed: 82 
+          }
+        ]
+      },
+      {
+        week_id: "W003",
+        title: "Vector Spaces",
+        videos: [
+          { 
+            video_id: "V005", 
+            title: "Subspaces", 
+            videoUrl: "https://example.com/video/C001/W003/V005",
+            completed: 80 
+          }
+        ]
+      },
+      {
+        week_id: "W004",
+        title: "Eigenvalues & Eigenvectors",
+        videos: [
+          { 
+            video_id: "V006", 
+            title: "Introduction to Eigenvalues", 
+            videoUrl: "https://example.com/video/C001/W004/V006",
+            completed: 75 
+          },
+          { 
+            video_id: "V007", 
+            title: "Eigenvector Computation", 
+            videoUrl: "https://example.com/video/C001/W004/V007",
+            completed: 70 
+          }
+        ]
+      }
     ],
-    discussions: [
-      { title: "What is a vector?", replies: 4 },
-      { title: "Best resources for matrices?", replies: 2 }
+    reviews: [
+      {
+        review_id: "R001",
+        user_id: "U003",
+        user_name: "Charlie Le",
+        content: "Can someone explain vectors in simple terms?",
+        star: 4
+      },
+      {
+        review_id: "R002",
+        user_id: "U001",
+        user_name: "Alice Nguyen",
+        content: "Looking for solid resources to understand matrix operations.",
+        star: 5
+      },
+      {
+        review_id: "R003",
+        user_id: "U003",
+        user_name: "Alice Nguyen",
+        content: "Looking for solid resources to understand matrix operations.",
+        star: 5
+      },
+      {
+        review_id: "R004",
+        user_id: "U004",
+        user_name: "Alice Nguyen",
+        content: "Looking for solid resources to understand matrix operations.",
+        star: 5
+      }
+    ],
+    students: [
+      { user_id: "U003", user_name: "Charlie Le", progress: 85 },
+      { user_id: "U001", user_name: "Alice Nguyen", progress: 95 },
+      { user_id: "U004", user_name: "Minh Vu", progress: 70 }
     ]
   },
   {
@@ -30,15 +125,76 @@ const mockCourses = [
     instructor: "Bob Tran",
     category: "Programming",
     createdAt: "2024-01-10T14:30:00Z",
-    enrolled: 120,
     rating: 4.5,
-    lessons: [
-      { title: "JSX & Components", completed: 88 },
-      { title: "Props & State", completed: 80 },
-      { title: "Hooks", completed: 70 }
+    enrolled: 150,
+    weeks: [
+      {
+        week_id: "W001",
+        title: "Introduction to React",
+        videos: [
+          { 
+            video_id: "V008", 
+            title: "What is React?", 
+            videoUrl: "https://example.com/video/C002/W001/V008",
+            completed: 90 
+          },
+          { 
+            video_id: "V009", 
+            title: "Setting up your environment", 
+            videoUrl: "https://example.com/video/C002/W001/V009",
+            completed: 88 
+          }
+        ]
+      },
+      {
+        week_id: "W002",
+        title: "JSX & Components",
+        videos: [
+          { 
+            video_id: "V010", 
+            title: "Understanding JSX", 
+            videoUrl: "https://example.com/video/C002/W002/V010",
+            completed: 85 
+          },
+          { 
+            video_id: "V011", 
+            title: "Creating Your First Component", 
+            videoUrl: "https://example.com/video/C002/W002/V011",
+            completed: 82 
+          }
+        ]
+      },
+      {
+        week_id: "W003",
+        title: "Props & State",
+        videos: [
+          { 
+            video_id: "V012", 
+            title: "Working with Props", 
+            videoUrl: "https://example.com/video/C002/W003/V012",
+            completed: 80 
+          },
+          { 
+            video_id: "V013", 
+            title: "Managing State", 
+            videoUrl: "https://example.com/video/C002/W003/V013",
+            completed: 75 
+          }
+        ]
+      }
     ],
-    discussions: [
-      { title: "How to use useEffect?", replies: 5 }
+    reviews: [
+      {
+        review_id: "R003",
+        user_id: "U005",
+        user_name: "Ethan Do",
+        content: "Still confused about the dependency array in useEffect.",
+        star: 4
+      }
+    ],
+    students: [
+      { user_id: "U005", user_name: "Ethan Do", progress: 65 },
+      { user_id: "U006", user_name: "Linh Pham", progress: 90 }
     ]
   },
   {
@@ -47,13 +203,50 @@ const mockCourses = [
     instructor: "Fiona Tran",
     category: "Design",
     createdAt: "2023-06-20T12:00:00Z",
-    enrolled: 60,
     rating: 4.2,
-    lessons: [
-      { title: "Principles of Design", completed: 90 },
-      { title: "Wireframing", completed: 78 }
+    enrolled: 75,
+    weeks: [
+      {
+        week_id: "W001",
+        title: "Principles of Design",
+        videos: [
+          { 
+            video_id: "V014", 
+            title: "Design Theory Basics", 
+            videoUrl: "https://example.com/video/C003/W001/V014",
+            completed: 90 
+          },
+          { 
+            video_id: "V015", 
+            title: "Color Theory", 
+            videoUrl: "https://example.com/video/C003/W001/V015",
+            completed: 85 
+          }
+        ]
+      },
+      {
+        week_id: "W002",
+        title: "Wireframing",
+        videos: [
+          { 
+            video_id: "V016", 
+            title: "Introduction to Wireframes", 
+            videoUrl: "https://example.com/video/C003/W002/V016",
+            completed: 78 
+          },
+          { 
+            video_id: "V017", 
+            title: "Creating Effective Wireframes", 
+            videoUrl: "https://example.com/video/C003/W002/V017",
+            completed: 75 
+          }
+        ]
+      }
     ],
-    discussions: []
+    reviews: [],
+    students: [
+      { user_id: "U007", user_name: "Nam Bui", progress: 88 }
+    ]
   },
   {
     course_id: "C004",
@@ -61,14 +254,76 @@ const mockCourses = [
     instructor: "Ethan Do",
     category: "Data Science",
     createdAt: "2023-11-15T09:00:00Z",
-    enrolled: 150,
     rating: 4.8,
-    lessons: [
-      { title: "Supervised Learning", completed: 95 },
-      { title: "Unsupervised Learning", completed: 90 }
+    enrolled: 200,
+    weeks: [
+      {
+        week_id: "W001",
+        title: "Introduction to ML",
+        videos: [
+          { 
+            video_id: "V018", 
+            title: "What is Machine Learning?", 
+            videoUrl: "https://example.com/video/C004/W001/V018",
+            completed: 96 
+          },
+          { 
+            video_id: "V019", 
+            title: "Types of ML Algorithms", 
+            videoUrl: "https://example.com/video/C004/W001/V019",
+            completed: 94 
+          }
+        ]
+      },
+      {
+        week_id: "W002",
+        title: "Supervised Learning",
+        videos: [
+          { 
+            video_id: "V020", 
+            title: "Classification vs Regression", 
+            videoUrl: "https://example.com/video/C004/W002/V020",
+            completed: 95 
+          },
+          { 
+            video_id: "V021", 
+            title: "Decision Trees", 
+            videoUrl: "https://example.com/video/C004/W002/V021",
+            completed: 92 
+          }
+        ]
+      },
+      {
+        week_id: "W003",
+        title: "Unsupervised Learning",
+        videos: [
+          { 
+            video_id: "V022", 
+            title: "Clustering Algorithms", 
+            videoUrl: "https://example.com/video/C004/W003/V022",
+            completed: 90 
+          },
+          { 
+            video_id: "V023", 
+            title: "Dimensionality Reduction", 
+            videoUrl: "https://example.com/video/C004/W003/V023",
+            completed: 88 
+          }
+        ]
+      }
     ],
-    discussions: [
-      { title: "Best ML libraries?", replies: 3 }
+    reviews: [
+      {
+        review_id: "R004",
+        user_id: "U001",
+        user_name: "Alice Nguyen",
+        content: "What libraries should I start with for ML in Python?",
+        star: 5
+      }
+    ],
+    students: [
+      { user_id: "U001", user_name: "Alice Nguyen", progress: 96 },
+      { user_id: "U005", user_name: "Ethan Do", progress: 93 }
     ]
   },
   {
@@ -77,12 +332,32 @@ const mockCourses = [
     instructor: "Tina Mai",
     category: "Cybersecurity",
     createdAt: "2024-02-20T11:20:00Z",
-    enrolled: 40,
     rating: 4.0,
-    lessons: [
-      { title: "Introduction to Forensics", completed: 60 }
+    enrolled: 50,
+    weeks: [
+      {
+        week_id: "W001",
+        title: "Introduction to Forensics",
+        videos: [
+          { 
+            video_id: "V024", 
+            title: "What is Digital Forensics?", 
+            videoUrl: "https://example.com/video/C005/W001/V024",
+            completed: 60 
+          },
+          { 
+            video_id: "V025", 
+            title: "Legal Aspects of Digital Forensics", 
+            videoUrl: "https://example.com/video/C005/W001/V025",
+            completed: 55 
+          }
+        ]
+      }
     ],
-    discussions: []
+    reviews: [],
+    students: [
+      { user_id: "U008", user_name: "Thu Hoang", progress: 60 }
+    ]
   }
 ];
 
@@ -112,23 +387,71 @@ const CourseManagement = () => {
 
   const handleExpand = (courseId) => {
     setExpanded(expanded === courseId ? null : courseId);
+    setExpandedWeek(null); // Reset expanded week when collapsing or expanding a course
   };
 
-  const handleDelete = (courseId) => {
-    setCourses(courses.filter((c) => c.course_id !== courseId));
+  const handleDelete = async (courseId) => {
+    try {
+      await axios.post("/api/delete-course", { courseId });
+      setCourses((prev) => prev.filter((c) => c.course_id !== courseId));
+    } catch (error) {
+      console.error("Failed to delete course:", error);
+    }
   };
-
-  const handleRemoveLesson = (courseId, lessonIdx) => {
-    setCourses((prev) =>
-      prev.map((c) =>
-        c.course_id === courseId ? { ...c, lessons: c.lessons.filter((_, i) => i !== lessonIdx) } : c
-      )
-    );
+  
+  // Remove video by courseId, weekId, and videoId
+  const handleRemoveVideo = async (courseId, weekId, videoId) => {
+    try {
+      await axios.post("/api/remove-video", { courseId, weekId, videoId });
+      setCourses((prev) =>
+        prev.map((c) =>
+          c.course_id === courseId
+            ? {
+                ...c,
+                weeks: c.weeks.map((w) =>
+                  w.week_id === weekId
+                    ? { ...w, videos: w.videos.filter((v) => v.video_id !== videoId) }
+                    : w
+                ),
+              }
+            : c
+        )
+      );
+    } catch (error) {
+      console.error("Failed to remove video:", error);
+    }
   };
-
-  const handleRemoveStudent = (courseId, studentIdx) => {
-    // Implementation for removing a student
-    console.log(`Removing student ${studentIdx} from course ${courseId}`);
+  
+  // Remove student by courseId + userId
+  const handleRemoveStudent = async (courseId, userId) => {
+    try {
+      await axios.post("/api/remove-student", { courseId, userId });
+      setCourses((prev) =>
+        prev.map((c) =>
+          c.course_id === courseId
+            ? { ...c, students: c.students.filter((s) => s.user_id !== userId) }
+            : c
+        )
+      );
+    } catch (error) {
+      console.error("Failed to remove student:", error);
+    }
+  };
+  
+  // Remove review by courseId + reviewId
+  const handleRemoveReview = async (courseId, reviewId) => {
+    try {
+      await axios.post("/api/remove-review", { courseId, reviewId });
+      setCourses((prev) =>
+        prev.map((c) =>
+          c.course_id === courseId
+            ? { ...c, reviews: c.reviews.filter((r) => r.review_id !== reviewId) }
+            : c
+        )
+      );
+    } catch (error) {
+      console.error("Failed to remove review:", error);
+    }
   };
 
   const handleFilterChange = (field, value) => {
@@ -173,6 +496,24 @@ const CourseManagement = () => {
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Function to render star rating
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span key={i} className={`text-lg ${i <= rating ? "text-yellow-500" : "text-gray-300"}`}>
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
+
+  // Calculate total videos for a course
+  const getTotalVideos = (course) => {
+    return course.weeks.reduce((total, week) => total + week.videos.length, 0);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -313,7 +654,7 @@ const CourseManagement = () => {
                         </tr>
                         {expanded === course.course_id && (
                           <tr>
-                            <td colSpan="7" className="bg-gray-50 px-12 py-6 border-b border-t border-gray-300 h-75">
+                            <td colSpan="7" className="bg-gray-50 px-12 py-6 border-b border-t border-gray-300">
                               <div className="grid grid-cols-1 md:grid-cols-5 gap-8 animate-fade-in-down">
                                 {/* Course Details */}
                                 <div className="md:col-span-1 flex flex-col justify-center">
@@ -324,16 +665,19 @@ const CourseManagement = () => {
                                     <span className="font-semibold">Rating:</span> {course.rating}/5.0
                                   </div>
                                   <div className="font-avant-medium text-lg text-gray-700 mb-1">
-                                    <span className="font-semibold">Enrolled:</span> {course.enrolled} students
+                                    <span className="font-semibold">Enrolled:</span> {course.students.length} students
                                   </div>
                                   <div className="font-avant-medium text-lg text-gray-700 mb-1">
-                                    <span className="font-semibold">Lessons:</span> {course.lessons.length}
+                                    <span className="font-semibold">Weeks:</span> {course.weeks.length}
+                                  </div>
+                                  <div className="font-avant-medium text-lg text-gray-700 mb-1">
+                                    <span className="font-semibold">Videos:</span> {getTotalVideos(course)}
                                   </div>
                                   <div className="font-avant-medium text-lg text-gray-700 mb-1">
                                     <span className="font-semibold">Created:</span> {new Date(course.createdAt).toLocaleDateString()}
                                   </div>
                                   <div className="font-avant-medium text-lg text-gray-700 mb-1">
-                                    <span className="font-semibold">Discussions:</span> {course.discussions.length}
+                                    <span className="font-semibold">Reviews:</span> {course.reviews.length}
                                   </div>
                                 </div>
                                 {/* Toggle + Content Container */}
@@ -349,29 +693,38 @@ const CourseManagement = () => {
                                       Curriculum
                                     </button>
                                     <button
-                                      className={`px-5 py-3 rounded-b-xl font-semibold border-3 w-36 cursor-pointer ${displayMode === "discussions"
+                                      className={`px-5 py-3 rounded-none font-semibold border-3 w-36 cursor-pointer mt-[-5px] ${displayMode === "students"
                                         ? "bg-blue-600 text-white border-blue-600"
                                         : "bg-white text-blue-600 border-blue-600"
                                         }`}
-                                      onClick={() => setDisplayMode("discussions")}
+                                      onClick={() => setDisplayMode("students")}
                                     >
-                                      Students Enrolled
+                                      Students
+                                    </button>
+                                    <button
+                                      className={`px-5 py-3 rounded-b-xl font-semibold border-3 w-36 cursor-pointer mt-[-5px] ${displayMode === "reviews"
+                                        ? "bg-blue-600 text-white border-blue-600"
+                                        : "bg-white text-blue-600 border-blue-600"
+                                        }`}
+                                      onClick={() => setDisplayMode("reviews")}
+                                    >
+                                      Reviews
                                     </button>
                                   </div>
                                   <div className="flex-1">
                                     {displayMode === "lessons" ? (
-                                      <div className="space-y-2">
-                                        {course.lessons.map((lesson, idx) => (
-                                          <div key={idx} className="border border-gray-300 rounded-xl overflow-hidden">
+                                      <div className="space-y-2 h-[240px] overflow-y-auto">
+                                        {course.weeks.map((week, weekIdx) => (
+                                          <div key={weekIdx} className="border border-gray-300 rounded-xl overflow-hidden">
                                             <div
                                               className="bg-gray-100 px-4 py-3 flex justify-between items-center cursor-pointer"
-                                              onClick={() => setExpandedWeek(expandedWeek === idx ? null : idx)}
+                                              onClick={() => setExpandedWeek(expandedWeek === weekIdx ? null : weekIdx)}
                                             >
                                               <h3 className="font-medium text-lg text-gray-900">
-                                                Week {idx + 1}: {lesson.title}
+                                                Week {weekIdx + 1}: {week.title}
                                               </h3>
                                               <svg
-                                                className={`h-5 w-5 text-gray-500 transform ${expandedWeek === idx ? 'rotate-180' : ''}`}
+                                                className={`h-5 w-5 text-gray-500 transform ${expandedWeek === weekIdx ? 'rotate-180' : ''}`}
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
@@ -380,33 +733,33 @@ const CourseManagement = () => {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                               </svg>
                                             </div>
-                                            {expandedWeek === idx && (
-                                              <div className="p-4">
+                                            {expandedWeek === weekIdx && (
+                                              <div className="px-4 py-1">
                                                 <table className="min-w-full divide-y divide-gray-200">
-                                                  <thead className="bg-gray-50">
+                                                  <thead>
                                                     <tr>
-                                                      <th scope="col" className="px-4 py-3 text-left text-[16px] font-medium text-gray-500 uppercase">Video Title</th>
-                                                      <th scope="col" className="px-4 py-3 text-left text-[16px] font-medium text-gray-500 uppercase">Video URL</th>
-                                                      <th scope="col" className="px-4 py-3 text-center text-[16px] font-medium text-gray-500 uppercase">Students Watched</th>
-                                                      <th scope="col" className="px-4 py-3 text-right text-[16px] font-medium text-gray-500 uppercase">Actions</th>
+                                                      <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "40%" }}>Title</th>
+                                                      <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "40%" }}>Url</th>
+                                                      <th className="px-3 py-2 text-center text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "10%" }}>Completion</th>
+                                                      <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "10%" }}>Actions</th>
                                                     </tr>
                                                   </thead>
                                                   <tbody className="bg-white divide-y divide-gray-200">
-                                                    <tr>
-                                                      <td className="px-4 py-3 text-[16px] text-gray-900">{lesson.title}</td>
-                                                      <td className="px-4 py-3 text-[16px] text-blue-600">https://example.com/video{idx + 1}</td>
-                                                      <td className="px-4 py-3 text-[16px] text-gray-900 text-center">
-                                                        {lesson.completed}% ({Math.floor(course.enrolled * lesson.completed / 100)}/{course.enrolled})
-                                                      </td>
-                                                      <td className="px-4 py-3 text-right">
-                                                        <button
-                                                          className="text-red-600 hover:text-red-900"
-                                                          onClick={() => handleRemoveLesson(course.course_id, idx)}
-                                                        >
-                                                          Remove
-                                                        </button>
-                                                      </td>
-                                                    </tr>
+                                                    {week.videos.map((video) => (
+                                                      <tr key={video.video_id}>
+                                                        <td className="px-3 py-2 whitespace-nowrap text-gray-600" style={{ width: "40%" }}>{video.title}</td>
+                                                        <td className="px-3 py-2 whitespace-nowrap text-gray-600" style={{ width: "40%" }}>{video.videoUrl}</td>
+                                                        <td className="px-3 py-2 whitespace-nowrap text-center text-gray-600" style={{ width: "10%" }}>{video.completed}%</td>
+                                                        <td className="px-3 py-2 whitespace-nowrap text-gray-600" style={{ width: "10%" }}>
+                                                          <button
+                                                            onClick={() => handleRemoveVideo(course.course_id, week.week_id, video.video_id)}
+                                                            className="text-red-600 hover:text-red-900"
+                                                          >
+                                                            Remove
+                                                          </button>
+                                                        </td>
+                                                      </tr>
+                                                    ))}
                                                   </tbody>
                                                 </table>
                                               </div>
@@ -414,29 +767,69 @@ const CourseManagement = () => {
                                           </div>
                                         ))}
                                       </div>
-                                    ) : (
-                                      <div className="overflow-x-auto max-h-60">
-                                        <table className="min-w-full divide-y divide-gray-200 rounded-xl overflow-hidden">
-                                          <thead className="bg-gray-200">
+                                    ) : displayMode === "students" ? (
+                                      <div className="space-y-2 h-[240px] overflow-y-auto">
+                                        <table className="min-w-full divide-y divide-gray-200">
+                                          <thead className="bg-gray-50">
                                             <tr>
-                                              <th scope="col" className="px-4 py-3 text-left text-lg font-medium text-gray-500">Student Name</th>
-                                              <th scope="col" className="px-4 py-3 text-center text-lg font-medium text-gray-500">Progress</th>
-                                              <th scope="col" className="px-4 py-3 text-center text-lg font-medium text-gray-500">Enrolled Date</th>
-                                              <th scope="col" className="px-4 py-3 text-right text-lg font-medium text-gray-500">Actions</th>
+                                              <th className="px-6 py-3 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "10%" }}>ID</th>
+                                              <th className="px-6 py-3 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "50%" }}>Name</th>
+                                              <th className="px-6 py-3 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "30%" }}>Progress</th>
+                                              <th className="px-6 py-3 text-center text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "10%" }}>Actions</th>
                                             </tr>
                                           </thead>
                                           <tbody className="bg-white divide-y divide-gray-200">
-                                            {Array.from({ length: Math.min(5, course.enrolled) }).map((_, idx) => (
-                                              <tr key={idx}>
-                                                <td className="px-4 py-3 text-[16px] text-gray-900">Student {idx + 1}</td>
-                                                <td className="px-4 py-3 text-[16px] text-gray-900 text-center">{Math.floor(Math.random() * 100)}%</td>
-                                                <td className="px-4 py-3 text-[16px] text-gray-500 text-center">
-                                                  {new Date(new Date(course.createdAt).getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                                            {course.students.map((student) => (
+                                              <tr key={student.user_id}>
+                                                <td className="px-6 py-4 text-gray-600 whitespace-nowrap" style={{ width: "10%" }}>{student.user_id}</td>
+                                                <td className="px-6 py-4 text-gray-600 whitespace-nowrap" style={{ width: "50%" }}>{student.user_name}</td>
+                                                <td className="px-6 py-4 text-gray-600 whitespace-nowrap" style={{ width: "30%" }}>
+                                                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                                    <div
+                                                      className="bg-blue-600 h-2.5 rounded-full"
+                                                      style={{ width: `${student.progress}%` }}
+                                                    ></div>
+                                                  </div>
+                                                  <span className="text-sm text-gray-500">{student.progress}%</span>
                                                 </td>
-                                                <td className="px-4 py-3 text-right">
+                                                <td className="px-6 py-4 whitespace-nowrap" style={{ width: "10%" }}>
                                                   <button
+                                                    onClick={() => handleRemoveStudent(course.course_id, student.user_id)}
                                                     className="text-red-600 hover:text-red-900"
-                                                    onClick={() => handleRemoveStudent(course.course_id, idx)}
+                                                  >
+                                                    Remove
+                                                  </button>
+                                                </td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    ) : (
+                                      <div className="space-y-2 h-[240px] overflow-y-auto">
+                                        <table className="min-w-full divide-y divide-gray-200">
+                                          <thead className="bg-gray-50">
+                                            <tr>
+                                              <th className="px-6 py-3 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "30%" }}>User</th>
+                                              <th className="px-6 py-3 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "10%" }}>Rating</th>
+                                              <th className="px-6 py-3 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "50%" }}>Content</th>
+                                              <th className="px-6 py-3 text-left text-[16px] font-semibold text-gray-800 uppercase tracking-wider" style={{ width: "10%" }}>Actions</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody className="bg-white divide-y divide-gray-200">
+                                            {course.reviews.map((review) => (
+                                              <tr key={review.review_id}>
+                                                <td className="px-6 py-4 text-gray-600 whitespace-nowrap" style={{ width: "30%" }}>{review.user_name}</td>
+                                                <td className="px-6 py-4 text-gray-600 whitespace-nowrap" style={{ width: "10%" }}>
+                                                  <div className="flex">{renderStars(review.star)}</div>
+                                                </td>
+                                                <td className="px-6 py-4 text-gray-600 whitespace-nowrap" style={{ width: "50%" }}>
+                                                  <div className="max-w-[470px] truncate">{review.content}</div>
+                                                </td>
+                                                <td className="px-6 py-4 text-gray-600 whitespace-nowrap">
+                                                  <button
+                                                    onClick={() => handleRemoveReview(course.course_id, review.review_id)}
+                                                    className="text-red-600 hover:text-red-900"
                                                   >
                                                     Remove
                                                   </button>
@@ -457,83 +850,58 @@ const CourseManagement = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="7" className="px-6 py-4 text-center text-lg text-gray-500 font-avant-medium">
-                        No courses found matching your search criteria
+                      <td colSpan="7" className="px-6 py-4 text-center text-gray-500">
+                        No courses found matching your filters.
                       </td>
                     </tr>
                   )}
                 </tbody>
               </table>
             </div>
-
-            {/* Pagination */}
-            <div className="px-8 py-4 bg-gray-50 font-avant-medium border-t border-gray-200 flex items-center justify-between">
-              <div className="text-gray-600">
-                Showing {filteredCourses.length === 0 ? 0 : indexOfFirstCourse + 1}
-                -
-                {Math.min(indexOfLastCourse, filteredCourses.length)} of {filteredCourses.length} courses
-              </div>
-              <div className="flex gap-2 items-center">
-                <button
-                  onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
-                  disabled={currentPage === 1}
-                  className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === 1
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-800"
-                    }`}
-                >
-                  Previous
-                </button>
-                {(() => {
-                  const pages = [];
-                  for (let i = 1; i <= totalPages; i++) {
-                    if (
-                      i === 1 ||
-                      i === totalPages ||
-                      (i >= currentPage - 1 && i <= currentPage + 1)
-                    ) {
-                      pages.push(
-                        <button
-                          key={i}
-                          onClick={() => paginate(i)}
-                          className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === i
-                            ? "bg-blue-100 text-blue-700 border border-blue-600"
-                            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
-                            }`}
-                          style={{ minWidth: 44 }}
-                        >
-                          {i}
-                        </button>
-                      );
-                    } else if (
-                      (i === currentPage - 2 && currentPage > 3) ||
-                      (i === currentPage + 2 && currentPage < totalPages - 2)
-                    ) {
-                      pages.push(
-                        <span
-                          key={i}
-                          className="px-3 py-2 text-gray-400 font-semibold"
-                        >
-                          ...
-                        </span>
-                      );
-                    }
-                  }
-                  return pages;
-                })()}
-                <button
-                  onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}
-                  disabled={currentPage === totalPages || totalPages === 0}
-                  className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === totalPages || totalPages === 0
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-800"
-                    }`}
-                >
-                  Next
-                </button>
-              </div>
-            </div>
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-8">
+              <nav className="inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button
+                  onClick={() => paginate(Math.max(1, currentPage - 1))}
+                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
+                    currentPage === 1 ? "cursor-not-allowed" : ""
+                  }`}
+                  disabled={currentPage === 1}
+                >
+                  <span className="sr-only">Previous</span>
+                  &laquo; Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                  <button
+                    key={number}
+                    onClick={() => paginate(number)}
+                    className={`relative inline-flex items-center px-4 py-2 border ${
+                      currentPage === number
+                        ? "bg-blue-50 border-blue-500 text-blue-600"
+                        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                    } text-sm font-medium`}
+                  >
+                    {number}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
+                    currentPage === totalPages ? "cursor-not-allowed" : ""
+                  }`}
+                  disabled={currentPage === totalPages}
+                >
+                  <span className="sr-only">Next</span>
+                  Next &raquo;
+                </button>
+              </nav>
+            </div>
+          )}
         </div>
       </div>
       <Footer />

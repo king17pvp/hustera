@@ -10,14 +10,6 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.checkSession = async (req, res) => {
-    if (req.session.user) {
-        res.status(200).json({ success: true, user: req.session.user });
-    } else {
-        res.status(401).json({ success: false, message: 'User not logged in' });
-    }
-}
-
 exports.logout = async (req, res) => {
     req.session.destroy((err) => {
         if (err) {

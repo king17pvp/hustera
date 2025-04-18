@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
 import ReactMarkdown from "react-markdown";
+import axios from "axios";
 import React from "react";
 
 // Mock data for threads and answers - added content to threads
@@ -168,19 +169,29 @@ const ForumManagement = () => {
     setExpanded(expanded === id ? null : id);
   };
 
-  const handleDeleteThread = (id) => {
-    setThreads(threads.filter((t) => t.id !== id));
-    if (expanded === id) setExpanded(null);
+  const handleDeleteThread = async (id) => {
+    try {
+      await axios.delete("/api/forum/delete-thread", { data: { thread_id: id } });
+      setThreads((prev) => prev.filter((t) => t.id !== id));
+      if (expanded === id) setExpanded(null);
+    } catch (err) {
+      console.error("Failed to delete thread", err);
+    }
   };
-
-  const handleDeleteAnswer = (threadId, answerId) => {
-    setThreads((prev) =>
-      prev.map((t) =>
-        t.id === threadId
-          ? { ...t, answers: t.answers.filter((a) => a.id !== answerId) }
-          : t
-      )
-    );
+  
+  const handleDeleteAnswer = async (threadId, answerId) => {
+    try {
+      await axios.delete("/api/forum/delete-answer", { data: { thread_id: threadId, answer_id: answerId } });
+      setThreads((prev) =>
+        prev.map((t) =>
+          t.id === threadId
+            ? { ...t, answers: t.answers.filter((a) => a.id !== answerId) }
+            : t
+        )
+      );
+    } catch (err) {
+      console.error("Failed to delete answer", err);
+    }
   };
 
   const handleFilterChange = (field, value) => {
@@ -391,7 +402,7 @@ const ForumManagement = () => {
                         {expanded === thread.id && (
                           <tr>
                             <td colSpan="7" className="bg-gray-50 px-12 py-6 border-b border-t border-gray-300">
-                              <div className="animate-fade-in-down">
+                              <div className="max-h-[500px] overflow-y-auto animate-fade-in-down">
                                 <div className="mb-4">
                                   <div className="text-[22px] font-semibold text-gray-800 mb-2">{thread.title}</div>
                                   <div className="text-gray-600 mb-1">
