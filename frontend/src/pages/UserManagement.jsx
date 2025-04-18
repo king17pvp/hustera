@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
+import axios from "axios";
 
-// Mock data updated for demo
+// Mock data updated for demo with added content and reviews
 const mockUsers = [
   {
     user_id: "U001",
@@ -14,14 +15,40 @@ const mockUsers = [
     gender: "Female",
     createdAt: "2023-09-01T10:15:00Z",
     enrolledCourses: [
-      { name: "React Basics", progress: "5/10" },
-      { name: "Data Science 101", progress: "7/12" },
-      { name: "Python Intro", progress: "2/8" },
+      { course_id: "C001", name: "React Basics", progress: "5/10", review: 4.5, reviewText: "Great introduction to React concepts!" },
+      { course_id: "C002", name: "Data Science 101", progress: "7/12", review: null, reviewText: null },
+      { course_id: "C003", name: "Python Intro", progress: "2/8", review: 3.0, reviewText: "Good but could use more examples" },
     ],
     threads: [
-      { title: "How to use hooks?", upvotes: 12, downvotes: 1, answers: 3 },
-      { title: "Best resources for JS?", upvotes: 7, downvotes: 0, answers: 2 },
-      { title: "React state tips?", upvotes: 5, downvotes: 2, answers: 1 },
+      {
+        thread_id: "T001",
+        title: "How to use hooks?",
+        upvotes: 12,
+        downvotes: 1,
+        answers: 3,
+        replies: [
+          { reply_id: "R001", content: "Hooks are used for state management in functional components", upvotes: 5, downvotes: 1 },
+          { reply_id: "R002", content: "Check the React docs for useEffect examples", upvotes: 2, downvotes: 0 }
+        ]
+      },
+      {
+        thread_id: "T002",
+        title: "Best resources for JS?",
+        upvotes: 7,
+        downvotes: 0,
+        answers: 2,
+        replies: [
+          { reply_id: "R003", content: "MDN is great for JavaScript reference", upvotes: 3, downvotes: 2 }
+        ]
+      },
+      {
+        thread_id: "T003",
+        title: "React state tips?",
+        upvotes: 5,
+        downvotes: 2,
+        answers: 1,
+        replies: []
+      },
     ],
   },
   {
@@ -33,12 +60,28 @@ const mockUsers = [
     gender: "Male",
     createdAt: "2022-12-15T08:30:00Z",
     enrolledCourses: [
-      { name: "Advanced CSS", progress: "10/10" },
-      { name: "Node.js Fundamentals", progress: "8/10" },
+      { course_id: "C004", name: "Advanced CSS", progress: "10/10", review: 5.0, reviewText: "Excellent course, loved the practical examples!" },
+      { course_id: "C005", name: "Node.js Fundamentals", progress: "8/10", review: 4.0, reviewText: "Very informative, good pace" },
     ],
     threads: [
-      { title: "Deploying Node apps", upvotes: 3, downvotes: 0, answers: 1 },
-      { title: "CSS Grid vs Flexbox", upvotes: 2, downvotes: 1, answers: 0 },
+      {
+        thread_id: "T004",
+        title: "Deploying Node apps",
+        upvotes: 3,
+        downvotes: 0,
+        answers: 1,
+        replies: [
+          { reply_id: "R004", content: "Heroku is a good platform for beginners", upvotes: 2, downvotes: 1 }
+        ]
+      },
+      {
+        thread_id: "T005",
+        title: "CSS Grid vs Flexbox",
+        upvotes: 2,
+        downvotes: 1,
+        answers: 0,
+        replies: []
+      },
     ],
   },
   {
@@ -50,11 +93,21 @@ const mockUsers = [
     gender: "Male",
     createdAt: "2023-06-20T12:00:00Z",
     enrolledCourses: [
-      { name: "Java Basics", progress: "4/10" },
-      { name: "Spring Boot Essentials", progress: "1/5" },
+      { course_id: "C006", name: "Java Basics", progress: "4/10", review: 3.5, reviewText: "Solid introduction to Java" },
+      { course_id: "C007", name: "Spring Boot Essentials", progress: "1/5", review: null, reviewText: null },
     ],
     threads: [
-      { title: "How to debug Java?", upvotes: 4, downvotes: 1, answers: 2 },
+      {
+        thread_id: "T006",
+        title: "How to debug Java?",
+        upvotes: 4,
+        downvotes: 1,
+        answers: 2,
+        replies: [
+          { reply_id: "R005", content: "Use IntelliJ's debugger for step-by-step execution", upvotes: 3, downvotes: 0 },
+          { reply_id: "R006", content: "Try logging with log4j", upvotes: 1, downvotes: 1 }
+        ]
+      },
     ],
   },
   {
@@ -67,7 +120,18 @@ const mockUsers = [
     createdAt: "2021-09-10T14:45:00Z",
     enrolledCourses: [],
     threads: [
-      { title: "Best practices for teaching online", upvotes: 10, downvotes: 0, answers: 5 },
+      {
+        thread_id: "T007",
+        title: "Best practices for teaching online",
+        upvotes: 10,
+        downvotes: 0,
+        answers: 5,
+        replies: [
+          { reply_id: "R007", content: "Use interactive quizzes to keep students engaged", upvotes: 8, downvotes: 1 },
+          { reply_id: "R008", content: "Create short video segments rather than long lectures", upvotes: 7, downvotes: 0 },
+          { reply_id: "R009", content: "Incorporate group activities for better collaboration", upvotes: 5, downvotes: 2 }
+        ]
+      },
     ],
   },
   {
@@ -79,225 +143,18 @@ const mockUsers = [
     gender: "Male",
     createdAt: "2024-01-05T09:25:00Z",
     enrolledCourses: [
-      { name: "Machine Learning", progress: "3/10" },
-      { name: "Deep Learning with PyTorch", progress: "0/8" },
+      { course_id: "C008", name: "Machine Learning", progress: "3/10", review: 4.0, reviewText: "Complex but well-explained" },
+      { course_id: "C009", name: "Deep Learning with PyTorch", progress: "0/8", review: null, reviewText: null },
     ],
     threads: [],
-  },
-  {
-    user_id: "U006",
-    name: "Fiona Tran",
-    email: "fiona@example.com",
-    role: "student",
-    dob: "2000-08-12",
-    gender: "Female",
-    createdAt: "2023-03-18T17:00:00Z",
-    enrolledCourses: [
-      { name: "HTML & CSS", progress: "10/10" },
-      { name: "Responsive Design", progress: "9/10" },
-      { name: "UI/UX Fundamentals", progress: "6/10" },
-    ],
-    threads: [
-      { title: "How to improve UI design?", upvotes: 9, downvotes: 0, answers: 2 },
-    ],
-  },
-  {
-    user_id: "U007",
-    name: "George Vu",
-    email: "george@example.com",
-    role: "admin",
-    dob: "1998-05-17",
-    gender: "Male",
-    createdAt: "2022-05-25T11:20:00Z",
-    enrolledCourses: [],
-    threads: [],
-  },
-  {
-    user_id: "U008",
-    name: "Hannah Ly",
-    email: "hannah@example.com",
-    role: "instructor",
-    dob: "1996-03-09",
-    gender: "Female",
-    createdAt: "2021-11-01T16:30:00Z",
-    enrolledCourses: [],
-    threads: [
-      { title: "How to structure advanced Python courses?", upvotes: 6, downvotes: 1, answers: 4 },
-    ],
-  },
-  {
-    user_id: "U009",
-    name: "Isaac Ho",
-    email: "isaac@example.com",
-    role: "student",
-    dob: "2004-06-22",
-    gender: "Male",
-    createdAt: "2024-02-10T10:00:00Z",
-    enrolledCourses: [
-      { name: "JavaScript Basics", progress: "1/10" },
-      { name: "Game Development with Phaser", progress: "3/12" },
-    ],
-    threads: [],
-  },
-  {
-    user_id: "U010",
-    name: "Jasmine Vo",
-    email: "jasmine@example.com",
-    role: "student",
-    dob: "2001-09-14",
-    gender: "Female",
-    createdAt: "2023-07-28T07:45:00Z",
-    enrolledCourses: [
-      { name: "Intro to AI", progress: "8/10" },
-      { name: "Natural Language Processing", progress: "2/6" },
-    ],
-    threads: [
-      { title: "Resources for learning AI?", upvotes: 11, downvotes: 0, answers: 3 },
-    ],
-  },
-  {
-    user_id: "U011",
-    name: "Kevin Bui",
-    email: "kevin@example.com",
-    role: "student",
-    dob: "2002-10-01",
-    gender: "Male",
-    createdAt: "2023-11-20T09:00:00Z",
-    enrolledCourses: [
-      { name: "Web Security", progress: "5/10" },
-    ],
-    threads: [],
-  },
-  {
-    user_id: "U012",
-    name: "Linda Phan",
-    email: "linda@example.com",
-    role: "instructor",
-    dob: "1989-06-06",
-    gender: "Female",
-    createdAt: "2020-02-10T10:30:00Z",
-    enrolledCourses: [],
-    threads: [
-      { title: "Teaching strategies for Gen Z", upvotes: 13, downvotes: 2, answers: 6 },
-    ],
-  },
-  {
-    user_id: "U013",
-    name: "Mike Dang",
-    email: "mike@example.com",
-    role: "student",
-    dob: "2001-04-12",
-    gender: "Male",
-    createdAt: "2024-03-01T12:10:00Z",
-    enrolledCourses: [
-      { name: "Algorithms", progress: "6/10" },
-    ],
-    threads: [],
-  },
-  {
-    user_id: "U014",
-    name: "Nina Le",
-    email: "nina@example.com",
-    role: "student",
-    dob: "2003-09-22",
-    gender: "Female",
-    createdAt: "2023-08-15T08:50:00Z",
-    enrolledCourses: [
-      { name: "UI Animation", progress: "3/6" },
-    ],
-    threads: [
-      { title: "Best tools for animation?", upvotes: 4, downvotes: 1, answers: 2 },
-    ],
-  },
-  {
-    user_id: "U015",
-    name: "Oscar Tran",
-    email: "oscar@example.com",
-    role: "admin",
-    dob: "1990-12-25",
-    gender: "Male",
-    createdAt: "2021-01-05T10:10:00Z",
-    enrolledCourses: [],
-    threads: [],
-  },
-  {
-    user_id: "U016",
-    name: "Phuong Hoang",
-    email: "phuong@example.com",
-    role: "student",
-    dob: "2000-11-17",
-    gender: "Female",
-    createdAt: "2024-01-10T14:30:00Z",
-    enrolledCourses: [
-      { name: "Statistics", progress: "7/9" },
-      { name: "Linear Algebra", progress: "4/6" },
-    ],
-    threads: [],
-  },
-  {
-    user_id: "U017",
-    name: "Quang Dinh",
-    email: "quang@example.com",
-    role: "student",
-    dob: "2002-02-14",
-    gender: "Male",
-    createdAt: "2023-12-01T15:00:00Z",
-    enrolledCourses: [
-      { name: "Docker Basics", progress: "5/7" },
-    ],
-    threads: [
-      { title: "Why use Docker for ML?", upvotes: 6, downvotes: 0, answers: 2 },
-    ],
-  },
-  {
-    user_id: "U018",
-    name: "Rachel Ngo",
-    email: "rachel@example.com",
-    role: "instructor",
-    dob: "1993-07-19",
-    gender: "Female",
-    createdAt: "2022-04-11T09:00:00Z",
-    enrolledCourses: [],
-    threads: [
-      { title: "Creating inclusive content", upvotes: 8, downvotes: 0, answers: 3 },
-    ],
-  },
-  {
-    user_id: "U019",
-    name: "Steven Lam",
-    email: "steven@example.com",
-    role: "student",
-    dob: "2005-05-05",
-    gender: "Male",
-    createdAt: "2024-02-20T11:20:00Z",
-    enrolledCourses: [
-      { name: "Game Design", progress: "2/8" },
-    ],
-    threads: [],
-  },
-  {
-    user_id: "U020",
-    name: "Tina Mai",
-    email: "tina@example.com",
-    role: "student",
-    dob: "2001-03-08",
-    gender: "Female",
-    createdAt: "2023-05-29T07:45:00Z",
-    enrolledCourses: [
-      { name: "Intro to Cybersecurity", progress: "6/10" },
-      { name: "Digital Forensics", progress: "3/7" },
-    ],
-    threads: [
-      { title: "What tools for beginners?", upvotes: 9, downvotes: 1, answers: 4 },
-    ],
   },
 ];
-
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [displayMode, setDisplayMode] = useState("courses");
+  const [threadDisplayMode, setThreadDisplayMode] = useState("threads");
 
   // New state for filtering and pagination
   const [searchTerm, setSearchTerm] = useState("");
@@ -320,27 +177,98 @@ const UserManagement = () => {
     setExpanded(expanded === userId ? null : userId);
   };
 
-  const handleDelete = (userId) => {
-    setUsers(users.filter((u) => u.user_id !== userId));
+  const handleDelete = async (userId) => {
+    try {
+      await axios.delete("/api/users/delete", { data: { user_id: userId } });
+      setUsers((prev) => prev.filter((u) => u.user_id !== userId));
+    } catch (err) {
+      console.error("Failed to delete user", err);
+    }
   };
 
-  const handleRemoveCourse = (userId, courseIdx) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.user_id === userId
-          ? { ...u, enrolledCourses: u.enrolledCourses.filter((_, i) => i !== courseIdx) }
-          : u
-      )
-    );
+  const handleRemoveCourse = async (userId, courseId) => {
+    try {
+      await axios.delete("/api/users/remove-course", { data: { user_id: userId, course_id: courseId } });
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.user_id === userId
+            ? { ...u, enrolledCourses: u.enrolledCourses.filter((c) => c.course_id !== courseId) }
+            : u
+        )
+      );
+    } catch (err) {
+      console.error("Failed to remove course", err);
+    }
   };
 
-  const handleRemoveThread = (userId, threadIdx) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.user_id === userId
-          ? { ...u, threads: u.threads.filter((_, i) => i !== threadIdx) }
-          : u
-      )
+  const handleRemoveThread = async (userId, threadId) => {
+    try {
+      await axios.delete("/api/users/remove-thread", { data: { user_id: userId, thread_id: threadId } });
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.user_id === userId
+            ? { ...u, threads: u.threads.filter((t) => t.thread_id !== threadId) }
+            : u
+        )
+      );
+    } catch (err) {
+      console.error("Failed to remove thread", err);
+    }
+  };
+
+  const handleRemoveReply = async (userId, threadId, replyId) => {
+    try {
+      await axios.delete("/api/users/remove-reply", { data: { user_id: userId, thread_id: threadId, reply_id: replyId } });
+      setUsers((prev) =>
+        prev.map((u) => {
+          if (u.user_id === userId) {
+            const updatedThreads = u.threads.map((t) => {
+              if (t.thread_id === threadId) {
+                return {
+                  ...t,
+                  replies: t.replies.filter((r) => r.reply_id !== replyId)
+                };
+              }
+              return t;
+            });
+            return { ...u, threads: updatedThreads };
+          }
+          return u;
+        })
+      );
+    } catch (err) {
+      console.error("Failed to remove reply", err);
+    }
+  };
+
+  // Render star rating
+  const renderStars = (rating) => {
+    if (rating === null) return "Not rated";
+
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5;
+    const stars = [];
+
+    // Full stars
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<span key={`full-${i}`} className="text-yellow-500">★</span>);
+    }
+
+    // Half star
+    if (halfStar) {
+      stars.push(<span key="half" className="text-yellow-500">★</span>);
+    }
+
+    // Empty stars
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<span key={`empty-${i}`} className="text-gray-300">★</span>);
+    }
+
+    return (
+      <div className="flex items-center">
+        {stars} <span className="ml-1 text-gray-600">({rating.toFixed(1)})</span>
+      </div>
     );
   };
 
@@ -536,7 +464,7 @@ const UserManagement = () => {
                       </div>
                     </div>
                     {expanded === user.user_id && (
-                      <div className="bg-gray-50 px-12 py-6 grid grid-cols-1 md:grid-cols-5 gap-8 animate-fade-in-down">
+                      <div className="bg-gray-50 px-12 py-6 grid grid-cols-1 md:grid-cols-5 gap-8 animate-fade-in-down h-90">
                         {/* User Details */}
                         <div className="md:col-span-1 flex flex-col justify-center">
                           <div className="mb-2 text-[21px] font-avant-medium font-semibold text-gray-800">
@@ -557,6 +485,9 @@ const UserManagement = () => {
                           <div className="font-avant-medium text-lg text-gray-700 mb-1">
                             <span className="font-semibold">Threads Started:</span> {user.threads.length}
                           </div>
+                          <div className="font-avant-medium text-lg text-gray-700 mb-1">
+                            <span className="font-semibold">Replies:</span> {user.threads.reduce((count, thread) => count + (thread.replies ? thread.replies.length : 0), 0)}
+                          </div>
                         </div>
                         {/* Toggle (vertical) + Table Container */}
                         <div className="md:col-span-4 flex flex-col md:flex-row font-avant-medium">
@@ -564,8 +495,8 @@ const UserManagement = () => {
                           <div className="flex flex-col items-start justify-center pr-8 mb-4 md:mb-0">
                             <button
                               className={`px-5 py-3 rounded-t-xl font-semibold border-3 w-36 cursor-pointer ${displayMode === "courses"
-                                  ? "bg-blue-600 text-white border-blue-600"
-                                  : "bg-white text-blue-600 border-blue-600"
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : "bg-white text-blue-600 border-blue-600"
                                 }`}
                               onClick={() => setDisplayMode("courses")}
                             >
@@ -573,8 +504,8 @@ const UserManagement = () => {
                             </button>
                             <button
                               className={`px-5 py-3 rounded-b-xl font-semibold border-3 w-36 cursor-pointer ${displayMode === "threads"
-                                  ? "bg-blue-600 text-white border-blue-600"
-                                  : "bg-white text-blue-600 border-blue-600"
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : "bg-white text-blue-600 border-blue-600"
                                 }`}
                               onClick={() => setDisplayMode("threads")}
                             >
@@ -584,25 +515,36 @@ const UserManagement = () => {
                           {/* Table area */}
                           <div className="flex-1">
                             {displayMode === "courses" ? (
-                              <div className="overflow-x-auto max-h-60">
+                              <div className="overflow-x-auto h-78">
                                 <table className="min-w-[400px] w-full text-left font-avant-medium border border-gray-300 rounded-xl overflow-hidden">
                                   <thead>
                                     <tr className="bg-gray-200 text-lg text-gray-700">
-                                      <th className="py-2 px-4 w-[85%]">Course Name</th>
-                                      <th className="py-2 px-4 w-[15%] text-center">Progress</th>
-                                      <th className="py-2 px-4 w-0"></th>
+                                      <th className="py-2 px-4 w-[40%]">Course Name</th>
+                                      <th className="py-2 px-4 w-[10%] text-center">Progress</th>
+                                      <th className="py-2 px-4 w-[40%]">Review</th>
+                                      <th className="py-2 px-4 w-[10%]"></th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     {user.enrolledCourses.length > 0 ? (
-                                      user.enrolledCourses.map((course, idx) => (
-                                        <tr key={idx} className="border-b bg-gray-100 text-lg text-gray-700 border-gray-300">
-                                          <td className="py-2 px-4 w-[85%]">{course.name}</td>
-                                          <td className="py-2 px-4 w-[15%] text-center">{course.progress}</td>
-                                          <td className="py-2 px-4 text-right w-0">
+                                      user.enrolledCourses.map((course) => (
+                                        <tr key={course.course_id} className="border-b bg-gray-100 text-lg text-gray-700 border-gray-300">
+                                          <td className="py-2 px-4 w-[40%]">{course.name}</td>
+                                          <td className="py-2 px-4 w-[10%] text-center">{course.progress}</td>
+                                          <td className="py-2 px-4 w-[40%]">
+                                            <div>
+                                              {renderStars(course.review)}
+                                              {course.reviewText && (
+                                                <div className="text-sm text-gray-600 mt-1 italic">
+                                                  "{course.reviewText}"
+                                                </div>
+                                              )}
+                                            </div>
+                                          </td>
+                                          <td className="py-2 px-4 text-right w-[10%]">
                                             <button
                                               className="px-4 py-1 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-700"
-                                              onClick={() => handleRemoveCourse(user.user_id, idx)}
+                                              onClick={() => handleRemoveCourse(user.user_id, course.course_id)}
                                             >
                                               Remove
                                             </button>
@@ -611,7 +553,7 @@ const UserManagement = () => {
                                       ))
                                     ) : (
                                       <tr>
-                                        <td colSpan={3} className="py-2 px-4 text-gray-400">
+                                        <td colSpan={4} className="py-2 px-4 text-gray-400">
                                           No courses
                                         </td>
                                       </tr>
@@ -620,47 +562,116 @@ const UserManagement = () => {
                                 </table>
                               </div>
                             ) : (
-                              <div className="overflow-x-auto max-h-60">
-                                <table className="min-w-[400px] w-full text-left font-avant-medium border border-gray-300 rounded-xl overflow-hidden">
-                                  <thead>
-                                    <tr className="bg-gray-200 text-lg text-gray-700">
-                                      <th className="py-2 px-4 w-[70%]">Title</th>
-                                      <th className="py-2 px-4 w-[10%] text-center">Upvotes</th>
-                                      <th className="py-2 px-4 w-[10%] text-center">Downvotes</th>
-                                      <th className="py-2 px-4 w-[10%] text-center">Answers</th>
-                                      <th className="py-2 px-4 w-0"></th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {user.threads.length > 0 ? (
-                                      user.threads.map((thread, idx) => (
-                                        <tr key={idx} className="border-b bg-gray-100 text-lg text-gray-700 border-gray-300">
-                                          <td className="py-2 px-4 w-[70%]">{thread.title}</td>
-                                          <td className="py-2 px-4 w-[10%] text-center">{thread.upvotes}</td>
-                                          <td className="py-2 px-4 w-[10%] text-center">{thread.downvotes}</td>
-                                          <td className="py-2 px-4 w-[10%] text-center">{thread.answers}</td>
-                                          <td className="py-2 px-4 text-right w-0">
-                                            <button
-                                              className="px-4 py-1 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-700"
-                                              onClick={() => handleRemoveThread(user.user_id, idx)}
-                                            >
-                                              Remove
-                                            </button>
-                                          </td>
+                              <div className="flex flex-col w-full">
+                                {/* Thread type toggle */}
+                                <div className="flex mb-4 text-lg border-b border-gray-300">
+                                  <button
+                                    className={`px-4 py-2 font-semibold ${threadDisplayMode === "threads"
+                                      ? "border-b-2 border-blue-600 text-blue-600"
+                                      : "text-gray-500"
+                                      }`}
+                                    onClick={() => setThreadDisplayMode("threads")}
+                                  >
+                                    Threads
+                                  </button>
+                                  <button
+                                    className={`px-4 py-2 font-semibold ${threadDisplayMode === "replies"
+                                      ? "border-b-2 border-blue-600 text-blue-600"
+                                      : "text-gray-500"
+                                      }`}
+                                    onClick={() => setThreadDisplayMode("replies")}
+                                  >
+                                    Replies
+                                  </button>
+                                </div>
+
+                                {threadDisplayMode === "threads" ? (
+                                  <div className="overflow-x-auto h-60">
+                                    <table className="min-w-[400px] w-full text-left font-avant-medium border border-gray-300 rounded-xl overflow-hidden">
+                                      <thead>
+                                        <tr className="bg-gray-200 text-lg text-gray-700">
+                                          <th className="py-2 px-4 w-[55%]">Title</th>
+                                          <th className="py-2 px-4 w-[10%] text-center">Upvotes</th>
+                                          <th className="py-2 px-4 w-[10%] text-center">Downvotes</th>
+                                          <th className="py-2 px-4 w-[10%] text-center">Answers</th>
+                                          <th className="py-2 px-4 w-[15%]"></th>
                                         </tr>
-                                      ))
-                                    ) : (
-                                      <tr>
-                                        <td colSpan={5} className="py-2 px-4 text-gray-400">
-                                          No threads
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </tbody>
-                                </table>
+                                      </thead>
+                                      <tbody>
+                                        {user.threads.length > 0 ? (
+                                          user.threads.map((thread) => (
+                                            <tr key={thread.thread_id} className="border-b bg-gray-100 text-lg text-gray-700 border-gray-300">
+                                              <td className="py-2 px-4 w-[55%]">{thread.title}</td>
+                                              <td className="py-2 px-4 w-[10%] text-center">{thread.upvotes}</td>
+                                              <td className="py-2 px-4 w-[10%] text-center">{thread.downvotes}</td>
+                                              <td className="py-2 px-4 w-[10%] text-center">{thread.answers}</td>
+                                              <td className="py-2 px-4 text-right w-[15%]">
+                                                <button
+                                                  className="px-4 py-1 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-700"
+                                                  onClick={() => handleRemoveThread(user.user_id, thread.thread_id)}
+                                                >
+                                                  Remove
+                                                </button>
+                                              </td>
+                                            </tr>
+                                          ))
+                                        ) : (
+                                          <tr>
+                                            <td colSpan={5} className="py-2 px-4 text-gray-400">
+                                              No threads
+                                            </td>
+                                          </tr>
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                ) : (
+                                  <div className="overflow-x-auto h-60">
+                                    <table className="min-w-[400px] w-full text-left font-avant-medium border border-gray-300 rounded-xl overflow-hidden">
+                                      <thead>
+                                        <tr className="bg-gray-200 text-lg text-gray-700">
+                                          <th className="py-2 px-4 w-[20%]">Thread</th>
+                                          <th className="py-2 px-4 w-[40%]">Reply Content</th>
+                                          <th className="py-2 px-4 w-[10%] text-center">Upvotes</th>
+                                          <th className="py-2 px-4 w-[10%] text-center">Downvotes</th>
+                                          <th className="py-2 px-4 w-[20%]"></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {user.threads.some(thread => thread.replies && thread.replies.length > 0) ? (
+                                          user.threads.flatMap(thread =>
+                                            thread.replies && thread.replies.length > 0
+                                              ? thread.replies.map(reply => (
+                                                <tr key={reply.reply_id} className="border-b bg-gray-100 text-lg text-gray-700 border-gray-300">
+                                                  <td className="py-2 px-4 w-[30%]">{thread.title}</td>
+                                                  <td className="py-2 px-4 w-[40%]">{reply.content}</td>
+                                                  <td className="py-2 px-4 w-[10%] text-center">{reply.upvotes}</td>
+                                                  <td className="py-2 px-4 w-[10%] text-center">{reply.downvotes}</td>
+                                                  <td className="py-2 px-4 text-right w-[10%]">
+                                                    <button
+                                                      className="px-4 py-1 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-700"
+                                                      onClick={() => handleRemoveReply(user.user_id, thread.thread_id, reply.reply_id)}
+                                                    >
+                                                      Remove
+                                                    </button>
+                                                  </td>
+                                                </tr>
+                                              ))
+                                              : []
+                                          )
+                                        ) : (
+                                          <tr>
+                                            <td colSpan={5} className="py-2 px-4 text-gray-400">
+                                              No replies
+                                            </td>
+                                          </tr>
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                )}
                               </div>
                             )}
-
                           </div>
                         </div>
                       </div>
@@ -668,121 +679,82 @@ const UserManagement = () => {
                   </div>
                 ))
               ) : (
-                <div className="py-8 text-center text-gray-500 font-avant-medium text-lg">
-                  No users found matching your filters
-                </div>
+                <div className="p-8 text-lg text-gray-500 text-center">No users found matching your filters.</div>
               )}
             </div>
 
-            {/* Pagination Controls */}
-            <div className="px-8 py-4 bg-gray-50 font-avant-medium border-t border-gray-200 flex items-center justify-between">
-              <div className="text-gray-600">
-                Showing {indexOfFirstUser + 1}-{Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
-                  disabled={currentPage === 1}
-                  className={`px-4 py-2 rounded-xl ${currentPage === 1
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-800"
-                    } transition`}
-                >
-                  Previous
-                </button>
-
-                {/* Limited pagination numbers logic */}
-                {(() => {
-                  const pageNumbers = [];
-                  const maxButtons = 5; // Maximum number of page buttons to show
-
-                  let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
-                  let endPage = Math.min(totalPages, startPage + maxButtons - 1);
-
-                  // Adjust if we're near the end
-                  if (endPage - startPage + 1 < maxButtons && startPage > 1) {
-                    startPage = Math.max(1, endPage - maxButtons + 1);
-                  }
-
-                  // First page
-                  if (startPage > 1) {
-                    pageNumbers.push(
-                      <button
-                        key={1}
-                        onClick={() => paginate(1)}
-                        className="px-4 py-2 rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
-                      >
-                        1
-                      </button>
-                    );
-
-                    // Ellipsis if needed
-                    if (startPage > 2) {
-                      pageNumbers.push(
-                        <span key="start-ellipsis" className="px-2 py-2 text-gray-500">
-                          ...
-                        </span>
-                      );
+            {/* Pagination */}
+            {filteredUsers.length > 0 && (
+              <div className="px-8 py-4 bg-gray-50 font-avant-medium border-t border-gray-200 flex items-center justify-between">
+                <div className="text-gray-600">
+                  Showing {filteredUsers.length === 0 ? 0 : indexOfFirstUser + 1}
+                  -
+                  {Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
+                </div>
+                <div className="flex gap-2 items-center">
+                  <button
+                    onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
+                    disabled={currentPage === 1}
+                    className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === 1
+                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 text-white hover:bg-blue-800"
+                      }`}
+                  >
+                    Previous
+                  </button>
+                  {(() => {
+                    const pages = [];
+                    for (let i = 1; i <= totalPages; i++) {
+                      if (
+                        i === 1 ||
+                        i === totalPages ||
+                        (i >= currentPage - 1 && i <= currentPage + 1)
+                      ) {
+                        pages.push(
+                          <button
+                            key={i}
+                            onClick={() => paginate(i)}
+                            className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === i
+                              ? "bg-blue-100 text-blue-700 border border-blue-600"
+                              : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                              }`}
+                            style={{ minWidth: 44 }}
+                          >
+                            {i}
+                          </button>
+                        );
+                      } else if (
+                        (i === currentPage - 2 && currentPage > 3) ||
+                        (i === currentPage + 2 && currentPage < totalPages - 2)
+                      ) {
+                        pages.push(
+                          <span
+                            key={i}
+                            className="px-3 py-2 text-gray-400 font-semibold"
+                          >
+                            ...
+                          </span>
+                        );
+                      }
                     }
-                  }
-
-                  // Visible page numbers
-                  for (let i = startPage; i <= endPage; i++) {
-                    pageNumbers.push(
-                      <button
-                        key={i}
-                        onClick={() => paginate(i)}
-                        className={`px-4 py-2 rounded-xl ${currentPage === i
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                          } transition`}
-                      >
-                        {i}
-                      </button>
-                    );
-                  }
-
-                  // Last page
-                  if (endPage < totalPages) {
-                    // Ellipsis if needed
-                    if (endPage < totalPages - 1) {
-                      pageNumbers.push(
-                        <span key="end-ellipsis" className="px-2 py-2 text-gray-500">
-                          ...
-                        </span>
-                      );
-                    }
-
-                    pageNumbers.push(
-                      <button
-                        key={totalPages}
-                        onClick={() => paginate(totalPages)}
-                        className="px-4 py-2 rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
-                      >
-                        {totalPages}
-                      </button>
-                    );
-                  }
-
-                  return pageNumbers;
-                })()}
-
-                <button
-                  onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}
-                  disabled={currentPage === totalPages || totalPages === 0}
-                  className={`px-4 py-2 rounded-xl ${currentPage === totalPages || totalPages === 0
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-800"
-                    } transition`}
-                >
-                  Next
-                </button>
+                    return pages;
+                  })()}
+                  <button
+                    onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}
+                    disabled={currentPage === totalPages || totalPages === 0}
+                    className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === totalPages || totalPages === 0
+                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 text-white hover:bg-blue-800"
+                      }`}
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );
