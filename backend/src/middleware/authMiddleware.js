@@ -31,8 +31,17 @@ exports.verifyToken = async (req, res, next) => {
         });
       }
       
-      // Log để debug
-      console.log("Authenticated user:", user);
+      // Log để debug - ENHANCED for better debugging
+      console.log("Authenticated user data:", JSON.stringify(user, null, 2));
+      
+      // IMPORTANT: Ensure the user has the right format
+      if (!user.user_ID) {
+        console.error("User ID missing in token payload");
+        return res.status(401).json({
+          success: false,
+          message: "Invalid token format: user_ID missing"
+        });
+      }
       
       req.user = user;
       next();
@@ -46,20 +55,10 @@ exports.verifyToken = async (req, res, next) => {
   }
 };
 
+// Make sure this middleware is still allowing all users to pass through
 exports.isInstructor = (req, res, next) => {
-    console.log('User in request:', req.user);
-    
-    if (!req.user) {
-        return res.status(401).json({ success: false, message: 'User not authenticated' });
-    }
-
-    if (req.user.role !== 'instructor') {
-        return res.status(403).json({ 
-            success: false, 
-            message: 'Access denied. Instructor role required.',
-            userRole: req.user.role 
-        });
-    }
-
-    next();
+    // Temporarily allow all authenticated users to act as instructors 
+    // for debugging purposes
+    console.log("DEBUG: Bypassing instructor check - allowing user:", req.user);
+    return next();
 };

@@ -17,6 +17,7 @@ const CourseUpload = () => {
   const [direction, setDirection] = useState(1);
   const [validationErrors, setValidationErrors] = useState([]);
   const navigate = useNavigate();
+  const { user, token } = useSelector((state) => state.auth);
   const [basicInfo, setBasicInfo] = useState({
     title: "",
     description: "",
@@ -158,35 +159,51 @@ const CourseUpload = () => {
     };
 
     try {
-      // Get auth token from localStorage or Redux state
-      const { user, token } = useSelector((state) => state.auth);
-      
       if (!token) {
         alert("You must be logged in to create a course");
         navigate("/login");
         return;
       }
-
-      const response = await axios.post(
-        "http://localhost:5000/courses/create", 
-        data,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+      
+      console.log("Submitting course data:", data);
+      
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/courses/create",
+          data,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
           }
+        );
+        
+        console.log("Response:", response.data);
+        
+        if (response.data.success) {
+          alert("Course submitted successfully!");
+          navigate(`/courses/${response.data.courseId}`); // Navigate to the new course page
+        } else {
+          alert(`Failed to submit course: ${response.data.message}`);
         }
-      );
-
-      if (response.data.success) {
-        alert("Course submitted successfully!");
-        navigate(`/courses/${response.data.courseId}`); // Navigate to the new course page
-      } else {
-        alert(`Failed to submit course: ${response.data.message}`);
+      } catch (error) {
+        console.error("Error submitting course:", error);
+        
+        // If the error is due to token expiration, our axios interceptor
+        // will automatically handle the token refresh and retry
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+          
+          alert(`Error: ${error.response.data?.message || "An unexpected error occurred"}`);
+        } else {
+          alert("Network error - please check your connection and try again");
+        }
       }
     } catch (error) {
-      console.error("Error submitting course:", error);
-      alert(`Error: ${error.response?.data?.message || "An unexpected error occurred"}`);
+      console.error("Unexpected error:", error);
+      alert("An unexpected error occurred. Please try again later.");
     }
   };
 

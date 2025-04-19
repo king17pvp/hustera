@@ -114,12 +114,20 @@ exports.createCourse = async (courseData) => {
     weeks = []
   } = courseData;
 
+  // Detailed logging
+  console.log("🔍 Creating course with data:", {
+    instructor_ID, title, category, price, duration, level,
+    weeksCount: weeks.length
+  });
+
   // Ensure we have a default image and get its ID
   const thumbnail_ID = await ensureDefaultImage();
+  console.log("🖼️ Using thumbnail_ID:", thumbnail_ID);
 
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
+    console.log("📊 Started database transaction");
 
     // Insert course with the default thumbnail
     const [courseResult] = await connection.execute(
@@ -127,51 +135,41 @@ exports.createCourse = async (courseData) => {
       [instructor_ID, title, description, category, thumbnail_ID, price, duration, level]
     );
     const courseId = courseResult.insertId;
+    console.log("📝 Created course record with ID:", courseId);
 
     // Insert weeks and videos if provided
     for (const [weekIndex, week] of weeks.entries()) {
+      console.log(`📅 Processing Week ${weekIndex + 1}: "${week.title}"`);
+      
       const [weekResult] = await connection.execute(
         'INSERT INTO weeks (course_ID, week_number, title) VALUES (?, ?, ?)',
         [courseId, weekIndex + 1, week.title]
       );
       const weekId = weekResult.insertId;
+      console.log(`📅 Created week record with ID: ${weekId}`);
 
       if (week.videos && week.videos.length > 0) {
+        console.log(`🎬 Processing ${week.videos.length} videos for week ${weekId}`);
+        
         for (const [videoIndex, video] of week.videos.entries()) {
-          try {
-            // Check if the videos table has resource_type and order_index columns
-            const [columns] = await connection.query(`
-              SELECT COUNT(*) as count FROM information_schema.columns 
-              WHERE table_name = 'videos' AND column_name = 'resource_type' AND table_schema = DATABASE()
-            `);
-            
-            if (columns[0].count > 0) {
-              await connection.execute(
-                'INSERT INTO videos (week_ID, title, url, resource_type, order_index) VALUES (?, ?, ?, ?, ?)',
-                [weekId, video.title, video.url, 'video', videoIndex + 1]
-              );
-            } else {
-              await connection.execute(
-                'INSERT INTO videos (week_ID, title, url) VALUES (?, ?, ?)',
-                [weekId, video.title, video.url]
-              );
-            }
-          } catch (error) {
-            console.error("Error inserting video:", error);
-            // Fallback to simpler query if the first one fails
-            await connection.execute(
-              'INSERT INTO videos (week_ID, title, url) VALUES (?, ?, ?)',
-              [weekId, video.title, video.url]
-            );
-          }
+          console.log(`🎬 Video ${videoIndex + 1}: "${video.title}" - URL: ${video.url}`);
+          
+          // Simplified video insertion - always use the basic version
+          const [videoResult] = await connection.execute(
+            'INSERT INTO videos (week_ID, title, url) VALUES (?, ?, ?)',
+            [weekId, video.title, video.url]
+          );
+          console.log(`🎬 Created video record with ID: ${videoResult.insertId}`);
         }
       }
     }
 
     await connection.commit();
+    console.log("✅ Database transaction committed successfully");
     connection.release();
     return courseId;
   } catch (error) {
+    console.error("❌ Database error:", error);
     await connection.rollback();
     connection.release();
     throw error;

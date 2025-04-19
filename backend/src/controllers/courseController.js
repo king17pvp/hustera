@@ -36,6 +36,11 @@ exports.createCourse = async (req, res) => {
     try {
         const courseData = req.body;
         
+        // Debug logs
+        console.log("🟢 Create Course Request:");
+        console.log("User from token:", JSON.stringify(req.user, null, 2));
+        console.log("Course Data:", JSON.stringify(courseData, null, 2));
+        
         // Basic validation
         if (!courseData.title || !courseData.description || !courseData.category || 
             !courseData.price || !courseData.duration || !courseData.level) {
@@ -45,17 +50,44 @@ exports.createCourse = async (req, res) => {
             });
         }
 
-        // Add instructor ID from authenticated user
-        courseData.instructor_ID = req.user.user_ID;
+        // IMPORTANT: Check user object format and adjust if needed
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: "User not authenticated"
+            });
+        }
+        
+        // Extract user_ID from token payload, supporting multiple formats
+        let instructorId = null;
+        if (req.user.user_ID) {
+            instructorId = req.user.user_ID;
+        } else if (req.user.id) {
+            instructorId = req.user.id;
+        } else if (req.user.userId) {
+            instructorId = req.user.userId;
+        } else {
+            // If no ID is found, generate an error with details
+            console.error("❌ No user ID found in token. Token payload:", req.user);
+            return res.status(401).json({
+                success: false,
+                message: "User ID not found in authentication token"
+            });
+        }
+        
+        courseData.instructor_ID = instructorId;
+        console.log("🟢 Assigned instructor_ID:", courseData.instructor_ID);
 
         const courseId = await courseService.createCourse(courseData);
+        console.log("🟢 Course created with ID:", courseId);
+        
         res.status(201).json({
             success: true,
             message: "Course created successfully",
             courseId
         });
     } catch (error) {
-        console.error("Error in creating course:", error);
+        console.error("❌ Error in creating course:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
