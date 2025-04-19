@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Trash2, X } from "lucide-react";
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSelector } from "react-redux";
 
 const predefinedTags = ["JavaScript", "React", "Python", "SQL", "Machine Learning"];
 const predefinedCategories = ["Art & Design", "Information Technology", "Communication", "Videography", "Photography", "Marketing", "Content Writing", "Finance", "Science"];
@@ -158,7 +159,7 @@ const CourseUpload = () => {
 
     try {
       // Get auth token from localStorage or Redux state
-      const token = localStorage.getItem('token') || (user && user.token);
+      const { user, token } = useSelector((state) => state.auth);
       
       if (!token) {
         alert("You must be logged in to create a course");

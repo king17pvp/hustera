@@ -235,14 +235,45 @@ const CourseListing = () => {
       <div className="flex justify-center w-full">
         <div className="flex flex-col md:flex-row justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
           <div className="w-full md:w-3/4">
-            <div className="flex justify-between items-center mb-6">
-              <SearchBar title="All Courses" />
-              <button
-                onClick={() => setShowCreateForm(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Create Course
-              </button>
+            <div className="flex flex-col mb-6">
+              <h1 className="text-4xl font-avant-medium font-bold mb-4">All Courses</h1>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex-1 mr-4">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search courses..."
+                      className="w-full font-avant-medium text-[19px] text-gray-600 border-3 border-gray-300 px-5 py-3 rounded-xl pr-12"
+                      value={titleQuery || ""}
+                      onChange={(e) => {
+                        const searchParams = new URLSearchParams(location.search);
+                        if (e.target.value) {
+                          searchParams.set("title", e.target.value);
+                        } else {
+                          searchParams.delete("title");
+                        }
+                        navigate(`/courses?${searchParams.toString()}`);
+                      }}
+                    />
+                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                      <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={() => navigate("/courses/upload")}
+                  className="bg-blue-600 text-white text-xl font-avant-medium font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center whitespace-nowrap"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  Create Course
+                </button>
+              </div>
             </div>
 
             {showCreateForm ? (

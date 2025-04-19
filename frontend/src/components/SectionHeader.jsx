@@ -1,40 +1,43 @@
 // frontend/src/components/SectionHeader.jsx
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const SearchBar = ({ title }) => {
+const SectionHeader = ({ title, showSearch = true }) => {
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Get search query from URL params
-  const params = new URLSearchParams(location.search);
-  const defaultValue = params.get('title') || '';
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const searchQuery = e.target.search.value;
-    
-    // Only add search parameter if there's a query
-    if (searchQuery) {
-      navigate(`/courses?title=${encodeURIComponent(searchQuery)}`);
-    } else {
-      navigate('/courses');
+    if (searchTerm.trim()) {
+      navigate(`/courses?title=${encodeURIComponent(searchTerm)}`);
     }
   };
 
   return (
-    <div className="flex items-center justify-between w-full">
-      <h1 className="text-4xl font-avant-medium font-bold">{title}</h1>
-      <form onSubmit={handleSearch} className="relative">
-        <input
-          type="text"
-          name="search"
-          defaultValue={defaultValue}
-          placeholder="Search courses..."
-          className="px-5 py-3 w-[400px] border-2 border-gray-300 rounded-xl text-lg focus:border-black outline-none"
-        />
-      </form>
+    <div className="w-full">
+      <h2 className="text-4xl font-avant-medium font-bold mb-4">{title}</h2>
+      
+      {showSearch && (
+        <form onSubmit={handleSearch} className="relative">
+          <input
+            type="text"
+            className="w-full font-avant-medium text-[19px] text-gray-600 border-3 border-gray-300 px-5 py-3 rounded-xl pr-12"
+            placeholder="Search courses..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button 
+            type="submit" 
+            className="absolute inset-y-0 right-0 pr-4 flex items-center"
+          >
+            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </button>
+        </form>
+      )}
     </div>
   );
 };
 
-export default SearchBar;
+export default SectionHeader;
