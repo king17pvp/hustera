@@ -48,15 +48,16 @@ exports.getForum = async (req, res) => {
       tags: req.query.tags || ""
     };
     console.log(filters);
-    const threads = await forumService.getForum({
+    const {threads, totalPages} = await forumService.getForum({
       category: filters.category,
       searchQuery: filters.searchQuery,
       tags: filters.tags,
       sortBy: filters.sortBy,
       page: filters.page,
     });
+    // console.log(threads, totalPages);
 
-    res.status(200).json({ success: true, threads: threads });
+    res.status(200).json({ success: true, threads: threads, totalPages: totalPages});
   } catch (err) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }

@@ -251,7 +251,7 @@ const ForumUpload = () => {
 
                     {viewMode === "Preview" ? (
                       <div className="w-full border-3 border-gray-500 font-avant-medium rounded-xl px-5 py-3 text-[19px] placeholder-gray-300 h-80 resize-none">
-                        <ReactMarkdown>{threadBody}</ReactMarkdown>
+                        <ReactMarkdown>{basicInfo.body}</ReactMarkdown>
                       </div>
                     ) : (
                       <textarea
@@ -341,7 +341,7 @@ const ForumUpload = () => {
                     {/* === Phase 2 === */}
 
                     <div className="mt-6 p-6 bg-white border-3 border-gray-700 rounded-2xl space-y-4">
-                      <h2 className="text-3xl font-avant-medium font-semibold text-gray-900">{threadTitle}</h2>
+                      <h2 className="text-3xl font-avant-medium font-semibold text-gray-900">{basicInfo.title}</h2>
                       {basicInfo.tags && (
                         <div className="mt-2">
                           <div className="flex gap-2 flex-wrap mt-2 items-center border-t border-gray-300 pt-3">
@@ -358,14 +358,14 @@ const ForumUpload = () => {
                         </div>
                       )}
                       <div className="prose border-t border-gray-300 py-3 text-xl font-avant-medium max-w-none">
-                        <ReactMarkdown>{threadBody}</ReactMarkdown>
+                        <ReactMarkdown>{basicInfo.body}</ReactMarkdown>
                       </div>
 
-                      {attachments.length > 0 && (
+                      {basicInfo.attachments.length > 0 && (
 
                         <div className="flex flex-wrap gap-4 border-t border-gray-300 pt-4">
                           <span className="text-[24px] mr-2 font-avant-medium font-semibold">Attachments:</span>
-                          {attachments.map((image, idx) => (
+                          {basicInfo.attachments.map((image, idx) => (
                             <img
                               key={idx}
                               src={image}
