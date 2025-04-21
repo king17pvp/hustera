@@ -1,6 +1,6 @@
 const db = require("../config/db");
 
-exports.getCourses = async ({ category, instructor, level, price, page = 1, limit = 10 }) => {
+exports.getCourses = async ({ category, instructor, level, price, title, page = 1, limit = 10 }) => {
   let baseQuery = `
     FROM courses c
     JOIN user_auth ua ON c.instructor_ID = ua.user_ID
@@ -9,22 +9,32 @@ exports.getCourses = async ({ category, instructor, level, price, page = 1, limi
     WHERE 1=1
   `;
   const queryParams = [];
+  
+  // Apply title search if provided
+  if (title) {
+    baseQuery += " AND c.title LIKE ?";
+    queryParams.push(`%${title}%`);
+  }
 
+  // Filter by category
   if (category) {
     baseQuery += " AND c.category = ?";
     queryParams.push(category);
   }
 
+  // Filter by instructor name
   if (instructor) {
     baseQuery += " AND ui.name = ?";
     queryParams.push(instructor);
   }
 
+  // Filter by course level
   if (level) {
     baseQuery += " AND c.level = ?";
     queryParams.push(level);
   }
 
+  // Filter by price range
   if (price) {
     if (price === "under30") {
       baseQuery += " AND c.price < 30";
@@ -35,6 +45,7 @@ exports.getCourses = async ({ category, instructor, level, price, page = 1, limi
     }
   }
 
+  // Final courses query with pagination
   const coursesQuery = `
     SELECT 
       c.course_ID AS courseID,
@@ -51,26 +62,32 @@ exports.getCourses = async ({ category, instructor, level, price, page = 1, limi
         ELSE img.image_path
       END AS thumbnailUrl,
       ui.name AS instructor,
-      FLOOR(RAND() * 100 + 50) as students,
-      20 AS lessons
+      FLOOR(RAND() * 100 + 50) as students
     ${baseQuery}
     ORDER BY c.course_ID DESC
     LIMIT ? OFFSET ?
   `;
+
+  // Log the query for debugging
+  console.log("Generated SQL:", coursesQuery);
+  console.log("Query params:", [...queryParams, parseInt(limit), (parseInt(page) - 1) * parseInt(limit)]);
+
   const coursesQueryParams = [...queryParams, parseInt(limit), (parseInt(page) - 1) * parseInt(limit)];
   const [courses] = await db.query(coursesQuery, coursesQueryParams);
 
+  // Get total count for pagination
   const countQuery = `SELECT COUNT(*) AS total ${baseQuery}`;
   const [countResult] = await db.query(countQuery, queryParams);
   const total = countResult[0].total;
 
   return {
     courses,
-    totalPages: Math.ceil(total / limit),
+    totalPages: Math.ceil(total / limit)
   };
 };
 
 exports.getFilters = async () => {
+  // Return all categories
   const [categories] = await db.query(`
     SELECT category, COUNT(*) AS count
     FROM courses
@@ -78,6 +95,7 @@ exports.getFilters = async () => {
     ORDER BY count DESC
   `);
 
+  // Top 3 instructors by course count
   const [instructors] = await db.query(`
     SELECT ui.name AS instructor, COUNT(*) AS count
     FROM courses c
@@ -85,6 +103,7 @@ exports.getFilters = async () => {
     JOIN user_info ui ON ua.user_ID = ui.user_ID
     GROUP BY ui.name
     ORDER BY count DESC
+    LIMIT 3
   `);
 
   return { categories, instructors };
@@ -354,24 +373,6 @@ exports.addReview = async ({ courseId, reviewerId, rating, review }) => {
 };
 
 exports.getCourseReviews = async (courseId) => {
-  // Get all reviews for the course
-  // const [reviews] = await db.query(`
-  //   SELECT 
-  //     r.*,
-  //     ui.name as reviewer_name,
-  //   FROM course_reviews r
-  //   JOIN user_info ui ON r.reviewer_ID = ui.user_ID
-  //   WHERE r.course_ID = ?
-  //   ORDER BY r.rated_at DESC
-  // `, [courseId]);
-  // const [reviews] = await db.query(`
-  //   SELECT 
-  //     r.* 
-  //   FROM course_reviews r
-  //   WHERE r.course_ID = ?
-  //   ORDER BY r.rated_at DESC
-  // `, [courseId]);    
-
   const [reviews] = await db.query(`
     SELECT 
       r.*, 
@@ -384,9 +385,6 @@ exports.getCourseReviews = async (courseId) => {
 
   console.log(reviews);
   
-  
-
-  // Get rating statistics
   const [ratingStats] = await db.query(`
     SELECT 
       rating,

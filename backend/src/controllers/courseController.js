@@ -1,5 +1,6 @@
 const courseService = require("../services/courseService");
 
+// Get all courses with optional filtering and search
 exports.getCourses = async (req, res) => {
     try {
         const { category, instructor, level, price, page, limit } = req.query;
@@ -22,6 +23,7 @@ exports.getCourses = async (req, res) => {
     }
 };
 
+// Get filter options
 exports.getFilters = async (req, res) => {
     try {
         const filters = await courseService.getFilters();

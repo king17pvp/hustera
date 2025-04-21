@@ -8,11 +8,14 @@ import Register from "./pages/Register";
 import FAQs from "./pages/FAQs";
 import UserSettings from "./pages/UserSettings";
 import CourseSingle from "./pages/CourseSingle.jsx";
+import CourseContent from "./pages/CourseContent.jsx"; // Add this import
 import { useSelector } from 'react-redux';
 import ForumSingle from "./pages/ForumSingle.jsx";
 import CourseUpload from "./pages/CourseUpload.jsx";
 import ForumUpload from "./pages/ForumUpload.jsx";
-import CourseContent from "./pages/CourseContent";
+import UserManagement from "./pages/UserManagement.jsx";
+import CourseManagement from "./pages/CourseManagement.jsx";
+import ForumManagement from "./pages/ForumManagement.jsx";
 
 const sampleCategories = [
   { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
@@ -210,22 +213,26 @@ const App = () => {
             (
               <>
                 <Route path="/" element={<Homepage
-                  courses={sampleCourses}
                   categories={sampleCategories}
                   testimonials={sampleTestimonials}
                   threads={sampleThreads}
-                  stats={sampleStats} />} />
+                  stats={sampleStats}
+                  courses={sampleCourses} />} />
                 <Route path="/courses" element={<CourseListing />} />
                 <Route path="/courses/:id" element={<CourseSingle />} />
                 <Route path="/courses/:id/learn" element={<CourseContent />} />
                 <Route path="/forum/1" element={<ForumSingle thread={sampleThread} />} />
                 <Route path="/forum" element={<ForumListing />} />
+                <Route path="/forum/:threadId" element={<ForumSingle/>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/faqs" element={<FAQs />} />
                 <Route path="/settings" element={<UserSettings />} />
                 <Route path="/courses/upload" element={<CourseUpload />} />
                 <Route path="/forum/upload" element={<ForumUpload />} />
+                <Route path="/admin/user-management" element={<UserManagement />} />
+                <Route path="/admin/course-management" element={<CourseManagement />} />
+                <Route path="/admin/forum-management" element={<ForumManagement />} />
               </>
             )}
 

@@ -1,153 +1,131 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { useParams, useLocation } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
 import ForumQuestion from "../components/ForumQuestion";
-import ForumComment from "../components/ForumComment";
-import ForumReplyCard from "../components/ForumReplyCard";
 
+import ForumReplyCard from "../components/ForumReplyCard";
+import AnswerCard from "../components/AnswerCard";
+import { useSelector } from "react-redux"; 
 import { ArrowUp, ArrowDown, MessageCircle } from "lucide-react";
 
-const ForumSingle = ({ thread }) => {
+const ForumSingle = () => {
+  const { threadId } = useParams();
+
+  const [thread, setThread] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const { user } = useSelector((state) => state.auth);
+  const [reloadFlag, setReloadFlag] = useState(false);
+
+  const thread1 = {
+    thread_id: 1,
+    title: "How to use React useState hook?",
+    author: "John Doe",
+    created_utc: "2025-04-14T10:30:00Z",
+    content: "I'm new to React and trying to understand how the `useState` hook works. Can someone explain it with an example?",
+    score: 15,
+    attachments: [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZxLXbumtxmwzqNFtu7fUfOTc39i3JlDu67w&s",
+      "https://i.ytimg.com/vi/ajKmtmPjVtc/hq2.jpg?sqp=-oaymwEoCOADEOgC8quKqQMcGADwAQH4Ab4EgALABIoCDAgAEAEYZSBSKEYwDw==&rs=AOn4CLC0Xjuim-IVR4A56Gv5BoRq600wbQ"
+    ],
+    tags: ["React", "JavaScript", "Hooks"]
+  };
+
+  // Extract search query from URL if present (same as CourseListing)
+  const searchParams = new URLSearchParams(location.search);
+  useEffect(() => {
+    // console.log("🎯 useEffect RUNNING...");
+    const fetchThread = async () => {
+      try {
+        console.log("🚀 Fetching thread...");
+        const res = await fetch(`http://localhost:5000/forum/${threadId}`);
+        const data = await res.json();
+        if (data.success) {
+          setThread(data.thread);
+          console.log(data);
+        } else {
+          console.error("Thread not found:", data.message);
+        }
+      } catch (error) {
+        console.error("Failed to fetch thread:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchThread();
+  }, [threadId, reloadFlag]);
+  useEffect(() => {
+    console.log("Retrieved thread", thread);
+  }, [thread]);
+  // return (
+  //   <div>
+  //     <h1>ForumSingle</h1>
+  //     <p>Thread ID: {threadId}</p>
+  //     <pre>{JSON.stringify(thread, null, 2)}</pre>
+  //   </div>
+  // );
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar currentState="Courses/" />
-
+  
       <div className="flex-1">
-        <Breadcrumb paths={["Homepage", "Forum", thread.title]} />
-        <div className="flex-1 max-w-[1680px] mx-auto px-4 py-12">
-          <ForumQuestion thread={thread} />
-
-          {/* Answers */}
-          <div>
-            <h2 className="text-3xl font-avant-medium font-semibold mb-4">
-              {thread.answers.length} Answers
-            </h2>
-            {thread.answers.map((answer) => {
-              const [score, setScore] = useState(answer.score);
-              const [userVote, setUserVote] = useState(null);
-              const [showReply, setShowReply] = useState(false);
-              const [comments, setComments] = useState(answer.comments || []);
-
-              const handleUpvote = () => {
-                if (userVote === "up") {
-                  setScore(score - 1);
-                  setUserVote(null);
-                } else if (userVote === "down") {
-                  setScore(score + 2);
-                  setUserVote("up");
-                } else {
-                  setScore(score + 1);
-                  setUserVote("up");
-                }
-              };
-
-              const handleDownvote = () => {
-                if (userVote === "down") {
-                  setScore(score + 1);
-                  setUserVote(null);
-                } else if (userVote === "up") {
-                  setScore(score - 2);
-                  setUserVote("down");
-                } else {
-                  setScore(score - 1);
-                  setUserVote("down");
-                }
-              };
-
-              const handleAddComment = (newComment) => {
-                const updatedComments = [
-                  ...comments,
-                  {
-                    author: "CurrentUser", // Replace with actual user
-                    content: newComment,
-                    created_utc: new Date().toISOString(),
-                  },
-                ];
-                setComments(updatedComments);
-                setShowReply(false);
-              
-                // Simulate backend interaction
-                console.log("Reply has been posted:", newComment);
-              };
-              
-
-              return (
-                <div
-                  key={answer.answer_id}
-                  className={`flex gap-6 border rounded-xl p-4 mb-6 ${
-                    answer.is_accepted
-                      ? "border-blue-400 bg-blue-50"
-                      : "border-gray-600"
-                  }`}
-                >
-                  {/* Voting Section */}
-                  <div className="flex flex-col items-center text-gray-500">
-                    <ArrowUp
-                      className={`cursor-pointer hover:text-orange-500 ${
-                        userVote === "up" ? "text-orange-500" : ""
-                      }`}
-                      onClick={handleUpvote}
-                    />
-                    <span className="font-semibold text-2xl">{score}</span>
-                    <ArrowDown
-                      className={`cursor-pointer hover:text-blue-500 ${
-                        userVote === "down" ? "text-blue-500" : ""
-                      }`}
-                      onClick={handleDownvote}
-                    />
-                  </div>
-
-                  {/* Answer Content */}
-                  <div className="flex-1 pr-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[18px] text-gray-700">
-                        Answered by <strong>{answer.author}</strong> on{" "}
-                        {new Date(answer.created_utc).toLocaleString()}
-                      </span>
-                      {answer.is_accepted && (
-                        <span className="text-green-700 text-xl font-semibold mt-2">
-                          ✔ Accepted
-                        </span>
-                      )}
-                    </div>
-                    <div className="prose max-w-none text-gray-800 text-xl mb-2">
-                      <ReactMarkdown>{answer.content}</ReactMarkdown>
-                    </div>
-                    {/* Comments */}
-                    {comments.length > 0 && <ForumComment comments={comments} />}
-
-                    {/* Reply Toggle */}
-                    <div
-                      className="flex items-center text-xl font-semibold text-gray-600 cursor-pointer hover:text-gray-900 mt-3"
-                      onClick={() => setShowReply(!showReply)}
-                    >
-                      <MessageCircle className="w-5 h-5 mr-2" /> Reply
-                    </div>
-
-                    {showReply && (
-                      <ForumReplyCard
-                        onSubmit={(content) => {
-                          handleAddComment(content);
-                        }}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-            <ForumReplyCard
-              onSubmit={(content) => {
-                console.log("New answer submitted:", content);
-                // You can later integrate API call here
-              }}
-            />
+        {loading || !thread ? (
+          <div className="text-center py-20 text-2xl text-gray-600">
+            Loading...
           </div>
-        </div>
-      </div>
+        ) : (
+          <>
+            <Breadcrumb paths={["Homepage", "Forum", thread.title]} />
+            <div className="flex-1 max-w-[1680px] mx-auto px-4 py-12">
+              <ForumQuestion thread={thread} />
+              <ForumQuestion thread={thread1} />
+  
+              {/* Answers */}
+              <div>
+                <h2 className="text-3xl font-avant-medium font-semibold mb-4">
+                  {thread.answers.length} Answers
+                </h2>
+                {thread.answers.map((answer) => (
+                  <AnswerCard key={answer.answer_id} answer={answer}threadId={threadId} />
+                ))}
+                <ForumReplyCard
+                  onSubmit={async (content) => {
+                    try {
+                      const res = await fetch(`http://localhost:5000/forum/${threadId}/answers`, {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          content,
+                          user_ID: user?.id, // hoặc dùng token nếu bạn có auth middleware
+                        }),
+                      });
 
+                      const data = await res.json();
+                      if (data.success) {
+                        console.log("✅ Answer posted:", data.answer);
+                        setReloadFlag(prev => !prev); // sẽ trigger lại useEffect
+
+                      } else {
+                        console.error("❌ Post failed:", data.message);
+                      }
+                    } catch (error) {
+                      console.error("❌ Error submitting answer:", error);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+  
       <Footer />
     </div>
   );

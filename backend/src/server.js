@@ -18,6 +18,13 @@ app.use(express.json());
 
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+// Middleware
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+app.use(cors({
+    origin: 'http://localhost:5173', // Updated to match Vite's default port
+    credentials: true,
+}));
 
 // Log all requests for debugging
 app.use((req, res, next) => {

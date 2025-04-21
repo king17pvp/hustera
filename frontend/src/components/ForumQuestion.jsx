@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import ForumComment from "./ForumComment";
 import { ArrowUp, ArrowDown } from "lucide-react";
 
 const ForumQuestion = ({ thread }) => {
   const [score, setScore] = useState(thread.score);
   const [userVote, setUserVote] = useState(null); // 'up', 'down', or null
-  
+
   const handleUpvote = () => {
     if (vote === "up") {
       setVote(null);
@@ -37,16 +36,14 @@ const ForumQuestion = ({ thread }) => {
       {/* Voting Section */}
       <div className="flex flex-col items-center text-gray-500">
         <ArrowUp
-          className={`cursor-pointer hover:text-orange-500 ${
-            userVote === "up" ? "text-orange-500" : ""
-          }`}
+          className={`cursor-pointer hover:text-orange-500 ${userVote === "up" ? "text-orange-500" : ""
+            }`}
           onClick={handleUpvote}
         />
         <span className="font-avant_medium font-semibold text-2xl">{score}</span>
         <ArrowDown
-          className={`cursor-pointer hover:text-blue-500 ${
-            userVote === "down" ? "text-blue-500" : ""
-          }`}
+          className={`cursor-pointer hover:text-blue-500 ${userVote === "down" ? "text-blue-500" : ""
+            }`}
           onClick={handleDownvote}
         />
       </div>
@@ -59,6 +56,7 @@ const ForumQuestion = ({ thread }) => {
           {new Date(thread.created_utc).toLocaleString()}
         </div>
         <div className="mb-3 text-gray-700 text-xl whitespace-pre-wrap">{thread.content}</div>
+
         <div className="flex flex-wrap gap-2 text-lg mb-4">
           {thread.tags.map((tag) => (
             <span
@@ -70,6 +68,25 @@ const ForumQuestion = ({ thread }) => {
           ))}
         </div>
 
+        {/* Attachments Section */}
+        {thread.attachments && thread.attachments.length > 0 && (
+          <div className="mt-4">
+            <h2 className="text-2xl font-avant-medium font-semibold mb-2">Attachments:</h2>
+            <div className="flex gap-4 overflow-x-auto">
+              {thread.attachments.map((attachment, index) => (
+                <div key={index} className="border rounded-lg overflow-hidden flex-shrink-0">
+                  <a href={attachment} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={attachment} // Base64 string
+                      alt={`Attachment ${index + 1}`}
+                      className="w-48 h-48 object-cover hover:opacity-90 transition"
+                    />
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {/* {thread.comments.length > 0 && (
           <ForumComment comments={thread.comments} />
         )} */}
