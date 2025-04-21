@@ -1,0 +1,99 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mdeleted file mode 100644[m
+[1mindex 1dfd5c0..0000000[m
+[1m--- a/.gitignore[m
+[1m+++ /dev/null[m
+[36m@@ -1,16 +0,0 @@[m
+[31m-# Ignore all images in the /bugs folder[m
+[31m-bugs/*.png[m
+[31m-bugs/*.jpg[m
+[31m-bugs/*.jpeg[m
+[31m-bugs/*.gif[m
+[31m-bugs/*.webp[m
+[31m-[m
+[31m-# Optional: Ignore OS/system stuff[m
+[31m-.DS_Store[m
+[31m-Thumbs.db[m
+[31m-[m
+[31m-# Node or Python project? Add these if applicable[m
+[31m-node_modules/[m
+[31m-.env[m
+[31m-__pycache__/[m
+[31m-*.pyc[m
+[1mdiff --git a/.vscode/settings.json b/.vscode/settings.json[m
+[1mdeleted file mode 100644[m
+[1mindex 2d425a8..0000000[m
+[1m--- a/.vscode/settings.json[m
+[1m+++ /dev/null[m
+[36m@@ -1,8 +0,0 @@[m
+[31m-{[m
+[31m-    "github.copilot.enable": {[m
+[31m-        "*": true,[m
+[31m-        "plaintext": false,[m
+[31m-        "markdown": false,[m
+[31m-        "scminput": false[m
+[31m-    }[m
+[31m-}[m
+\ No newline at end of file[m
+[1mdiff --git a/backend/debug-images.html b/backend/debug-images.html[m
+[1mdeleted file mode 100644[m
+[1mindex 05d6c0e..0000000[m
+[1m--- a/backend/debug-images.html[m
+[1m+++ /dev/null[m
+[36m@@ -1,78 +0,0 @@[m
+[31m-<!DOCTYPE html>[m
+[31m-<html lang="en">[m
+[31m-<head>[m
+[31m-    <meta charset="UTF-8">[m
+[31m-    <meta name="viewport" content="width=device-width, initial-scale=1.0">[m
+[31m-    <title>Debug Images</title>[m
+[31m-    <style>[m
+[31m-        body { font-family: Arial, sans-serif; margin: 20px; }[m
+[31m-        .image-test { margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; }[m
+[31m-        .success { color: green; }[m
+[31m-        .error { color: red; }[m
+[31m-        img { max-width: 300px; max-height: 200px; }[m
+[31m-    </style>[m
+[31m-</head>[m
+[31m-<body>[m
+[31m-    <h1>Image Loading Debug Tool</h1>[m
+[31m-    [m
+[31m-    <div class="image-test">[m
+[31m-        <h2>Test 1: Direct Path</h2>[m
+[31m-        <p>Testing: <code>/public/images/default-course-thumbnail.jpg</code></p>[m
+[31m-        <img src="http://localhost:5000/public/images/default-course-thumbnail.jpg" [m
+[31m-             alt="Test 1" [m
+[31m-             onload="this.parentNode.innerHTML += '<p class=\'success\'>Success! Image loaded correctly.</p>'"[m
+[31m-             onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error! Image failed to load.</p>'">[m
+[31m-    </div>[m
+[31m-[m
+[31m-    <div class="image-test">[m
+[31m-        <h2>Test 2: Images Path</h2>[m
+[31m-        <p>Testing: <code>/images/default-course-thumbnail.jpg</code></p>[m
+[31m-        <img src="http://localhost:5000/images/default-course-thumbnail.jpg" [m
+[31m-             alt="Test 2" [m
+[31m-             onload="this.parentNode.innerHTML += '<p class=\'success\'>Success! Image loaded correctly.</p>'"[m
+[31m-             onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error! Image failed to load.</p>'">[m
+[31m-    </div>[m
+[31m-[m
+[31m-    <div class="image-test">[m
+[31m-        <h2>Test 3: No Public Prefix</h2>[m
+[31m-        <p>Testing: <code>/default-course-thumbnail.jpg</code></p>[m
+[31m-        <img src="http://localhost:5000/default-course-thumbnail.jpg" [m
+[31m-             alt="Test 3" [m
+[31m-             onload="this.parentNode.innerHTML += '<p class=\'success\'>Success! Image loaded correctly.</p>'"[m
+[31m-             onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error! Image failed to load.</p>'">[m
+[31m-    </div>[m
+[31m-[m
+[31m-    <div class="image-test">[m
+[31m-        <h2>Test 4: Raw Path From Database</h2>[m
+[31m-        <div id="dbTest">[m
+[31m-            <p>Enter image path from database: <input type="text" id="dbPath" value="/public/images/default-course-thumbnail.jpg"></p>[m
+[31m-            <button onclick="testDbPath()">Test Path</button>[m
+[31m-            <div id="dbResult"></div>[m
+[31m-        </div>[m
+[31m-    </div>[m
+[31m-[m
+[31m-    <script>[m
+[31m-        function testDbPath() {[m
+[3

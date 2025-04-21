@@ -159,51 +159,47 @@ const CourseUpload = () => {
     };
 
     try {
-      if (!token) {
+      // Get token from localStorage directly to ensure we have the most current token
+      const authToken = localStorage.getItem('token');
+      
+      if (!authToken) {
         alert("You must be logged in to create a course");
         navigate("/login");
         return;
       }
       
-      console.log("Submitting course data:", data);
+      console.log("Submitting course with auth token:", authToken.substring(0, 10) + "...");
       
-      try {
-        const response = await axios.post(
-          "http://localhost:5000/courses/create",
-          data,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
+      const response = await axios.post(
+        "http://localhost:5000/courses/create",
+        data,
+        {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
           }
-        );
-        
-        console.log("Response:", response.data);
-        
-        if (response.data.success) {
-          alert("Course submitted successfully!");
-          navigate(`/courses/${response.data.courseId}`); // Navigate to the new course page
-        } else {
-          alert(`Failed to submit course: ${response.data.message}`);
         }
-      } catch (error) {
-        console.error("Error submitting course:", error);
-        
-        // If the error is due to token expiration, our axios interceptor
-        // will automatically handle the token refresh and retry
-        if (error.response) {
-          console.error("Response data:", error.response.data);
-          console.error("Response status:", error.response.status);
-          
-          alert(`Error: ${error.response.data?.message || "An unexpected error occurred"}`);
-        } else {
-          alert("Network error - please check your connection and try again");
-        }
+      );
+      
+      console.log("Response:", response.data);
+      
+      if (response.data.success) {
+        alert("Course submitted successfully!");
+        navigate(`/courses/${response.data.courseId}`);
+      } else {
+        alert(`Failed to submit course: ${response.data.message}`);
       }
     } catch (error) {
-      console.error("Unexpected error:", error);
-      alert("An unexpected error occurred. Please try again later.");
+      console.error("Error submitting course:", error);
+      
+      if (error.response && error.response.status === 401) {
+        alert("Authentication error. Please log in again.");
+        navigate("/login");
+      } else if (error.response) {
+        alert(`Error: ${error.response.data?.message || "An unexpected error occurred"}`);
+      } else {
+        alert("Network error - please check your connection and try again");
+      }
     }
   };
 

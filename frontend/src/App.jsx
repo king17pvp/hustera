@@ -194,14 +194,16 @@ const sampleStats = [
 ];
 
 const App = () => {
-  // const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const isAuthenticated = true;
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  // Use local storage as backup for authentication status
+  const tokenInStorage = localStorage.getItem('token');
+  const isUserLoggedIn = isAuthenticated || !!tokenInStorage;
 
   return (
     <>
       <BrowserRouter>
         <Routes>
-          {!isAuthenticated ?
+          {!isUserLoggedIn ?
             (
               <>
                 <Route path='*' element={<Navigate to="/login" replace />} />
@@ -237,7 +239,7 @@ const App = () => {
             )}
 
         </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
     </>
   );
 };

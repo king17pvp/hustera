@@ -139,6 +139,11 @@ exports.createCourse = async (courseData) => {
     weeksCount: weeks.length
   });
 
+  if (!instructor_ID) {
+    console.error("❌ Missing instructor_ID in course data");
+    throw new Error("Instructor ID is required to create a course");
+  }
+
   // Ensure we have a default image and get its ID
   const thumbnail_ID = await ensureDefaultImage();
   console.log("🖼️ Using thumbnail_ID:", thumbnail_ID);

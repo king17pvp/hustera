@@ -9,7 +9,15 @@ exports.getFilters = async () => {
 };
 
 exports.createCourse = async (courseData) => {
-    return await coursesModel.createCourse(courseData);
+    try {
+        return await coursesModel.createCourse(courseData);
+    } catch (error) {
+        console.error("Service layer error in createCourse:", error);
+        if (error.message.includes("Instructor ID is required")) {
+            throw new Error("Authentication problem: " + error.message);
+        }
+        throw error;
+    }
 };
 
 exports.getCourseById = async (courseId) => {

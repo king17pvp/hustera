@@ -6,7 +6,8 @@ const authMiddleware = require("../middleware/authMiddleware");
 router.get("/", coursesController.getCourses);
 router.get("/filters", coursesController.getFilters);
 router.get("/:id", coursesController.getCourseById);
-// Add back the verifyToken middleware which was removed
+
+// Ensure verifyToken middleware is applied to protected routes
 router.post("/create", authMiddleware.verifyToken, coursesController.createCourse);
 
 // Thêm routes cho bài giảng
