@@ -45,7 +45,7 @@ exports.getForumOnClick = async ({ threadId }) => {
 
 exports.getForum = async ({category, searchQuery, tags, sortBy, page}) => {
   try {
-    
+    // console.log("Category from forum service", category);
     const threads = await forumModel.getForum({
       category: category, 
       searchQuery: searchQuery, 
@@ -53,7 +53,12 @@ exports.getForum = async ({category, searchQuery, tags, sortBy, page}) => {
       sortBy: sortBy, 
       page: page
     });
-    return threads;
+    const totalPages = await forumModel.getTotalPages({
+      category: category, 
+      searchQuery: searchQuery, 
+      tags: tags, 
+    })
+    return {threads, totalPages};
   } catch (err) {
     console.error('Error in forumService.getForum:', err);
     throw err;

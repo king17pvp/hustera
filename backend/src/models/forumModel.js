@@ -1,5 +1,84 @@
 const db = require('../config/db');
+exports.getTotalPages = async ({category, searchQuery, tags}) => {
+  const params = [];
+  const limit = 9;
+  const conditions = [];
+  console.log("Category: ", category);
+  // console.log(searchQuery);
+  // console.log(tags);
+  // console.log(sortBy);
+  // console.log(page);
+  // Filter by category
+  if (category) {
+    conditions.push('t.category = ?');
+    params.push(category);
+  } else {
+    searchQuery = "";
+    conditions.push('t.category LIKE ?')
+    params.push(`%%`);
+  }
+  let searchTerm = ``;
+  conditions.push('(t.title LIKE ? OR t.content LIKE ?)');
+  if (!searchQuery) {
+    searchQuery = "";
+  }
+  searchTerm = `%${searchQuery}%`;
+  params.push(searchTerm, searchTerm);  // Two parameters for LIKE
+  // Filter by tag name (join with thread_tags and tags)
+  let tagJoin = '';
+  if (tags && (Array.isArray(tags) ? tags.length > 0 : tags !== '')) {
+    tagJoin = `
+      JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
+      JOIN tags tg ON tt.tag_ID = tg.tag_ID
+    `;
+  
+    // Always treat tags as an array
+    const tagArray = Array.isArray(tags) ? tags : [tags];
+  
+    // Add condition
+    conditions.push(`tg.tag_name IN (${tagArray.map(() => '?').join(',')})`);
+  
+    // Add values
+    params.push(...tagArray);
+  } else {
+    let tag = '';
+    tagJoin = `
+      JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
+      JOIN tags tg ON tt.tag_ID = tg.tag_ID
+    `;
+    conditions.push('tg.tag_name LIKE ?');
+    const tagSearch = `%${tag}%`;
+    params.push(tagSearch);
+  }
 
+  // // Create WHERE clause
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  // // SQL query to fetch threads based on the conditions and sorting
+  const query = `
+    SELECT COUNT(DISTINCT t.thread_ID) AS totalThreads
+      FROM threads t
+      JOIN user_auth ua ON t.author_ID = ua.user_ID
+      JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
+      JOIN tags tg ON tt.tag_ID = tg.tag_ID
+      LEFT JOIN user_info ui ON ua.user_ID = ui.user_ID
+      LEFT JOIN thread_votes tv ON t.thread_ID = tv.thread_ID
+      LEFT JOIN thread_answers ta ON t.thread_ID = ta.thread_ID
+      ${whereClause}
+  `;
+  // console.log('Executing query:', query);
+  // console.log('With parameters:', params);
+  try {
+    const [countResult] = await db.execute(query, params);
+    // console.log(countResult);
+    const totalThreads = countResult[0].totalThreads || 0;
+    const totalPages = Math.ceil(totalThreads / limit);
+    return totalPages;
+  } catch (err) {
+    console.error('Error executing query in getTotalPages:', err);
+    throw err;
+  }
+};
 exports.getThreadById = async (threadId) => {
   const [rows] = await db.query(`
     SELECT 
@@ -203,7 +282,7 @@ exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page
       ${whereClause}
       GROUP BY t.thread_ID
       ${orderByClause}
-      LIMIT 9;
+      LIMIT 9 OFFSET ${offset.toString()};
   `;
   console.log('Executing query:', query);
   console.log('With parameters:', params);
