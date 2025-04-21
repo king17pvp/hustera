@@ -6,12 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Trash2, X } from "lucide-react";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
 
 const predefinedTags = ["JavaScript", "React", "Python", "SQL", "Machine Learning"];
 const predefinedCategories = ["Art & Design", "Information Technology", "Communication", "Videography", "Photography", "Marketing", "Content Writing", "Finance", "Science"];
 
 const CourseUpload = () => {
+
+  const { user } = useSelector((state) => state.auth);
+
   const [phase, setPhase] = useState(1);
   const [direction, setDirection] = useState(1);
   const [validationErrors, setValidationErrors] = useState([]);
@@ -144,6 +148,7 @@ const CourseUpload = () => {
 
   const submitCourse = async () => {
     const data = {
+      instructor_id: user.id,
       title: basicInfo.title,
       description: basicInfo.description,
       category: basicInfo.category,

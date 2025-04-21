@@ -5,7 +5,7 @@ import Breadcrumb from "../components/BreadCrumb";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux"; 
+import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
 
@@ -111,7 +111,7 @@ const ForumUpload = () => {
           "Content-Type": "application/json"
         }
       });
-  
+
       // Step 3: Handle the response
       if (response.status === 201) {
         // Optionally, reset the form or navigate to another page after submission
@@ -311,19 +311,19 @@ const ForumUpload = () => {
                       <label className="block mb-2 text-[23px] font-avant-medium font-semibold">Tags</label>
                       <label className="block text-lg text-gray-700 font-avant-medium mt-[-10px] mb-2">Select tags that are relevant to your thread's content</label>
                       <div className="flex flex-wrap gap-3">
-                      {predefinedTags.map((tag) => (
-  <button
-    key={tag}
-    type="button"
-    onClick={() => handleTagClick(tag)}
-    className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${basicInfo.tags.split(",").includes(tag)
-      ? "bg-gray-800 border-gray-800 text-white"
-      : "bg-white border-gray-400 hover:bg-gray-100"
-      }`}
-  >
-    {tag}
-  </button>
-))}
+                        {predefinedTags.map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => handleTagClick(tag)}
+                            className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${basicInfo.tags.split(",").includes(tag)
+                              ? "bg-gray-800 border-gray-800 text-white"
+                              : "bg-white border-gray-400 hover:bg-gray-100"
+                              }`}
+                          >
+                            {tag}
+                          </button>
+                        ))}
                       </div>
                     </div>
                   </motion.div>
