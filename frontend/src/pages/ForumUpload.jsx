@@ -21,7 +21,52 @@ const ForumUpload = () => {
   });
   const { user } = useSelector((state) => state.auth);
   const predefinedTags = ["React", "JavaScript", "Tailwind", "CSS", "HTML"];
-  const predefinedCategories = ["Programming", "Design", "Marketing", "Business", "Data Science"];
+  const predefinedCategories = [
+    "Accounting",
+    "Anthropology",
+    "Architecture",
+    "Art & Creativity",
+    "Artificial Intelligence",
+    "Astronomy",
+    "Biology",
+    "Business",
+    "Chemistry",
+    "Civil Engineering",
+    "Communication",
+    "Computer Science",
+    "Data Science",
+    "Design",
+    "Economics",
+    "Education",
+    "Electrical Engineering",
+    "Engineering",
+    "Environmental Science",
+    "Ethics",
+    "Finance",
+    "Geography",
+    "Graphic Design",
+    "History",
+    "Law",
+    "Linguistics",
+    "Machine Learning",
+    "Marketing",
+    "Mathematics",
+    "Mechanical Engineering",
+    "Media Studies",
+    "Medicine",
+    "Philosophy",
+    "Physics",
+    "Political Science",
+    "Psychology",
+    "Public Health",
+    "Sociology",
+    "Software Engineering",
+    "Statistics",
+    "Theology",
+    "UI/UX Design"
+  ];
+  
+  
   const navigate = useNavigate();
   const [errors, setErrors] = useState({
     title: false,

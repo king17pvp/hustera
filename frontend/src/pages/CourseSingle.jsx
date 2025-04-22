@@ -6,11 +6,11 @@ import CourseSingleCards from "../components/CourseSingleCards";
 import Breadcrumb from "../components/BreadCrumb";
 
 const sampleCourse = {
-  course_ID: 1,
+  course_id: 1,
   title: "The Ultimate Guide To The Best WordPress LMS Plugin",
   description: "LearnPress is a comprehensive WordPress LMS Plugin for creating and selling online courses. LearnPress is one of the best WordPress LMS Plugins for creating and selling online courses.",
   category: "Technology",
-  thumbnail_ID: 25, // Change this to base64 encoded string later when backend is ready
+  thumbnail_id: 25, // Change this to base64 encoded string later when backend is ready
   price: 49.99,
   duration: 2, // in weeks
   level: "Intermediate",
@@ -22,21 +22,21 @@ const sampleCourse = {
   reviews: [
     {
       reviewer_name: "John Doeny",
-      reviewer_avatar_ID: 401, // Change this to base64 encoded string later when backend is ready
+      reviewer_avatar_id: 401, // Change this to base64 encoded string later when backend is ready
       rating: 4,
       rated_at: "2022-10-03 14:30:00",
       review: "This course was incredibly helpful!"
     },
     {
       reviewer_name: "Jane Smith",
-      reviewer_avatar_ID: 402, // Change this to base64 encoded string later when backend is ready
+      reviewer_avatar_id: 402, // Change this to base64 encoded string later when backend is ready
       rating: 3,
       rated_at: "2022-09-29 09:15:00",
       review: "Loved the hands-on approach."
     },
     {
       reviewer_name: "Alice Johnson",
-      reviewer_avatar_ID: 403, // Change this to base64 encoded string later when backend is ready
+      reviewer_avatar_id: 403, // Change this to base64 encoded string later when backend is ready
       rating: 5,
       rated_at: "2022-09-15 16:45:00",
       review: "Perfect for beginners!"
@@ -49,14 +49,17 @@ const sampleCourse = {
       title: "Lessons With Video Content",
       videos: [
         { 
+          video_id: 23,
           title: "Introduction to LearnPress", 
           url: "https://www.youtube.com/watch?v=xvFZjo5PgG0&ab_channel=Duran"
         },
         { 
+          video_id: 12,
           title: "Installing LearnPress", 
           url: "https://www.youtube.com/embed/2jK1R9bXTVc"
         },
         { 
+          video_id: 21,
           title: "First Course Setup", 
           url: "https://www.youtube.com/embed/3aQ15eHgUJ8"
         }
@@ -66,10 +69,12 @@ const sampleCourse = {
       title: "Advanced LearnPress",
       videos: [
         { 
+          video_id: 1,
           title: "Adding Custom Quizzes", 
           url: "https://www.youtube.com/embed/4bD1Rxh3K9s"
         },
         { 
+          video_id: 145,
           title: "Integrating Payment Methods", 
           url: "https://www.youtube.com/embed/5n3L6Rxx9fM"
         }
@@ -79,12 +84,12 @@ const sampleCourse = {
   
   // Instructor info
   instructor: {
-    user_ID: 101,
+    user_id: 101,
     email: "john.doe@example.com",
     name: "John Doe",
     num_courses: 5,
     num_students: 200,
-    avatar_ID: 150 // Change this to base64 encoded string later when backend is ready
+    avatar_id: 150 // Change this to base64 encoded string later when backend is ready
   },
   
   // Enrollment count
@@ -92,7 +97,6 @@ const sampleCourse = {
 };
 
 const CourseSingle = ({ course = sampleCourse }) => {
-  const [activeTab, setActiveTab] = useState("Curriculum");
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -107,8 +111,6 @@ const CourseSingle = ({ course = sampleCourse }) => {
           <div className="w-[1680px] items-center justify-between">
             <CourseSingleCards 
               course={course} 
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
             />
           </div>
         </div>

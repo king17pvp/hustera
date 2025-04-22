@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { FaStar, FaReply, FaChevronLeft, FaChevronRight, FaCheck, FaUsers, FaBookOpen } from "react-icons/fa";
+import { FaStar, FaChevronLeft, FaChevronRight, FaUsers, FaBookOpen } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const CourseVideoOverlay = ({ course, selectedVideo, closeVideo, handleVideoClick, expandedSections, toggleSection }) => {
   if (!selectedVideo) return null;
@@ -7,30 +8,30 @@ const CourseVideoOverlay = ({ course, selectedVideo, closeVideo, handleVideoClic
   // Function to extract YouTube video ID from various YouTube URL formats
   const getYouTubeEmbedUrl = (url) => {
     if (!url) return "";
-    
+
     // If it's already an embed URL, return it
     if (url.includes('youtube.com/embed/')) return url;
-    
+
     // Extract the video ID from various YouTube URL formats
     let videoId = "";
-    
+
     // Format: youtube.com/watch?v=VIDEO_ID
     const watchRegex = /youtube\.com\/watch\?v=([^&]+)/;
     const watchMatch = url.match(watchRegex);
-    
+
     // Format: youtu.be/VIDEO_ID
     const shortRegex = /youtu\.be\/([^?]+)/;
     const shortMatch = url.match(shortRegex);
-    
+
     // Format: youtube.com/v/VIDEO_ID
     const vRegex = /youtube\.com\/v\/([^?]+)/;
     const vMatch = url.match(vRegex);
-    
+
     if (watchMatch) videoId = watchMatch[1];
     else if (shortMatch) videoId = shortMatch[1];
     else if (vMatch) videoId = vMatch[1];
     else videoId = url; // Assume it's just the ID
-    
+
     return `https://www.youtube.com/embed/${videoId}`;
   };
 
@@ -50,8 +51,8 @@ const CourseVideoOverlay = ({ course, selectedVideo, closeVideo, handleVideoClic
             </span>
             {selectedVideo.title || "Course Video"}
           </h2>
-          <button 
-            onClick={closeVideo} 
+          <button
+            onClick={closeVideo}
             className="text-gray-500 hover:text-gray-800 transition duration-150 bg-gray-100 rounded-full p-2 hover:bg-gray-200"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -101,13 +102,12 @@ const CourseVideoOverlay = ({ course, selectedVideo, closeVideo, handleVideoClic
                         {week.videos.map((video, vidIndex) => (
                           <div
                             key={vidIndex}
-                            className={`p-2 pl-8 hover:bg-gray-50 cursor-pointer transition duration-150 flex items-center ${
-                              selectedVideo === video || 
+                            className={`p-2 pl-8 hover:bg-gray-50 cursor-pointer transition duration-150 flex items-center ${selectedVideo === video ||
                               (selectedVideo.url && video.url && selectedVideo.url === video.url) ||
                               (typeof selectedVideo === 'string' && typeof video === 'string' && selectedVideo === video)
-                                ? 'bg-blue-50' 
-                                : ''
-                            }`}
+                              ? 'bg-blue-50'
+                              : ''
+                              }`}
                             onClick={() => handleVideoClick(video)}
                           >
                             <div className="mr-2 text-gray-400">
@@ -150,13 +150,19 @@ const CourseVideoOverlay = ({ course, selectedVideo, closeVideo, handleVideoClic
   );
 };
 
-const CourseSingleCards = ({ course, activeTab, setActiveTab }) => {
+const CourseSingleCards = ({ course }) => {
+  const [activeTab, setActiveTab] = useState("Curriculum");
   const [expandedSections, setExpandedSections] = useState({});
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
   const [hovered, setHovered] = useState(0);
+  const [ratingError, setRatingError] = useState("");
+  const [commentError, setCommentError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const reviewsPerPage = 3;
+
+  const { user } = useSelector((state) => state.auth);
 
   // Calculate average rating
   const totalRatings = course.reviews.length;
@@ -196,8 +202,66 @@ const CourseSingleCards = ({ course, activeTab, setActiveTab }) => {
   };
 
   // Function to handle video selection
-  const handleVideoClick = (video) => {
+  const handleVideoClick = async (video) => {
     setSelectedVideo(video);
+    const payload = {
+      user_id: user.id,
+      video_id: video.video_id,
+    };
+    try {
+      await axios.post("/api/user/watch-video", payload);
+      // Optionally handle response or show a notification
+    } catch (err) {
+      console.error("Failed to update watched video", err);
+    }
+  };
+
+  const handlePostComment = async (e) => {
+    e.preventDefault();
+    let hasError = false;
+
+    if (!user) {
+      setRatingError("You must be logged in to post a comment.");
+      hasError = true;
+    } else {
+      setRatingError("");
+    }
+
+    if (!rating) {
+      setRatingError("Please select a rating.");
+      hasError = true;
+    } else if (user) {
+      setRatingError("");
+    }
+
+    if (!comment.trim()) {
+      setCommentError("Please enter a comment.");
+      hasError = true;
+    } else {
+      setCommentError("");
+    }
+
+    if (hasError) return;
+
+    const payload = {
+      user_id: user.id,
+      course_id: course.course_id,
+      rating,
+      review: comment.trim(),
+    };
+    try {
+      console.log("Posting review:", payload);
+      await axios.post("/api/course/post-review", payload);
+      setComment("");
+      setRating(0);
+      setHovered(0);
+      setRatingError("");
+      setCommentError("");
+      // Optionally: fetch updated reviews here
+    } catch (err) {
+      setRatingError("Failed to post review. Please try again.");
+      console.error("Failed to post review", err);
+    }
   };
 
   // Function to close video modal
@@ -236,7 +300,7 @@ const CourseSingleCards = ({ course, activeTab, setActiveTab }) => {
               {/* Instructor Info */}
               <div className="flex items-center">
                 <img
-                  src={course.instructor.avatar_ID ? `/api/images/${course.instructor.avatar_ID}` : "/api/placeholder/150/150"}
+                  src={course.instructor.avatar_id ? `/api/images/${course.instructor.avatar_id}` : "/api/placeholder/150/150"}
                   alt="Instructor"
                   className="w-32 h-32 rounded-lg object-cover mr-6"
                 />
@@ -327,7 +391,7 @@ const CourseSingleCards = ({ course, activeTab, setActiveTab }) => {
                   <div key={index} className="bg-white px-6 py-4 rounded-xl">
                     <div className="flex items-center">
                       <img
-                        src={review.reviewer_avatar_ID ? `/api/images/${review.reviewer_avatar_ID}` : "/api/placeholder/50/50"}
+                        src={review.reviewer_avatar_id || "https://www.svgrepo.com/show/5125/avatar.svg"}
                         alt="User"
                         className="w-12 h-12 rounded-full object-cover mr-4"
                       />
@@ -414,31 +478,38 @@ const CourseSingleCards = ({ course, activeTab, setActiveTab }) => {
                 <FaStar
                   key={star}
                   size={28}
-                  className="cursor-pointer transition-colors duration-200"
+                  className={`cursor-pointer transition-colors duration-200 ${ratingError ? "text-red-500" : ""}`}
                   color={(hovered || rating) >= star ? "#facc15" : "#d1d5db"}
                   onMouseEnter={() => setHovered(star)}
                   onMouseLeave={() => setHovered(0)}
-                  onClick={() => setRating(star)}
+                  onClick={() => {
+                    setRating(star);
+                    setRatingError("");
+                  }}
                 />
               ))}
             </div>
-
-            {/* Inline Satisfaction Label */}
-            {(hovered || rating) > 0 && (
+            {(hovered || rating) > 0 && !ratingError && (
               <span className="text-lg text-black font-medium">
                 {["😞 Very Bad", "😕 Bad", "😐 Okay", "🙂 Good", "🤩 Excellent"][(hovered || rating) - 1]}
               </span>
+            )}
+            {ratingError && (
+              <span className="ml-4 text-red-600 text-lg">{ratingError}</span>
             )}
           </div>
 
           {/* Comment field */}
           <textarea
             placeholder="Comment"
-            className="w-full h-32 border-3 px-5 py-3 text-lg rounded-xl resize-none"
+            className={`w-full h-32 border-3 px-5 py-3 text-lg rounded-xl resize-none ${commentError ? "border-red-500" : ""}`}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
           ></textarea>
-
-          {/* Post Comment Button */}
-          <button className="bg-blue-600 text-white text-lg font-medium px-5 py-2 rounded-xl cursor-pointer">
+          <button
+            onClick={handlePostComment}
+            className="bg-blue-600 text-white text-lg font-medium px-5 py-2 rounded-xl cursor-pointer"
+          >
             Post Comment
           </button>
         </form>
