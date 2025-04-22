@@ -84,7 +84,7 @@ const ThreadListing = () => {
     }, [filterData]);
 
   const navigate = useNavigate();
-  console.log("Total pages: ", totalPages, "Current page: ", currentPage);
+  // console.log("Total pages: ", totalPages, "Current page: ", currentPage);
   return (
     <>
       <Navbar currentState="Forum" />
