@@ -10,7 +10,50 @@ import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
 
 const predefinedTags = ["JavaScript", "React", "Python", "SQL", "Machine Learning"];
-const predefinedCategories = ["Art & Design", "Information Technology", "Communication", "Videography", "Photography", "Marketing", "Content Writing", "Finance", "Science"];
+const predefinedCategories = [
+  "Accounting",
+  "Anthropology",
+  "Architecture",
+  "Art & Creativity",
+  "Artificial Intelligence",
+  "Astronomy",
+  "Biology",
+  "Business",
+  "Chemistry",
+  "Civil Engineering",
+  "Communication",
+  "Computer Science",
+  "Data Science",
+  "Design",
+  "Economics",
+  "Education",
+  "Electrical Engineering",
+  "Engineering",
+  "Environmental Science",
+  "Ethics",
+  "Finance",
+  "Geography",
+  "Graphic Design",
+  "History",
+  "Law",
+  "Linguistics",
+  "Machine Learning",
+  "Marketing",
+  "Mathematics",
+  "Mechanical Engineering",
+  "Media Studies",
+  "Medicine",
+  "Philosophy",
+  "Physics",
+  "Political Science",
+  "Psychology",
+  "Public Health",
+  "Sociology",
+  "Software Engineering",
+  "Statistics",
+  "Theology",
+  "UI/UX Design"
+];
 
 const CourseUpload = () => {
 

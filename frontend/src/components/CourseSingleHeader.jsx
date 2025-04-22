@@ -1,10 +1,29 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 const CourseSingleHeader = ({ course }) => {
+  const { user } = useSelector((state) => state.auth);
   // Calculate total number of videos across all weeks
   const totalVideos = course.weeks.reduce((total, week) => {
     return total + week.videos.length;
   }, 0);
+
+  const handleStartNow = async () => {
+    if (!user) {
+      alert("You must be logged in to start the course.");
+      return;
+    }
+    try {
+      await axios.post("/api/user/enroll-course", {
+        user_id: user.id,
+        course_id: course.course_id,
+      });
+      // Need something to refresh course UI to manage registered course here //
+    } catch (err) {
+      console.error("Failed to enroll in course", err);
+      alert("Failed to enroll in course. Please try again.");
+    }
+  };
 
   return (
     <div className="bg-black text-white p-6 relative font-avant-medium h-80 flex justify-center items-center">
@@ -48,7 +67,7 @@ const CourseSingleHeader = ({ course }) => {
           {/* Image Section - Using placeholder with thumbnail_ID reference */}
           <div>
             <img
-              src={`/api/images/${course.thumbnail_ID}`}
+              src={course.thumbnail_ID}
               alt="Course Preview"
               className="w-full h-70 object-cover rounded-t-xl"
             />
@@ -59,7 +78,9 @@ const CourseSingleHeader = ({ course }) => {
             <p className="text-2xl font-avant-medium font-bold text-gray-700">
               ${course.price}
             </p>
-            <button className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition cursor-pointer">
+            <button
+              onClick={handleStartNow} 
+              className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition cursor-pointer">
               Start Now
             </button>
           </div>

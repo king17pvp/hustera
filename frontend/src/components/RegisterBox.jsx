@@ -14,7 +14,7 @@ const RegisterBox = () => {
   const [error, setError] = useState('');
   const dispatch = useDispatch();
   const [attemptedRegister, setAttemptedRegister] = useState(false);
-  const [form, setForm] = useState({ email: "", password: "", role: "Student" });
+  const [form, setForm] = useState({ email: "", password: "", role: "student" });
 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ const RegisterBox = () => {
     const { name, value } = e.target;
     setForm((prevForm) => ({
       ...prevForm,
-      [name]: value,
+      [name]: name === "role" ? value.toLowerCase() : value,
     }));
   };
 
@@ -42,6 +42,7 @@ const RegisterBox = () => {
     try {
       setAttemptedRegister(false);
       const response = await axios.post('http://localhost:5000/register', form);
+      console.log(response.data.user);
       dispatch(login(response.data.user));
       navigate('/settings');
     } catch (err) {
