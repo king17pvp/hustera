@@ -128,9 +128,9 @@ exports.uploadForum = async (req, res) => {
     }
 
     const threadData = req.body;
-    // console.log("Thread data", threadData);
+    console.log("Thread data", threadData);
     const threadId = await forumService.uploadForum(threadData, authorId);
-    console.log(threadId);
+    // console.log(threadId);
     res.status(201).json({
       message: 'Thread uploaded successfully',
       threadId: threadId,

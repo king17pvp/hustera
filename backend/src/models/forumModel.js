@@ -1,4 +1,9 @@
 const db = require('../config/db');
+
+exports.getTags = async () => {
+  
+}
+
 exports.getTotalPages = async ({category, searchQuery, tags}) => {
   const params = [];
   const limit = 9;
@@ -284,10 +289,10 @@ exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page
       ${orderByClause}
       LIMIT 9 OFFSET ${offset.toString()};
   `;
-  console.log('Executing query:', query);
-  console.log('With parameters:', params);
-  console.log(tags);
-  console.log(searchQuery);
+  // console.log('Executing query:', query);
+  // console.log('With parameters:', params);
+  // console.log(tags);
+  // console.log(searchQuery);
   // Add pagination parameters
   // params.push(limit, offset);
 
@@ -417,14 +422,14 @@ exports.createAnswer = async (threadId, authorId, contents, attachments = []) =>
 
 
 exports.uploadForum = async (threadData, authorId) => {
-  const { title, body, tags, attachments } = threadData;
+  const { title, body, tags, attachments, category} = threadData;
   let parsedTags = tags ? tags.split(',') : [];
   try {
     // Step 1: Insert thread
     const [threadResult] = await db.execute(
       `INSERT INTO threads (author_ID, title, category, content)
        VALUES (?, ?, ?, ?)`,
-      [authorId, title, 'general', body]
+      [authorId, title, category, body]
     );
     console.log("TAGS TYPE:", typeof parsedTags, parsedTags);
     const threadId = threadResult.insertId;
