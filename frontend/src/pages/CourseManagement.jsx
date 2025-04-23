@@ -5,362 +5,6 @@ import Breadcrumb from "../components/BreadCrumb";
 import axios from "axios";
 import React from "react";
 
-// Updated mock data structure with weeks containing videos
-const mockCourses = [
-  {
-    course_id: "C001",
-    title: "Linear Algebra",
-    instructor: "Dr. Alice Nguyen",
-    category: "Mathematics",
-    createdAt: "2023-09-01T10:15:00Z",
-    rating: 4.7,
-    enrolled: 100, // Added enrolled count
-    weeks: [
-      {
-        week_id: "W001",
-        title: "Introduction to Linear Algebra",
-        videos: [
-          { 
-            video_id: "V001", 
-            title: "Vectors and Spaces", 
-            videoUrl: "https://example.com/video/C001/W001/V001",
-            completed: 92 
-          },
-          { 
-            video_id: "V002", 
-            title: "Linear Combinations", 
-            videoUrl: "https://example.com/video/C001/W001/V002",
-            completed: 88 
-          }
-        ]
-      },
-      {
-        week_id: "W002",
-        title: "Matrix Transformations",
-        videos: [
-          { 
-            video_id: "V003", 
-            title: "Matrix Multiplication", 
-            videoUrl: "https://example.com/video/C001/W002/V003",
-            completed: 85 
-          },
-          { 
-            video_id: "V004", 
-            title: "Matrix Inverse", 
-            videoUrl: "https://example.com/video/C001/W002/V004",
-            completed: 82 
-          }
-        ]
-      },
-      {
-        week_id: "W003",
-        title: "Vector Spaces",
-        videos: [
-          { 
-            video_id: "V005", 
-            title: "Subspaces", 
-            videoUrl: "https://example.com/video/C001/W003/V005",
-            completed: 80 
-          }
-        ]
-      },
-      {
-        week_id: "W004",
-        title: "Eigenvalues & Eigenvectors",
-        videos: [
-          { 
-            video_id: "V006", 
-            title: "Introduction to Eigenvalues", 
-            videoUrl: "https://example.com/video/C001/W004/V006",
-            completed: 75 
-          },
-          { 
-            video_id: "V007", 
-            title: "Eigenvector Computation", 
-            videoUrl: "https://example.com/video/C001/W004/V007",
-            completed: 70 
-          }
-        ]
-      }
-    ],
-    reviews: [
-      {
-        review_id: "R001",
-        user_id: "U003",
-        user_name: "Charlie Le",
-        content: "Can someone explain vectors in simple terms?",
-        star: 4
-      },
-      {
-        review_id: "R002",
-        user_id: "U001",
-        user_name: "Alice Nguyen",
-        content: "Looking for solid resources to understand matrix operations.",
-        star: 5
-      },
-      {
-        review_id: "R003",
-        user_id: "U003",
-        user_name: "Alice Nguyen",
-        content: "Looking for solid resources to understand matrix operations.",
-        star: 5
-      },
-      {
-        review_id: "R004",
-        user_id: "U004",
-        user_name: "Alice Nguyen",
-        content: "Looking for solid resources to understand matrix operations.",
-        star: 5
-      }
-    ],
-    students: [
-      { user_id: "U003", user_name: "Charlie Le", progress: 85 },
-      { user_id: "U001", user_name: "Alice Nguyen", progress: 95 },
-      { user_id: "U004", user_name: "Minh Vu", progress: 70 }
-    ]
-  },
-  {
-    course_id: "C002",
-    title: "React for Beginners",
-    instructor: "Bob Tran",
-    category: "Programming",
-    createdAt: "2024-01-10T14:30:00Z",
-    rating: 4.5,
-    enrolled: 150,
-    weeks: [
-      {
-        week_id: "W001",
-        title: "Introduction to React",
-        videos: [
-          { 
-            video_id: "V008", 
-            title: "What is React?", 
-            videoUrl: "https://example.com/video/C002/W001/V008",
-            completed: 90 
-          },
-          { 
-            video_id: "V009", 
-            title: "Setting up your environment", 
-            videoUrl: "https://example.com/video/C002/W001/V009",
-            completed: 88 
-          }
-        ]
-      },
-      {
-        week_id: "W002",
-        title: "JSX & Components",
-        videos: [
-          { 
-            video_id: "V010", 
-            title: "Understanding JSX", 
-            videoUrl: "https://example.com/video/C002/W002/V010",
-            completed: 85 
-          },
-          { 
-            video_id: "V011", 
-            title: "Creating Your First Component", 
-            videoUrl: "https://example.com/video/C002/W002/V011",
-            completed: 82 
-          }
-        ]
-      },
-      {
-        week_id: "W003",
-        title: "Props & State",
-        videos: [
-          { 
-            video_id: "V012", 
-            title: "Working with Props", 
-            videoUrl: "https://example.com/video/C002/W003/V012",
-            completed: 80 
-          },
-          { 
-            video_id: "V013", 
-            title: "Managing State", 
-            videoUrl: "https://example.com/video/C002/W003/V013",
-            completed: 75 
-          }
-        ]
-      }
-    ],
-    reviews: [
-      {
-        review_id: "R003",
-        user_id: "U005",
-        user_name: "Ethan Do",
-        content: "Still confused about the dependency array in useEffect.",
-        star: 4
-      }
-    ],
-    students: [
-      { user_id: "U005", user_name: "Ethan Do", progress: 65 },
-      { user_id: "U006", user_name: "Linh Pham", progress: 90 }
-    ]
-  },
-  {
-    course_id: "C003",
-    title: "UI/UX Fundamentals",
-    instructor: "Fiona Tran",
-    category: "Design",
-    createdAt: "2023-06-20T12:00:00Z",
-    rating: 4.2,
-    enrolled: 75,
-    weeks: [
-      {
-        week_id: "W001",
-        title: "Principles of Design",
-        videos: [
-          { 
-            video_id: "V014", 
-            title: "Design Theory Basics", 
-            videoUrl: "https://example.com/video/C003/W001/V014",
-            completed: 90 
-          },
-          { 
-            video_id: "V015", 
-            title: "Color Theory", 
-            videoUrl: "https://example.com/video/C003/W001/V015",
-            completed: 85 
-          }
-        ]
-      },
-      {
-        week_id: "W002",
-        title: "Wireframing",
-        videos: [
-          { 
-            video_id: "V016", 
-            title: "Introduction to Wireframes", 
-            videoUrl: "https://example.com/video/C003/W002/V016",
-            completed: 78 
-          },
-          { 
-            video_id: "V017", 
-            title: "Creating Effective Wireframes", 
-            videoUrl: "https://example.com/video/C003/W002/V017",
-            completed: 75 
-          }
-        ]
-      }
-    ],
-    reviews: [],
-    students: [
-      { user_id: "U007", user_name: "Nam Bui", progress: 88 }
-    ]
-  },
-  {
-    course_id: "C004",
-    title: "Machine Learning Basics",
-    instructor: "Ethan Do",
-    category: "Data Science",
-    createdAt: "2023-11-15T09:00:00Z",
-    rating: 4.8,
-    enrolled: 200,
-    weeks: [
-      {
-        week_id: "W001",
-        title: "Introduction to ML",
-        videos: [
-          { 
-            video_id: "V018", 
-            title: "What is Machine Learning?", 
-            videoUrl: "https://example.com/video/C004/W001/V018",
-            completed: 96 
-          },
-          { 
-            video_id: "V019", 
-            title: "Types of ML Algorithms", 
-            videoUrl: "https://example.com/video/C004/W001/V019",
-            completed: 94 
-          }
-        ]
-      },
-      {
-        week_id: "W002",
-        title: "Supervised Learning",
-        videos: [
-          { 
-            video_id: "V020", 
-            title: "Classification vs Regression", 
-            videoUrl: "https://example.com/video/C004/W002/V020",
-            completed: 95 
-          },
-          { 
-            video_id: "V021", 
-            title: "Decision Trees", 
-            videoUrl: "https://example.com/video/C004/W002/V021",
-            completed: 92 
-          }
-        ]
-      },
-      {
-        week_id: "W003",
-        title: "Unsupervised Learning",
-        videos: [
-          { 
-            video_id: "V022", 
-            title: "Clustering Algorithms", 
-            videoUrl: "https://example.com/video/C004/W003/V022",
-            completed: 90 
-          },
-          { 
-            video_id: "V023", 
-            title: "Dimensionality Reduction", 
-            videoUrl: "https://example.com/video/C004/W003/V023",
-            completed: 88 
-          }
-        ]
-      }
-    ],
-    reviews: [
-      {
-        review_id: "R004",
-        user_id: "U001",
-        user_name: "Alice Nguyen",
-        content: "What libraries should I start with for ML in Python?",
-        star: 5
-      }
-    ],
-    students: [
-      { user_id: "U001", user_name: "Alice Nguyen", progress: 96 },
-      { user_id: "U005", user_name: "Ethan Do", progress: 93 }
-    ]
-  },
-  {
-    course_id: "C005",
-    title: "Digital Forensics",
-    instructor: "Tina Mai",
-    category: "Cybersecurity",
-    createdAt: "2024-02-20T11:20:00Z",
-    rating: 4.0,
-    enrolled: 50,
-    weeks: [
-      {
-        week_id: "W001",
-        title: "Introduction to Forensics",
-        videos: [
-          { 
-            video_id: "V024", 
-            title: "What is Digital Forensics?", 
-            videoUrl: "https://example.com/video/C005/W001/V024",
-            completed: 60 
-          },
-          { 
-            video_id: "V025", 
-            title: "Legal Aspects of Digital Forensics", 
-            videoUrl: "https://example.com/video/C005/W001/V025",
-            completed: 55 
-          }
-        ]
-      }
-    ],
-    reviews: [],
-    students: [
-      { user_id: "U008", user_name: "Thu Hoang", progress: 60 }
-    ]
-  }
-];
-
 const CourseManagement = () => {
   const [courses, setCourses] = useState([]);
   const [expanded, setExpanded] = useState(null);
@@ -379,10 +23,25 @@ const CourseManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 10;
 
-  const uniqueCategories = Array.from(new Set(mockCourses.map(course => course.category)));
+  // Get unique categories for filter dropdown
+  const uniqueCategories = Array.from(new Set(courses.map(course => course.category)));
 
   useEffect(() => {
-    setCourses(mockCourses);
+    // Fetch courses from the API
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get('/api/admin/course-management');
+        if (response.data.success) {
+          setCourses(response.data.courses);
+        } else {
+          console.error('Failed to fetch courses:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();
   }, []);
 
   const handleExpand = (courseId) => {
@@ -392,8 +51,12 @@ const CourseManagement = () => {
 
   const handleDelete = async (courseId) => {
     try {
-      await axios.post("/api/delete-course", { courseId });
-      setCourses((prev) => prev.filter((c) => c.course_id !== courseId));
+      const response = await axios.post("/api/admin/course-management/delete-course", { courseId });
+      if (response.data.success) {
+        setCourses((prev) => prev.filter((c) => c.course_ID !== courseId));
+      } else {
+        console.error("Failed to delete course:", response.data.message);
+      }
     } catch (error) {
       console.error("Failed to delete course:", error);
     }
@@ -402,21 +65,25 @@ const CourseManagement = () => {
   // Remove video by courseId, weekId, and videoId
   const handleRemoveVideo = async (courseId, weekId, videoId) => {
     try {
-      await axios.post("/api/remove-video", { courseId, weekId, videoId });
-      setCourses((prev) =>
-        prev.map((c) =>
-          c.course_id === courseId
-            ? {
-                ...c,
-                weeks: c.weeks.map((w) =>
-                  w.week_id === weekId
-                    ? { ...w, videos: w.videos.filter((v) => v.video_id !== videoId) }
-                    : w
-                ),
-              }
-            : c
-        )
-      );
+      const response = await axios.post("/api/admin/course-management/remove-video", { courseId, weekId, videoId });
+      if (response.data.success) {
+        setCourses((prev) =>
+          prev.map((c) =>
+            c.course_ID === courseId
+              ? {
+                  ...c,
+                  weeks: c.weeks.map((w) =>
+                    w.week_ID === weekId
+                      ? { ...w, videos: w.videos.filter((v) => v.video_ID !== videoId) }
+                      : w
+                  ),
+                }
+              : c
+          )
+        );
+      } else {
+        console.error("Failed to remove video:", response.data.message);
+      }
     } catch (error) {
       console.error("Failed to remove video:", error);
     }
@@ -425,14 +92,18 @@ const CourseManagement = () => {
   // Remove student by courseId + userId
   const handleRemoveStudent = async (courseId, userId) => {
     try {
-      await axios.post("/api/remove-student", { courseId, userId });
-      setCourses((prev) =>
-        prev.map((c) =>
-          c.course_id === courseId
-            ? { ...c, students: c.students.filter((s) => s.user_id !== userId) }
-            : c
-        )
-      );
+      const response = await axios.post("/api/admin/course-management/remove-student", { courseId, userId });
+      if (response.data.success) {
+        setCourses((prev) =>
+          prev.map((c) =>
+            c.course_ID === courseId
+              ? { ...c, students: c.students.filter((s) => s.user_id !== userId) }
+              : c
+          )
+        );
+      } else {
+        console.error("Failed to remove student:", response.data.message);
+      }
     } catch (error) {
       console.error("Failed to remove student:", error);
     }

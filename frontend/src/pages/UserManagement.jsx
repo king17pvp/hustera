@@ -4,173 +4,41 @@ import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
 import axios from "axios";
 
-// Mock data updated for demo with added content and reviews
-const mockUsers = [
-  {
-    user_id: "U001",
-    name: "Alice Nguyen",
-    email: "alice@example.com",
-    role: "student",
-    dob: "2002-05-10",
-    gender: "Female",
-    createdAt: "2023-09-01T10:15:00Z",
-    enrolledCourses: [
-      { course_id: "C001", name: "React Basics", progress: "5/10", review: 4.5, reviewText: "Great introduction to React concepts!" },
-      { course_id: "C002", name: "Data Science 101", progress: "7/12", review: null, reviewText: null },
-      { course_id: "C003", name: "Python Intro", progress: "2/8", review: 3.0, reviewText: "Good but could use more examples" },
-    ],
-    threads: [
-      {
-        thread_id: "T001",
-        title: "How to use hooks?",
-        upvotes: 12,
-        downvotes: 1,
-        answers: 3,
-        replies: [
-          { reply_id: "R001", content: "Hooks are used for state management in functional components", upvotes: 5, downvotes: 1 },
-          { reply_id: "R002", content: "Check the React docs for useEffect examples", upvotes: 2, downvotes: 0 }
-        ]
-      },
-      {
-        thread_id: "T002",
-        title: "Best resources for JS?",
-        upvotes: 7,
-        downvotes: 0,
-        answers: 2,
-        replies: [
-          { reply_id: "R003", content: "MDN is great for JavaScript reference", upvotes: 3, downvotes: 2 }
-        ]
-      },
-      {
-        thread_id: "T003",
-        title: "React state tips?",
-        upvotes: 5,
-        downvotes: 2,
-        answers: 1,
-        replies: []
-      },
-    ],
-  },
-  {
-    user_id: "U002",
-    name: "Bob Tran",
-    email: "bob@example.com",
-    role: "admin",
-    dob: "1999-11-23",
-    gender: "Male",
-    createdAt: "2022-12-15T08:30:00Z",
-    enrolledCourses: [
-      { course_id: "C004", name: "Advanced CSS", progress: "10/10", review: 5.0, reviewText: "Excellent course, loved the practical examples!" },
-      { course_id: "C005", name: "Node.js Fundamentals", progress: "8/10", review: 4.0, reviewText: "Very informative, good pace" },
-    ],
-    threads: [
-      {
-        thread_id: "T004",
-        title: "Deploying Node apps",
-        upvotes: 3,
-        downvotes: 0,
-        answers: 1,
-        replies: [
-          { reply_id: "R004", content: "Heroku is a good platform for beginners", upvotes: 2, downvotes: 1 }
-        ]
-      },
-      {
-        thread_id: "T005",
-        title: "CSS Grid vs Flexbox",
-        upvotes: 2,
-        downvotes: 1,
-        answers: 0,
-        replies: []
-      },
-    ],
-  },
-  {
-    user_id: "U003",
-    name: "Charlie Le",
-    email: "charlie@example.com",
-    role: "student",
-    dob: "2001-07-15",
-    gender: "Male",
-    createdAt: "2023-06-20T12:00:00Z",
-    enrolledCourses: [
-      { course_id: "C006", name: "Java Basics", progress: "4/10", review: 3.5, reviewText: "Solid introduction to Java" },
-      { course_id: "C007", name: "Spring Boot Essentials", progress: "1/5", review: null, reviewText: null },
-    ],
-    threads: [
-      {
-        thread_id: "T006",
-        title: "How to debug Java?",
-        upvotes: 4,
-        downvotes: 1,
-        answers: 2,
-        replies: [
-          { reply_id: "R005", content: "Use IntelliJ's debugger for step-by-step execution", upvotes: 3, downvotes: 0 },
-          { reply_id: "R006", content: "Try logging with log4j", upvotes: 1, downvotes: 1 }
-        ]
-      },
-    ],
-  },
-  {
-    user_id: "U004",
-    name: "Diana Pham",
-    email: "diana@example.com",
-    role: "instructor",
-    dob: "1995-04-01",
-    gender: "Female",
-    createdAt: "2021-09-10T14:45:00Z",
-    enrolledCourses: [],
-    threads: [
-      {
-        thread_id: "T007",
-        title: "Best practices for teaching online",
-        upvotes: 10,
-        downvotes: 0,
-        answers: 5,
-        replies: [
-          { reply_id: "R007", content: "Use interactive quizzes to keep students engaged", upvotes: 8, downvotes: 1 },
-          { reply_id: "R008", content: "Create short video segments rather than long lectures", upvotes: 7, downvotes: 0 },
-          { reply_id: "R009", content: "Incorporate group activities for better collaboration", upvotes: 5, downvotes: 2 }
-        ]
-      },
-    ],
-  },
-  {
-    user_id: "U005",
-    name: "Ethan Do",
-    email: "ethan@example.com",
-    role: "student",
-    dob: "2003-01-30",
-    gender: "Male",
-    createdAt: "2024-01-05T09:25:00Z",
-    enrolledCourses: [
-      { course_id: "C008", name: "Machine Learning", progress: "3/10", review: 4.0, reviewText: "Complex but well-explained" },
-      { course_id: "C009", name: "Deep Learning with PyTorch", progress: "0/8", review: null, reviewText: null },
-    ],
-    threads: [],
-  },
-];
-
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [displayMode, setDisplayMode] = useState("courses");
   const [threadDisplayMode, setThreadDisplayMode] = useState("threads");
 
-  // New state for filtering and pagination
+  // States for filtering and pagination
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     user_id: "",
     name: "",
     email: "",
-    role: "all", // Changed to "all" as default
+    role: "all",
     startDate: "",
-    endDate: "" // Added end date
+    endDate: ""
   });
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
 
+  // Fetch users data when component mounts
   useEffect(() => {
-    setUsers(mockUsers);
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("/api/admin/user-management");
+        if (response.data.success) {
+          setUsers(response.data.users);
+        } else {
+          console.error("Failed to fetch users:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const handleExpand = (userId) => {
@@ -179,8 +47,12 @@ const UserManagement = () => {
 
   const handleDelete = async (userId) => {
     try {
-      await axios.delete("/api/users/delete", { data: { user_id: userId } });
-      setUsers((prev) => prev.filter((u) => u.user_id !== userId));
+      const response = await axios.delete("/api/admin/user-management/delete", { data: { user_id: userId } });
+      if (response.data.success) {
+        setUsers((prev) => prev.filter((u) => u.user_id !== userId));
+      } else {
+        console.error("Failed to delete user:", response.data.message);
+      }
     } catch (err) {
       console.error("Failed to delete user", err);
     }
@@ -188,14 +60,21 @@ const UserManagement = () => {
 
   const handleRemoveCourse = async (userId, courseId) => {
     try {
-      await axios.delete("/api/users/remove-course", { data: { user_id: userId, course_id: courseId } });
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.user_id === userId
-            ? { ...u, enrolledCourses: u.enrolledCourses.filter((c) => c.course_id !== courseId) }
-            : u
-        )
-      );
+      const response = await axios.delete("/api/admin/user-management/remove-course", { 
+        data: { user_id: userId, course_id: courseId } 
+      });
+      
+      if (response.data.success) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.user_id === userId
+              ? { ...u, enrolledCourses: u.enrolledCourses.filter((c) => c.course_id !== courseId) }
+              : u
+          )
+        );
+      } else {
+        console.error("Failed to remove course:", response.data.message);
+      }
     } catch (err) {
       console.error("Failed to remove course", err);
     }
@@ -203,14 +82,21 @@ const UserManagement = () => {
 
   const handleRemoveThread = async (userId, threadId) => {
     try {
-      await axios.delete("/api/users/remove-thread", { data: { user_id: userId, thread_id: threadId } });
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.user_id === userId
-            ? { ...u, threads: u.threads.filter((t) => t.thread_id !== threadId) }
-            : u
-        )
-      );
+      const response = await axios.delete("/api/admin/user-management/remove-thread", { 
+        data: { user_id: userId, thread_id: threadId } 
+      });
+      
+      if (response.data.success) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.user_id === userId
+              ? { ...u, threads: u.threads.filter((t) => t.thread_id !== threadId) }
+              : u
+          )
+        );
+      } else {
+        console.error("Failed to remove thread:", response.data.message);
+      }
     } catch (err) {
       console.error("Failed to remove thread", err);
     }
@@ -218,24 +104,31 @@ const UserManagement = () => {
 
   const handleRemoveReply = async (userId, threadId, replyId) => {
     try {
-      await axios.delete("/api/users/remove-reply", { data: { user_id: userId, thread_id: threadId, reply_id: replyId } });
-      setUsers((prev) =>
-        prev.map((u) => {
-          if (u.user_id === userId) {
-            const updatedThreads = u.threads.map((t) => {
-              if (t.thread_id === threadId) {
-                return {
-                  ...t,
-                  replies: t.replies.filter((r) => r.reply_id !== replyId)
-                };
-              }
-              return t;
-            });
-            return { ...u, threads: updatedThreads };
-          }
-          return u;
-        })
-      );
+      const response = await axios.delete("/api/admin/user-management/remove-reply", { 
+        data: { user_id: userId, thread_id: threadId, reply_id: replyId } 
+      });
+      
+      if (response.data.success) {
+        setUsers((prev) =>
+          prev.map((u) => {
+            if (u.user_id === userId) {
+              const updatedThreads = u.threads.map((t) => {
+                if (t.thread_id === threadId) {
+                  return {
+                    ...t,
+                    replies: t.replies.filter((r) => r.reply_id !== replyId)
+                  };
+                }
+                return t;
+              });
+              return { ...u, threads: updatedThreads };
+            }
+            return u;
+          })
+        );
+      } else {
+        console.error("Failed to remove reply:", response.data.message);
+      }
     } catch (err) {
       console.error("Failed to remove reply", err);
     }
@@ -325,6 +218,9 @@ const UserManagement = () => {
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Rest of the component code remains the same (UI rendering)...
+  // (I've kept the UI rendering part out for brevity, as it's the same as your original code)
 
   return (
     <div className="flex flex-col min-h-screen">

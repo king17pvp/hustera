@@ -6,139 +6,6 @@ import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import React from "react";
 
-// Mock data for threads and answers - added content to threads
-const mockThreads = [
-  {
-    id: 1,
-    title: "How do I use React useEffect properly?",
-    author: "Alice Nguyen",
-    createdAt: "2024-04-01T10:00:00Z",
-    upvotes: 12,
-    downvotes: 1,
-    content: `
-I've been struggling with React's \`useEffect\` hook.
-
-**Problems:**
-- Sometimes it runs more times than I expect
-- Not sure if I'm using the dependency array correctly
-
-\`\`\`js
-useEffect(() => {
-  // some logic
-}, [someVar]);
-\`\`\`
-
-Can someone explain how to properly utilize \`useEffect\` to avoid unnecessary re-renders and potential memory leaks?  
-I've noticed that when I don't include all dependencies, I get a warning, but including everything sometimes causes infinite loops.
-    `,
-    answers: [
-      {
-        id: 101,
-        author: "Bob Tran",
-        createdAt: "2024-04-01T11:00:00Z",
-        content: `
-You should always specify dependencies in the dependency array.
-
-> This is critical because \`useEffect\` will re-run whenever any dependency changes.
-
-**Example:**
-\`\`\`js
-useEffect(() => {
-  // do something with count
-}, [count]);
-\`\`\`
-
-- If you miss a dependency, you might have stale closures.
-- To avoid infinite loops, make sure you're not updating state in a way that will trigger the effect again without a clear stopping condition.
-        `,
-        upvotes: 5,
-        downvotes: 0,
-      },
-      {
-        id: 102,
-        author: "Diana Pham",
-        createdAt: "2024-04-01T12:00:00Z",
-        content: `
-Remember that **useEffect runs after render**.
-
-- The function passed to useEffect will run *after* the component renders and React updates the DOM.
-- This is suitable for side effects that shouldn't block the rendering process.
-
-\`\`\`js
-useEffect(() => {
-  // DOM is updated here
-});
-\`\`\`
-        `,
-        upvotes: 3,
-        downvotes: 0,
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Best way to structure Node.js projects?",
-    author: "Charlie Le",
-    createdAt: "2024-04-02T09:30:00Z",
-    upvotes: 7,
-    downvotes: 0,
-    content: `
-I'm starting a new **Node.js** project and looking for advice on the best way to structure it.
-
-I've seen various approaches like:
-- Grouping by feature
-- Separating by technical role (controllers, models, etc.)
-- Using a domain-driven design
-
-Which approach scales best for medium to large applications?  
-Are there any established best practices in **2024**?
-    `,
-    answers: [
-      {
-        id: 201,
-        author: "Ethan Do",
-        createdAt: "2024-04-02T10:00:00Z",
-        content: `
-Use **MVC pattern** for better maintainability.
-
-\`\`\`plaintext
-project/
-  models/
-  controllers/
-  routes/
-  views/
-\`\`\`
-
-For larger applications, consider a modular approach where you group related functionality together.
-
-> This makes it easier to navigate the codebase as it grows.
-        `,
-        upvotes: 2,
-        downvotes: 0,
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "How to debug JavaScript efficiently?",
-    author: "Fiona Tran",
-    createdAt: "2024-04-03T14:15:00Z",
-    upvotes: 4,
-    downvotes: 2,
-    content: `
-I find debugging JavaScript applications can be time-consuming.
-
-I'm currently using \`console.log\` everywhere, but I feel there must be better approaches.
-
-**What tools and techniques do experienced developers use to debug JavaScript code efficiently?**
-
-- I work primarily with React on the frontend and Node.js on the backend.
-- Any tips for using browser devtools or VS Code debuggers?
-    `,
-    answers: [],
-  },
-];
-
 // Character limits
 const THREAD_CONTENT_LIMIT = 150;
 const ANSWER_CONTENT_LIMIT = 120;
@@ -159,10 +26,37 @@ const ForumManagement = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const threadsPerPage = 8;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch all threads from API
   useEffect(() => {
-    setThreads(mockThreads);
+    const fetchThreads = async () => {
+      try {
+        setLoading(true);
+        console.log("Attempting to fetch threads from:", "/admin/forum-management");
+        const response = await axios.get("http://localhost:5000/admin/forum-management", { withCredentials: true });
+        console.log("Response received:", response.data);
+        
+        if (response.data.success) {
+          // Even if threads is an empty array, this is still a successful response
+          setThreads(response.data.threads || []);
+          setError(null);
+        } else {
+          console.error("API returned success: false", response.data);
+          setError("Failed to fetch threads: " + (response.data.message || "Unknown error"));
+        }
+      } catch (err) {
+        console.error("Error fetching threads:", err);
+        setError("Failed to fetch threads. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchThreads();
   }, []);
+  
 
   // Handlers
   const handleExpand = (id) => {
@@ -171,29 +65,37 @@ const ForumManagement = () => {
 
   const handleDeleteThread = async (id) => {
     try {
-      await axios.delete("/api/forum/delete-thread", { data: { thread_id: id } });
-      setThreads((prev) => prev.filter((t) => t.id !== id));
-      if (expanded === id) setExpanded(null);
+      const response = await axios.post("/admin/forum-management/delete-thread", { thread_id: id });
+      if (response.data.success) {
+        setThreads((prev) => prev.filter((t) => t.id !== id));
+        if (expanded === id) setExpanded(null);
+      } else {
+        alert("Failed to delete thread: " + response.data.message);
+      }
     } catch (err) {
       console.error("Failed to delete thread", err);
-    }
-  };
-  
-  const handleDeleteAnswer = async (threadId, answerId) => {
-    try {
-      await axios.delete("/api/forum/delete-answer", { data: { thread_id: threadId, answer_id: answerId } });
-      setThreads((prev) =>
-        prev.map((t) =>
-          t.id === threadId
-            ? { ...t, answers: t.answers.filter((a) => a.id !== answerId) }
-            : t
-        )
-      );
-    } catch (err) {
-      console.error("Failed to delete answer", err);
+      alert("Failed to delete thread. Please try again later.");
     }
   };
 
+  const handleDeleteAnswer = async (answerId) => {
+    try {
+      const response = await axios.post("/admin/forum-management/delete-answer", { answer_id: answerId });
+      if (response.data.success) {
+        setThreads((prev) =>
+          prev.map((t) => ({
+            ...t,
+            answers: t.answers.filter((a) => a.id !== answerId)
+          }))
+        );
+      } else {
+        alert("Failed to delete answer: " + response.data.message);
+      }
+    } catch (err) {
+      console.error("Failed to delete answer", err);
+      alert("Failed to delete answer. Please try again later.");
+    }
+  };
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
     setCurrentPage(1);
@@ -254,11 +156,36 @@ const ForumManagement = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white">
+        <Navbar currentState={null} />
+        <Breadcrumb paths={["Admin", "Forum Management"]} />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-xl font-avant-medium text-gray-600">Loading forum data...</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white">
+        <Navbar currentState={null} />
+        <Breadcrumb paths={["Admin", "Forum Management"]} />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-xl font-avant-medium text-red-600">{error}</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Navbar currentState={null} />
       <Breadcrumb paths={["Admin", "Forum Management"]} />
-
       <div className="flex-grow px-4 py-8 w-full max-w-[1700px] mx-auto">
         <div className="w-full flex-col">
           <div className="flex justify-between items-center mb-8">
@@ -416,7 +343,7 @@ const ForumManagement = () => {
                                     <span className="font-semibold">Upvotes:</span> {thread.upvotes} &nbsp;
                                     <span className="font-semibold">Downvotes:</span> {thread.downvotes}
                                   </div>
-
+                                  
                                   {/* Thread content with show more/less */}
                                   <div className="mt-4 bg-white p-4 rounded-xl border border-gray-200">
                                     <div className="font-semibold text-gray-800 mb-2">Thread Content:</div>
@@ -472,7 +399,7 @@ const ForumManagement = () => {
                                             </div>
                                             <div className="text-gray-500 text-[16px] mt-1">
                                               By {answer.author} &middot;{" "}
-                                              {new Date(answer.createdAt).toLocaleString()}
+                                              {new Date(answer.created_at).toLocaleString()}
                                             </div>
                                             <div className="text-gray-500 text-[16px] mt-1">
                                               Upvotes: {answer.upvotes} &nbsp; Downvotes: {answer.downvotes}
@@ -480,7 +407,7 @@ const ForumManagement = () => {
                                           </div>
                                           <button
                                             className="mt-2 md:mt-0 px-4 py-2 rounded-xl bg-red-500 text-white font-avant-medium hover:bg-red-700 transition cursor-pointer whitespace-nowrap"
-                                            onClick={() => handleDeleteAnswer(thread.id, answer.id)}
+                                            onClick={() => handleDeleteAnswer(answer.id)}
                                           >
                                             Delete Answer
                                           </button>
@@ -495,16 +422,16 @@ const ForumManagement = () => {
                             </td>
                           </tr>
                         )}
-                      </React.Fragment>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="7" className="px-6 py-4 text-center text-lg text-gray-500 font-avant-medium">
-                        No threads found matching your filters
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
+                       </React.Fragment>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" className="px-6 py-4 text-center text-lg text-gray-500 font-avant-medium">
+                          No threads found matching your filters.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
               </table>
             </div>
 
