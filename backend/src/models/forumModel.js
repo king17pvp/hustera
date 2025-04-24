@@ -8,7 +8,7 @@ exports.getTotalPages = async ({category, searchQuery, tags}) => {
   const params = [];
   const limit = 9;
   const conditions = [];
-  console.log("Category: ", category);
+  // console.log("Category: ", category);
   // console.log(searchQuery);
   // console.log(tags);
   // console.log(sortBy);
@@ -347,6 +347,62 @@ exports.getFilters = async () => {
     throw err;
   }
 };
+exports.getThreadVote = async(threadId, userId) => {
+  const [existing] = await db.execute(
+    `SELECT * FROM thread_votes WHERE thread_ID = ? AND voter_ID = ?`,
+    [threadId, userId]
+  );
+  if (existing.length > 0) {
+    return {status: true, vote_type: existing[0].vote_type};
+  }
+  else {
+    return {status: false}
+  }
+}
+exports.getAnswerVote = async(answerId, userId) => {
+  const [existing] = await db.execute(
+    `SELECT * FROM thread_answer_votes WHERE answer_ID = ? AND voter_ID = ?`,
+    [answerId, userId]
+  );
+  console.log("ALO ALO", existing);
+  if (existing.length > 0) {
+    
+    return {status: true, vote_type: existing[0].vote_type};
+  }
+  else {
+    return {status: false}
+  }
+}
+exports.upsertThreadVote = async (threadId, userId, voteType) => {
+  const [existing] = await db.query(
+    `SELECT * FROM thread_votes WHERE thread_ID = ? AND voter_ID = ?`,
+    [threadId, userId]
+  );
+  if (existing.length > 0) {
+    // Nếu voteType giống -> remove vote
+    if (existing[0].vote_type === voteType) {
+      await db.query(
+        `DELETE FROM thread_votes WHERE thread_ID = ? AND voter_ID = ?`,
+        [threadId, userId]
+      );
+      return { removed: true };
+    } else {
+      // Nếu khác -> update vote
+      await db.query(
+        `UPDATE thread_votes SET vote_type = ? WHERE thread_ID = ? AND voter_ID = ?`,
+        [voteType, threadId, userId]
+      );
+      return { updated: true };
+    }
+  } else {
+    // Chưa vote -> insert mới
+    await db.query(
+      `INSERT INTO thread_votes (thread_ID, voter_ID, vote_type) VALUES (?, ?, ?)`,
+      [threadId, userId, voteType]
+    );
+    return { inserted: true };
+  }
+}
 
 exports.upsertAnswerVote = async (answerId, userId, voteType) => {
   // Kiểm tra đã vote chưa
