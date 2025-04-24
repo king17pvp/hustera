@@ -1,21 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowUp, ArrowDown, MessageCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const AnswerCard = ({ answer, threadId }) => {
   const [score, setScore] = useState(answer.score);
   const [userVote, setUserVote] = useState(null); // "up" | "down" | null
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  console.log(user.id);
+  const answerId = answer.answer_id;
+  const user_ID = user?.id;
+  console.log("Answer id: ", answerId);
+  // console.log(user.id);
+  useEffect(() => {
+    const fetchUserVote = async () => {
+      // console.log(`CALLING with answerID of ${answerId} and userId of ${user_ID}!!!!`);
+      try {
+        console.log(`CALLING with answerID of ${answerId} and userId of ${user_ID}!!!!`);
+        const response = await axios.get(
+          `http://localhost:5000/forum/${answerId}/getVote/${user_ID}`, // Adjust the URL based on your backend route
+        );
+        
+        if (response.data.success) {
+          // Set the user vote based on the response from the backend
+          console.log("Response: ", response.data);
+          setUserVote(response.data.result.vote_type); // Assuming the backend returns the vote type
+        }
+      } catch (error) {
+        console.error("Error fetching vote data:", error);
+      }
+    };
 
+    fetchUserVote();
+  }, [answerId, user_ID]);
   const sendVote = async (voteType) => {
     try {
       const res = await fetch(`http://localhost:5000/forum/${threadId}/answers/${answer.answer_id}/vote`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}`, // nếu có auth
         },
         body: JSON.stringify({
           vote_type: voteType,
@@ -29,10 +52,10 @@ const AnswerCard = ({ answer, threadId }) => {
           setUserVote(null);
           setScore((prev) => prev + (voteType === "upvote" ? -1 : 1));
         } else if (data.result.updated) {
-          setUserVote(voteType === "upvote" ? "up" : "down");
+          setUserVote(voteType === "upvote" ? "upvote" : "downvote");
           setScore((prev) => prev + (voteType === "upvote" ? 2 : -2));
         } else if (data.result.inserted) {
-          setUserVote(voteType === "upvote" ? "up" : "down");
+          setUserVote(voteType === "upvote" ? "upvote" : "downvote");
           setScore((prev) => prev + (voteType === "upvote" ? 1 : -1));
         }
       } else {
@@ -59,13 +82,13 @@ const AnswerCard = ({ answer, threadId }) => {
       {/* Voting Section */}
       <div className="flex flex-col items-center text-gray-500">
         <ArrowUp
-          className={`cursor-pointer hover:text-orange-500 ${userVote === "up" ? "text-orange-500" : ""
+          className={`cursor-pointer hover:text-orange-500 ${userVote === "upvote" ? "text-orange-500" : ""
             }`}
           onClick={handleUpvote}
         />
         <span className="font-semibold text-2xl">{score}</span>
         <ArrowDown
-          className={`cursor-pointer hover:text-blue-500 ${userVote === "down" ? "text-blue-500" : ""
+          className={`cursor-pointer hover:text-blue-500 ${userVote === "downvote" ? "text-blue-500" : ""
             }`}
           onClick={handleDownvote}
         />
