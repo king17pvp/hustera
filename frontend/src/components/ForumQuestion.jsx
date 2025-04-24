@@ -1,34 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowUp, ArrowDown } from "lucide-react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const ForumQuestion = ({ thread }) => {
   const [score, setScore] = useState(thread.score);
-  const [userVote, setUserVote] = useState(null); // 'up', 'down', or null
+  const [userVote, setUserVote] = useState(null); // 'upvote', 'downvote', or null
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const threadId = thread.question_id;
+  console.log("Thread ID", threadId);
+  useEffect(() => {
+    const fetchUserVote = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/forum/${threadId}/getVote/${user?.id}`, // Adjust the URL based on your backend route
+        );
+        
+        if (response.data.success) {
+          // Set the user vote based on the response from the backend
+          console.log("Data: ", response.data);
+          setUserVote(response.data.result.vote_type); // Assuming the backend returns the vote type
+        }
+      } catch (error) {
+        console.error("Error fetching vote data:", error);
+      }
+    };
 
-  const handleUpvote = () => {
-    if (vote === "up") {
-      setVote(null);
-      setScore(score - 1);
-    } else if (vote === "down") {
-      setVote("up");
-      setScore(score + 2);
-    } else {
-      setVote("up");
-      setScore(score + 1);
+    fetchUserVote();
+  }, [threadId]);
+  const sendVote = async (voteType) => {
+    try {
+      const res = await fetch(`http://localhost:5000/forum/${threadId}/vote`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          vote_type: voteType,
+          user_ID: user?.id,  // 👈 Gửi từ frontend
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        if (data.result.removed) {
+          setUserVote(null);
+          setScore((prev) => prev + (voteType === "upvote" ? -1 : 1));
+        } else if (data.result.updated) {
+          setUserVote(voteType === "upvote" ? "upvote" : "downvote");
+          setScore((prev) => prev + (voteType === "upvote" ? 2 : -2));
+        } else if (data.result.inserted) {
+          setUserVote(voteType === "upvote" ? "upvote" : "downvote");
+          setScore((prev) => prev + (voteType === "upvote" ? 1 : -1));
+        }
+      } else {
+        console.error("Vote failed:", data.message);
+      }
+    } catch (err) {
+      console.error("API vote error:", err);
     }
+  };
+  const handleUpvote = () => {
+    sendVote("upvote");
   };
 
   const handleDownvote = () => {
-    if (vote === "down") {
-      setVote(null);
-      setScore(score + 1);
-    } else if (vote === "up") {
-      setVote("down");
-      setScore(score - 2);
-    } else {
-      setVote("down");
-      setScore(score - 1);
-    }
+    sendVote("downvote");
   };
 
   return (
@@ -36,13 +73,13 @@ const ForumQuestion = ({ thread }) => {
       {/* Voting Section */}
       <div className="flex flex-col items-center text-gray-500">
         <ArrowUp
-          className={`cursor-pointer hover:text-orange-500 ${userVote === "up" ? "text-orange-500" : ""
+          className={`cursor-pointer hover:text-orange-500 ${userVote === "upvote" ? "text-orange-500" : ""
             }`}
           onClick={handleUpvote}
         />
         <span className="font-avant_medium font-semibold text-2xl">{score}</span>
         <ArrowDown
-          className={`cursor-pointer hover:text-blue-500 ${userVote === "down" ? "text-blue-500" : ""
+          className={`cursor-pointer hover:text-blue-500 ${userVote === "downvote" ? "text-blue-500" : ""
             }`}
           onClick={handleDownvote}
         />
