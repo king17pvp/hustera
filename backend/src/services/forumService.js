@@ -82,6 +82,27 @@ exports.voteAnswer = async (answerId, userId, voteType) => {
   return result;
 };
 
+exports.voteThread = async (threadId, userId, voteType) => {
+  if (!["upvote", "downvote"].includes(voteType)) {
+    throw new Error("Invalid vote type");
+  }
+
+  const result = await forumModel.upsertThreadVote(threadId, userId, voteType);
+  return result;
+};
+
+exports.getThreadVote = async (threadId, userId) => {
+  const result = await forumModel.getThreadVote(threadId, userId);
+  return result;
+}
+
+
+exports.getAnswerVote = async (answerId, userId) => {
+  const result = await forumModel.getAnswerVote(answerId, userId);
+  console.log("ALO ALO", result);
+  return result;
+}
+
 exports.postAnswer = async (threadId, authorId, content) => {
   if (!content || content.trim() === "") {
     throw new Error("Answer content cannot be empty");

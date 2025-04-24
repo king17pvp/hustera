@@ -88,7 +88,7 @@ const ForumSingle = () => {
                         },
                         body: JSON.stringify({
                           content,
-                          user_ID: user?.id, // hoặc dùng token nếu bạn có auth middleware
+                          user_ID: user?.id, 
                         }),
                       });
 

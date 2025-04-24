@@ -4,7 +4,7 @@ exports.getForumOnClick = async (req, res) => {
   try {
     const threadId = req.params.threadId;
     const thread = await forumService.getForumOnClick({ threadId });
-    console.log(threadId);
+    // console.log(threadId);
     if (!thread) {
       return res.status(404).json({ success: false, message: 'Thread not found.' });
     }
@@ -47,7 +47,7 @@ exports.getForum = async (req, res) => {
       page: parseInt(req.query.page) || 1,
       tags: req.query.tags || ""
     };
-    console.log(filters);
+    // console.log(filters);
     const {threads, totalPages} = await forumService.getForum({
       category: filters.category,
       searchQuery: filters.searchQuery,
@@ -92,6 +92,65 @@ exports.handleVoteAnswer = async (req, res) => {
   }
 };
 
+exports.handleVoteThread = async (req, res) => {
+  const { threadId } = req.params;
+  const { vote_type } = req.body;
+  const userId = req.body?.user_ID;
+  // console.log("Thread ID", threadId);
+  // console.log("Vote type", vote_type);
+  // console.log("User Id", userId); 
+
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
+  try {
+    const result = await forumService.voteThread(threadId, userId, vote_type);
+    res.status(200).json({ success: true, result });
+  } catch (err) {
+    console.error("Vote error:", err.message);
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+exports.handleGetVoteAnswer = async (req, res) => {
+  console.log("IT IS CALLING");
+  const { answerId, userId } = req.params;
+  // const userId = req.body?.user_ID;
+  console.log("answer ID", answerId);
+  // console.log("Vote type", vote_type);
+  console.log("User Id", userId); 
+
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
+  try {
+    const result = await forumService.getAnswerVote(answerId, userId);
+    res.status(200).json({ success: true, result });
+  } catch (err) {
+    console.error("Vote error:", err.message);
+    res.status(400).json({ success: false, message: err.message });
+  }
+}
+exports.handleGetVoteThread = async (req, res) => {
+  const { threadId, userId } = req.params;
+  // const userId = req.body?.user_ID;
+  // console.log("Thread ID", threadId);
+  // console.log("Vote type", vote_type);
+  // console.log("User Id", userId); 
+  
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
+  try {
+    const result = await forumService.getThreadVote(threadId, userId);
+    res.status(200).json({ success: true, result });
+  } catch (err) {
+    console.error("Vote error:", err.message);
+    res.status(400).json({ success: false, message: err.message });
+  }
+}
 exports.postAnswer = async (req, res) => {
   try {
     const threadId = req.params.threadId;
@@ -128,7 +187,7 @@ exports.uploadForum = async (req, res) => {
     }
 
     const threadData = req.body;
-    console.log("Thread data", threadData);
+    // console.log("Thread data", threadData);
     const threadId = await forumService.uploadForum(threadData, authorId);
     // console.log(threadId);
     res.status(201).json({
