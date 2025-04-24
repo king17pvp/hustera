@@ -6,7 +6,7 @@ const forumController = require('../controllers/forumManagementController');
 router.get('/', forumController.getAllThreads);
 
 // Admin-protected endpoints
-router.post('/delete-thread', forumController.deleteThread);
-router.post('/delete-answer', forumController.deleteAnswer);
+router.delete('/delete-thread', forumController.deleteThread);
+router.delete('/delete-answer', forumController.deleteAnswer);
 
 module.exports = router;

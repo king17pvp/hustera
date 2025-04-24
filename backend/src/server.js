@@ -38,23 +38,10 @@ db.connect(err => {
 });
 
 // Admin middleware (updated)
-const isAdmin = (req, res, next) => {
-  if (req.session.user?.role === 'admin') next();
-  else res.status(403).json({ success: false, message: 'Admin access required' });
-};
-
-// Routes (fixed structure)
-app.use('/admin', (req, res, next) => {
-  console.log(`Admin route accessed: ${req.method} ${req.path}`);
-  next();
-});
-
 // Public forum routes
 app.use('/admin/forum-management', forumManagementRoutes);
-
-// Protected admin routes
-app.use('/admin/user-management', isAdmin, userManagementRoutes);
-app.use('/admin/course-management', isAdmin, courseManagementRoutes);
+app.use('/admin/user-management', userManagementRoutes);
+app.use('/admin/course-management', courseManagementRoutes);
 
 // Other routes
 app.use('/register', registerRoutes);

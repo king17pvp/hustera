@@ -1,64 +1,50 @@
-const userManagementModel = require('../models/userManagementModel');
+const userManagementModel = require('../models/userManagementModel'); // Adjust path if needed
 
-// Get all users with their detailed information
 exports.getAllUsers = async () => {
-  // Get basic user information
-  const users = await userManagementModel.getAllUsers();
-  
-  // For each user, fetch related information
-  const usersWithDetails = await Promise.all(users.map(async (user) => {
-    // Get enrolled courses with progress and reviews
-    const enrolledCourses = await userManagementModel.getUserCourses(user.user_id);
-    
-    // Get threads created by the user
-    const threads = await userManagementModel.getUserThreads(user.user_id);
-    
-    // For each thread, get replies
-    for (const thread of threads) {
-      thread.replies = await userManagementModel.getThreadReplies(thread.thread_id);
-    }
-    
-    return {
-      user_id: `U${user.user_ID.toString().padStart(3, '0')}`, // Format as U001, U002, etc.
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      dob: user.dob ? user.dob.toISOString().split('T')[0] : null,
-      gender: user.gender,
-      createdAt: user.created_at.toISOString(),
-      enrolledCourses,
-      threads
-    };
-  }));
-  
-  return usersWithDetails;
+  return await userManagementModel.getAllUsers();
 };
 
-// Delete a user
-exports.deleteUser = async (user_id) => {
-  // Extract numeric ID from format like U001
-  const numericId = parseInt(user_id.substring(1));
-  return await userManagementModel.deleteUser(numericId);
+exports.getUserCourses = async (userId) => {
+  // Ensure userId is the numeric ID expected by the model
+  if (isNaN(parseInt(userId))) {
+      console.error("Service: Invalid userId passed to getUserCourses:", userId);
+      return []; // Return empty array or throw error for invalid ID
+  }
+  return await userManagementModel.getUserCourses(parseInt(userId));
 };
 
-// Remove a course from user's enrolled courses
-exports.removeUserCourse = async (user_id, course_id) => {
-  const numericUserId = parseInt(user_id.substring(1));
-  const numericCourseId = parseInt(course_id.substring(1));
-  return await userManagementModel.removeUserCourse(numericUserId, numericCourseId);
+exports.getUserThreads = async (userId) => {
+  // Ensure userId is the numeric ID expected by the model
+  if (isNaN(parseInt(userId))) {
+      console.error("Service: Invalid userId passed to getUserThreads:", userId);
+      return []; // Return empty array or throw error for invalid ID
+  }
+  return await userManagementModel.getUserThreads(parseInt(userId));
 };
 
-// Remove a thread created by a user
-exports.removeUserThread = async (user_id, thread_id) => {
-  const numericUserId = parseInt(user_id.substring(1));
-  const numericThreadId = parseInt(thread_id.substring(1));
-  return await userManagementModel.removeUserThread(numericUserId, numericThreadId);
+// --- Delete/Remove Functions ---
+// Pass numeric IDs directly to the model. Parsing happens in controller or here.
+
+exports.deleteUser = async (userId) => {
+    // Assuming userId received is numeric
+    if (isNaN(parseInt(userId))) throw new Error("Invalid User ID");
+    return await userManagementModel.deleteUser(parseInt(userId));
 };
 
-// Remove a reply from a thread
-exports.removeUserReply = async (user_id, thread_id, reply_id) => {
-  const numericUserId = parseInt(user_id.substring(1));
-  const numericThreadId = parseInt(thread_id.substring(1));
-  const numericReplyId = parseInt(reply_id.substring(1));
-  return await userManagementModel.removeUserReply(numericUserId, numericThreadId, numericReplyId);
+exports.removeUserCourse = async (userId, courseId) => {
+    // Assuming IDs received are numeric
+    if (isNaN(parseInt(userId)) || isNaN(parseInt(courseId))) throw new Error("Invalid User or Course ID");
+    return await userManagementModel.removeUserCourse(parseInt(userId), parseInt(courseId));
+};
+
+exports.removeUserThread = async (userId, threadId) => {
+    // Assuming IDs received are numeric
+    if (isNaN(parseInt(userId)) || isNaN(parseInt(threadId))) throw new Error("Invalid User or Thread ID");
+    return await userManagementModel.removeUserThread(parseInt(userId), parseInt(threadId));
+};
+
+exports.removeUserReply = async (userId, threadId, replyId) => {
+    // Assuming IDs received are numeric
+    if (isNaN(parseInt(userId)) || isNaN(parseInt(threadId)) || isNaN(parseInt(replyId))) throw new Error("Invalid User, Thread or Reply ID");
+    return await userManagementModel.removeUserReply(parseInt(userId), parseInt(threadId), parseInt(replyId));
 };

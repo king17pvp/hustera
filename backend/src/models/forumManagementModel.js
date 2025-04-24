@@ -1,6 +1,7 @@
 const db = require('../config/db');
 
 exports.getAllThreadsWithDetails = async () => {
+  // Get all threads with basic info
   const [threads] = await db.query(`
     SELECT 
       t.thread_ID AS id,
@@ -8,42 +9,58 @@ exports.getAllThreadsWithDetails = async () => {
       t.content,
       t.created_at AS createdAt,
       ui.name AS author,
-      (SELECT COUNT(*) FROM thread_votes WHERE thread_ID = t.thread_ID AND vote_type = 'upvote') AS upvotes,
-      (SELECT COUNT(*) FROM thread_votes WHERE thread_ID = t.thread_ID AND vote_type = 'downvote') AS downvotes
+      COALESCE(tv.upvotes, 0) AS upvotes,
+      COALESCE(tv.downvotes, 0) AS downvotes
     FROM threads t
     LEFT JOIN user_info ui ON t.author_ID = ui.user_ID
+    LEFT JOIN (
+      SELECT 
+        thread_ID,
+        COUNT(CASE WHEN vote_type = 'upvote' THEN 1 END) AS upvotes,
+        COUNT(CASE WHEN vote_type = 'downvote' THEN 1 END) AS downvotes
+      FROM thread_votes
+      GROUP BY thread_ID
+    ) tv ON t.thread_ID = tv.thread_ID
     ORDER BY t.created_at DESC
   `);
 
-  const processedThreads = await Promise.all(threads.map(async (thread) => {
-    const [answers] = await db.query(`
+  // Get all answers in a single query
+  const [allAnswers] = await db.query(`
+    SELECT 
+      a.thread_ID,
+      a.answer_ID AS id,
+      a.content,
+      a.created_at AS createdAt,
+      ui.name AS author,
+      COALESCE(av.upvotes, 0) AS upvotes,
+      COALESCE(av.downvotes, 0) AS downvotes
+    FROM thread_answers a
+    LEFT JOIN user_info ui ON a.author_ID = ui.user_ID
+    LEFT JOIN (
       SELECT 
-        a.answer_ID AS answer_ID,
-        a.content,
-        a.created_at AS created_at,
-        ui.name AS author,
-        (SELECT COUNT(*) FROM thread_answer_votes WHERE answer_ID = a.answer_ID AND vote_type = 'upvote') AS upvotes,
-        (SELECT COUNT(*) FROM thread_answer_votes WHERE answer_ID = a.answer_ID AND vote_type = 'downvote') AS downvotes
-      FROM thread_answers a
-      LEFT JOIN user_info ui ON a.author_ID = ui.user_ID
-      WHERE a.thread_ID = ?
-      ORDER BY a.created_at ASC
-    `, [thread.id]);
+        answer_ID,
+        COUNT(CASE WHEN vote_type = 'upvote' THEN 1 END) AS upvotes,
+        COUNT(CASE WHEN vote_type = 'downvote' THEN 1 END) AS downvotes
+      FROM thread_answer_votes
+      GROUP BY answer_ID
+    ) av ON a.answer_ID = av.answer_ID
+    ORDER BY a.created_at ASC
+  `);
 
-    return {
-      ...thread,
-      answers: answers.map(answer => ({
-        answer_ID: answer.answer_ID,
-        content: answer.content,
-        author: answer.author || "Unknown",
-        created_at: answer.created_at,
-        upvotes: answer.upvotes,
-        downvotes: answer.downvotes
-      }))
-    };
+  // Map answers to threads
+  const answerMap = allAnswers.reduce((acc, answer) => {
+    if (!acc[answer.thread_ID]) acc[answer.thread_ID] = [];
+    acc[answer.thread_ID].push({
+      ...answer,
+      author: answer.author || "Unknown"
+    });
+    return acc;
+  }, {});
+
+  return threads.map(thread => ({
+    ...thread,
+    answers: answerMap[thread.id] || []
   }));
-
-  return processedThreads;
 };
 
 exports.deleteThread = async (threadId) => {

@@ -6,15 +6,15 @@ const router = express.Router();
 router.get('/', courseManagementController.getAllCourses);
 
 // Delete a course
-router.post('/delete-course', courseManagementController.deleteCourse);
+router.delete('/delete-course', courseManagementController.deleteCourse);
 
 // Remove video from a course
-router.post('/remove-video', courseManagementController.removeVideo);
+router.delete('/remove-video', courseManagementController.removeVideo);
 
 // Remove student from a course
-router.post('/remove-student', courseManagementController.removeStudent);
+router.delete('/remove-student', courseManagementController.removeStudent);
 
 // Remove review from a course
-router.post('/remove-review', courseManagementController.removeReview);
+router.delete('/remove-review', courseManagementController.removeReview);
 
 module.exports = router;
