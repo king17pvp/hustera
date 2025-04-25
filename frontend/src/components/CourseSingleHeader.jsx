@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import qrcode from "../assets/qrcode.png"; // Placeholder for QR code image
+import axios from "axios";
 
 const CourseSingleHeader = ({ course }) => {
   const { user } = useSelector((state) => state.auth);
+  const [showQRModal, setShowQRModal] = useState(false);
+
   // Calculate total number of videos across all weeks
   const totalVideos = course.weeks.reduce((total, week) => {
     return total + week.videos.length;
@@ -13,12 +17,21 @@ const CourseSingleHeader = ({ course }) => {
       alert("You must be logged in to start the course.");
       return;
     }
+
+    // Show QR code modal instead of direct enrollment
+    setShowQRModal(true);
+  };
+
+  const handleEnrollAfterPayment = async () => {
     try {
       await axios.post("/api/user/enroll-course", {
         user_id: user.id,
         course_id: course.course_id,
       });
-      // Need something to refresh course UI to manage registered course here //
+      // Close the QR modal
+      setShowQRModal(false);
+      // You can add additional confirmation logic here
+      alert("Payment received! You are now enrolled in the course.");
     } catch (err) {
       console.error("Failed to enroll in course", err);
       alert("Failed to enroll in course. Please try again.");
@@ -79,13 +92,64 @@ const CourseSingleHeader = ({ course }) => {
               ${course.price}
             </p>
             <button
-              onClick={handleStartNow} 
+              onClick={handleStartNow}
               className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition cursor-pointer">
               Start Now
             </button>
           </div>
         </div>
       </div>
+
+      {/* QR Code Payment Modal - with blur effect instead of dark overlay */}
+      {showQRModal && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex justify-center items-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-lg w-full text-black shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-3xl font-bold text-gray-800">Payment</h2>
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="text-center mb-4">
+              <p className="text-gray-700 text-xl mb-2">Scan the QR code to pay</p>
+              <p className="text-2xl font-bold text-gray-800">${course.price}</p>
+            </div>
+
+            <div className="flex justify-center mb-6">
+              <div className="bg-gray-100 p-4 rounded-lg">
+                {/* Display QR code image instead of SVG */}
+                <img
+                  src={qrcode} // Placeholder for QR code image
+                  alt="QR Code for Payment"
+                  width={350}
+                  height={350}
+                  className="object-contain"
+                />
+              </div>
+            </div>
+
+            <div className="text-gray-600 text-lg mb-4 text-center">
+              <p>After payment, you'll get immediate access</p>
+            </div>
+
+            {/* In a real implementation, this button would be activated after payment verification */}
+            <div className="flex justify-center">
+              <button
+                onClick={handleEnrollAfterPayment}
+                className="bg-green-600 text-white py-2 px-6 rounded-full text-lg font-medium hover:bg-green-700 transition"
+              >
+                I've Completed Payment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
