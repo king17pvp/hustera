@@ -7,7 +7,7 @@ import axios from "axios";
 // Mock data updated for demo with added content and reviews
 const mockUsers = [
   {
-    user_id: "U001",
+    user_ID: "U001",
     name: "Alice Nguyen",
     email: "alice@example.com",
     role: "student",
@@ -52,7 +52,7 @@ const mockUsers = [
     ],
   },
   {
-    user_id: "U002",
+    user_ID: "U002",
     name: "Bob Tran",
     email: "bob@example.com",
     role: "admin",
@@ -85,7 +85,7 @@ const mockUsers = [
     ],
   },
   {
-    user_id: "U003",
+    user_ID: "U003",
     name: "Charlie Le",
     email: "charlie@example.com",
     role: "student",
@@ -111,7 +111,7 @@ const mockUsers = [
     ],
   },
   {
-    user_id: "U004",
+    user_ID: "U004",
     name: "Diana Pham",
     email: "diana@example.com",
     role: "instructor",
@@ -135,7 +135,7 @@ const mockUsers = [
     ],
   },
   {
-    user_id: "U005",
+    user_ID: "U005",
     name: "Ethan Do",
     email: "ethan@example.com",
     role: "student",
@@ -153,13 +153,15 @@ const mockUsers = [
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [expanded, setExpanded] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [displayMode, setDisplayMode] = useState("courses");
   const [threadDisplayMode, setThreadDisplayMode] = useState("threads");
 
   // New state for filtering and pagination
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
-    user_id: "",
+    user_ID: "",
     name: "",
     email: "",
     role: "all", // Changed to "all" as default
@@ -170,58 +172,108 @@ const UserManagement = () => {
   const usersPerPage = 10;
 
   useEffect(() => {
-    setUsers(mockUsers);
+    setLoading(true);
+    setError(null);
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/admin/user-management`); // GET /
+        if (response.data && response.data.success && Array.isArray(response.data.users)) {
+          setUsers(response.data.users);
+        } else {
+          console.error("Unexpected data format received:", response.data);
+          setError("Failed to load users: Unexpected data format from server.");
+          setUsers([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch users:", err);
+        setError(`Failed to load users: ${err.response?.data?.message || err.message}`);
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
   }, []);
 
   const handleExpand = (userId) => {
     setExpanded(expanded === userId ? null : userId);
   };
 
-  const handleDelete = async (userId) => {
+  const handleDeleteUser = async (userIdToDelete) => {
+    setError(null);
+    if (!window.confirm(`Are you sure you want to delete user ID ${userIdToDelete}? This action cannot be undone.`)) {
+      return;
+    }
     try {
-      await axios.delete("/api/users/delete", { data: { user_id: userId } });
-      setUsers((prev) => prev.filter((u) => u.user_id !== userId));
+      // Backend expects { user_id: ... }
+      await axios.delete(`http://localhost:5000/admin/user-management/delete`, { data: { user_id: userIdToDelete } });
+      setUsers((prev) => prev.filter((u) => u.user_ID !== userIdToDelete));
+      if (expandedUserId === userIdToDelete) setExpandedUserId(null);
     } catch (err) {
-      console.error("Failed to delete user", err);
+      console.error(`Failed to delete user ${userIdToDelete}:`, err);
+      setError(`Failed to delete user: ${err.response?.data?.message || err.message}`);
     }
   };
 
   const handleRemoveCourse = async (userId, courseId) => {
+    setError(null);
+    if (!window.confirm(`Remove course ${courseId} from user ID ${userId}?`)) return;
+
     try {
-      await axios.delete("/api/users/remove-course", { data: { user_id: userId, course_id: courseId } });
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.user_id === userId
-            ? { ...u, enrolledCourses: u.enrolledCourses.filter((c) => c.course_id !== courseId) }
-            : u
-        )
+      // Backend expects { user_id: ..., course_id: ... }
+      await axios.delete(`http://localhost:5000/admin/user-management/remove-course`, { data: { user_id: userId, course_id: courseId } });
+      // Update local state to reflect removal
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => {
+          if (user.user_ID === userId) {
+            return {
+              ...user,
+              enrolledCourses: user.enrolledCourses?.filter(
+                (course) => course.course_id !== courseId // Filter by formatted ID from data
+              ),
+            };
+          }
+          return user;
+        })
       );
     } catch (err) {
-      console.error("Failed to remove course", err);
+      console.error(`Failed to remove course ${courseId} for user ${userId}:`, err);
+      setError(`Failed to remove course: ${err.response?.data?.message || err.message}`);
     }
   };
 
   const handleRemoveThread = async (userId, threadId) => {
+    setError(null);
+    if (!window.confirm(`Remove thread ${threadId} created by user ID ${userId}?`)) return;
     try {
-      await axios.delete("/api/users/remove-thread", { data: { user_id: userId, thread_id: threadId } });
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.user_id === userId
-            ? { ...u, threads: u.threads.filter((t) => t.thread_id !== threadId) }
-            : u
-        )
+      // Backend expects { user_id: ..., thread_id: ... }
+      await axios.delete(`http://localhost:5000/admin/user-management/remove-thread`, { data: { user_id: userId, thread_id: threadId } });
+      // Update local state
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => {
+          if (user.user_ID === userId) {
+            return {
+              ...user,
+              threads: user.threads?.filter(
+                (thread) => thread.thread_id !== threadId // Filter by formatted ID from data
+              ),
+            };
+          }
+          return user;
+        })
       );
     } catch (err) {
-      console.error("Failed to remove thread", err);
+      console.error(`Failed to remove thread ${formattedThreadId} for user ${userId}:`, err);
+      setError(`Failed to remove thread: ${err.response?.data?.message || err.message}`);
     }
   };
 
   const handleRemoveReply = async (userId, threadId, replyId) => {
     try {
-      await axios.delete("/api/users/remove-reply", { data: { user_id: userId, thread_id: threadId, reply_id: replyId } });
+      await axios.delete("/api/users/remove-reply", { data: { user_ID: userId, thread_id: threadId, reply_id: replyId } });
       setUsers((prev) =>
         prev.map((u) => {
-          if (u.user_id === userId) {
+          if (u.user_ID === userId) {
             const updatedThreads = u.threads.map((t) => {
               if (t.thread_id === threadId) {
                 return {
@@ -308,7 +360,7 @@ const UserManagement = () => {
 
     // Check if user matches other column filters
     const otherFiltersMatch =
-      (filters.user_id === "" || user.user_id.toLowerCase().includes(filters.user_id.toLowerCase())) &&
+      (filters.user_ID === "" || user.user_ID.toLowerCase().includes(filters.user_ID.toLowerCase())) &&
       (filters.name === "" || user.name.toLowerCase().includes(filters.name.toLowerCase())) &&
       (filters.email === "" || user.email.toLowerCase().includes(filters.email.toLowerCase()));
 
@@ -357,8 +409,8 @@ const UserManagement = () => {
                       type="text"
                       className="px-3 py-1 text-[16px] border border-gray-300 rounded-xl"
                       placeholder="Filter ID..."
-                      value={filters.user_id}
-                      onChange={(e) => handleFilterChange("user_id", e.target.value)}
+                      value={filters.user_ID}
+                      onChange={(e) => handleFilterChange("user_ID", e.target.value)}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -420,7 +472,7 @@ const UserManagement = () => {
               {/* Table Body */}
               {currentUsers.length > 0 ? (
                 currentUsers.map((user) => (
-                  <div key={user.user_id} className="border-b border-gray-100">
+                  <div key={user.user_ID} className="border-b border-gray-100">
                     <div
                       className="font-avant-medium text-lg text-gray-600 items-center px-8 py-4"
                       style={{
@@ -429,7 +481,7 @@ const UserManagement = () => {
                         columnGap: "24px",
                       }}
                     >
-                      <div className="flex items-center text-black">{user.user_id}</div>
+                      <div className="flex items-center text-black">{user.user_ID}</div>
                       <div className="flex items-center">{user.name}</div>
                       <div className="flex items-center">{user.email}</div>
                       <div className="flex items-center">
@@ -451,19 +503,19 @@ const UserManagement = () => {
                       <div className="flex items-center justify-end gap-3">
                         <button
                           className="px-4 py-2 rounded-xl bg-blue-600 text-white font-avant-medium hover:bg-blue-800 transition cursor-pointer"
-                          onClick={() => handleExpand(user.user_id)}
+                          onClick={() => handleExpand(user.user_ID)}
                         >
-                          {expanded === user.user_id ? "Hide" : "View More"}
+                          {expanded === user.user_ID ? "Hide" : "View More"}
                         </button>
                         <button
                           className="px-4 py-2 rounded-xl bg-red-500 text-white font-avant-medium hover:bg-red-700 transition cursor-pointer"
-                          onClick={() => handleDelete(user.user_id)}
+                          onClick={() => handleDeleteUser(user.user_ID)}
                         >
                           Delete
                         </button>
                       </div>
                     </div>
-                    {expanded === user.user_id && (
+                    {expanded === user.user_ID && (
                       <div className="bg-gray-50 px-12 py-6 grid grid-cols-1 md:grid-cols-5 gap-8 animate-fade-in-down h-90">
                         {/* User Details */}
                         <div className="md:col-span-1 flex flex-col justify-center">
@@ -544,7 +596,7 @@ const UserManagement = () => {
                                           <td className="py-2 px-4 text-right w-[10%]">
                                             <button
                                               className="px-4 py-1 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-700"
-                                              onClick={() => handleRemoveCourse(user.user_id, course.course_id)}
+                                              onClick={() => handleRemoveCourse(user.user_ID, course.course_id)}
                                             >
                                               Remove
                                             </button>
@@ -608,7 +660,7 @@ const UserManagement = () => {
                                               <td className="py-2 px-4 text-right w-[15%]">
                                                 <button
                                                   className="px-4 py-1 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-700"
-                                                  onClick={() => handleRemoveThread(user.user_id, thread.thread_id)}
+                                                  onClick={() => handleRemoveThread(user.user_ID, thread.thread_id)}
                                                 >
                                                   Remove
                                                 </button>
@@ -650,7 +702,7 @@ const UserManagement = () => {
                                                   <td className="py-2 px-4 text-right w-[10%]">
                                                     <button
                                                       className="px-4 py-1 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-700"
-                                                      onClick={() => handleRemoveReply(user.user_id, thread.thread_id, reply.reply_id)}
+                                                      onClick={() => handleRemoveReply(user.user_ID, thread.thread_id, reply.reply_id)}
                                                     >
                                                       Remove
                                                     </button>
@@ -679,79 +731,78 @@ const UserManagement = () => {
                   </div>
                 ))
               ) : (
-                <div className="p-8 text-lg text-gray-500 text-center">No users found matching your filters.</div>
+                <div className="px-6 py-4 text-lg font-avant-medium text-gray-500 text-center">No users found matching your filters.</div>
               )}
             </div>
 
             {/* Pagination */}
-            {filteredUsers.length > 0 && (
-              <div className="px-8 py-4 bg-gray-50 font-avant-medium border-t border-gray-200 flex items-center justify-between">
-                <div className="text-gray-600">
-                  Showing {filteredUsers.length === 0 ? 0 : indexOfFirstUser + 1}
-                  -
-                  {Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
-                </div>
-                <div className="flex gap-2 items-center">
-                  <button
-                    onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
-                    disabled={currentPage === 1}
-                    className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === 1
-                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                      : "bg-blue-600 text-white hover:bg-blue-800"
-                      }`}
-                  >
-                    Previous
-                  </button>
-                  {(() => {
-                    const pages = [];
-                    for (let i = 1; i <= totalPages; i++) {
-                      if (
-                        i === 1 ||
-                        i === totalPages ||
-                        (i >= currentPage - 1 && i <= currentPage + 1)
-                      ) {
-                        pages.push(
-                          <button
-                            key={i}
-                            onClick={() => paginate(i)}
-                            className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === i
-                              ? "bg-blue-100 text-blue-700 border border-blue-600"
-                              : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
-                              }`}
-                            style={{ minWidth: 44 }}
-                          >
-                            {i}
-                          </button>
-                        );
-                      } else if (
-                        (i === currentPage - 2 && currentPage > 3) ||
-                        (i === currentPage + 2 && currentPage < totalPages - 2)
-                      ) {
-                        pages.push(
-                          <span
-                            key={i}
-                            className="px-3 py-2 text-gray-400 font-semibold"
-                          >
-                            ...
-                          </span>
-                        );
-                      }
-                    }
-                    return pages;
-                  })()}
-                  <button
-                    onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}
-                    disabled={currentPage === totalPages || totalPages === 0}
-                    className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === totalPages || totalPages === 0
-                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                      : "bg-blue-600 text-white hover:bg-blue-800"
-                      }`}
-                  >
-                    Next
-                  </button>
-                </div>
+            <div className="px-8 py-4 bg-gray-50 font-avant-medium border-t border-gray-200 flex items-center justify-between">
+              <div className="text-gray-600">
+                Showing {filteredUsers.length === 0 ? 0 : indexOfFirstUser + 1}
+                -
+                {Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
               </div>
-            )}
+              <div className="flex gap-2 items-center">
+                <button
+                  onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === 1
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-800"
+                    }`}
+                >
+                  Previous
+                </button>
+                {(() => {
+                  const pages = [];
+                  for (let i = 1; i <= totalPages; i++) {
+                    if (
+                      i === 1 ||
+                      i === totalPages ||
+                      (i >= currentPage - 1 && i <= currentPage + 1)
+                    ) {
+                      pages.push(
+                        <button
+                          key={i}
+                          onClick={() => paginate(i)}
+                          className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === i
+                            ? "bg-blue-100 text-blue-700 border border-blue-600"
+                            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                            }`}
+                          style={{ minWidth: 44 }}
+                        >
+                          {i}
+                        </button>
+                      );
+                    } else if (
+                      (i === currentPage - 2 && currentPage > 3) ||
+                      (i === currentPage + 2 && currentPage < totalPages - 2)
+                    ) {
+                      pages.push(
+                        <span
+                          key={i}
+                          className="px-3 py-2 text-gray-400 font-semibold"
+                        >
+                          ...
+                        </span>
+                      );
+                    }
+                  }
+                  return pages;
+                })()}
+                <button
+                  onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}
+                  disabled={currentPage === totalPages || totalPages === 0}
+                  className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === totalPages || totalPages === 0
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-800"
+                    }`}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
