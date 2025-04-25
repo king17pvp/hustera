@@ -8,7 +8,7 @@ import React from "react";
 // Updated mock data structure with weeks containing videos
 const mockCourses = [
   {
-    course_id: "C001",
+    course_ID: "C001",
     title: "Linear Algebra",
     instructor: "Dr. Alice Nguyen",
     category: "Mathematics",
@@ -17,68 +17,68 @@ const mockCourses = [
     enrolled: 100, // Added enrolled count
     weeks: [
       {
-        week_id: "W001",
+        week_ID: "W001",
         title: "Introduction to Linear Algebra",
         videos: [
-          { 
-            video_id: "V001", 
-            title: "Vectors and Spaces", 
+          {
+            video_ID: "V001",
+            title: "Vectors and Spaces",
             videoUrl: "https://example.com/video/C001/W001/V001",
-            completed: 92 
+            completed: 92
           },
-          { 
-            video_id: "V002", 
-            title: "Linear Combinations", 
+          {
+            video_ID: "V002",
+            title: "Linear Combinations",
             videoUrl: "https://example.com/video/C001/W001/V002",
-            completed: 88 
+            completed: 88
           }
         ]
       },
       {
-        week_id: "W002",
+        week_ID: "W002",
         title: "Matrix Transformations",
         videos: [
-          { 
-            video_id: "V003", 
-            title: "Matrix Multiplication", 
+          {
+            video_ID: "V003",
+            title: "Matrix Multiplication",
             videoUrl: "https://example.com/video/C001/W002/V003",
-            completed: 85 
+            completed: 85
           },
-          { 
-            video_id: "V004", 
-            title: "Matrix Inverse", 
+          {
+            video_ID: "V004",
+            title: "Matrix Inverse",
             videoUrl: "https://example.com/video/C001/W002/V004",
-            completed: 82 
+            completed: 82
           }
         ]
       },
       {
-        week_id: "W003",
+        week_ID: "W003",
         title: "Vector Spaces",
         videos: [
-          { 
-            video_id: "V005", 
-            title: "Subspaces", 
+          {
+            video_ID: "V005",
+            title: "Subspaces",
             videoUrl: "https://example.com/video/C001/W003/V005",
-            completed: 80 
+            completed: 80
           }
         ]
       },
       {
-        week_id: "W004",
+        week_ID: "W004",
         title: "Eigenvalues & Eigenvectors",
         videos: [
-          { 
-            video_id: "V006", 
-            title: "Introduction to Eigenvalues", 
+          {
+            video_ID: "V006",
+            title: "Introduction to Eigenvalues",
             videoUrl: "https://example.com/video/C001/W004/V006",
-            completed: 75 
+            completed: 75
           },
-          { 
-            video_id: "V007", 
-            title: "Eigenvector Computation", 
+          {
+            video_ID: "V007",
+            title: "Eigenvector Computation",
             videoUrl: "https://example.com/video/C001/W004/V007",
-            completed: 70 
+            completed: 70
           }
         ]
       }
@@ -120,7 +120,7 @@ const mockCourses = [
     ]
   },
   {
-    course_id: "C002",
+    course_ID: "C002",
     title: "React for Beginners",
     instructor: "Bob Tran",
     category: "Programming",
@@ -129,56 +129,56 @@ const mockCourses = [
     enrolled: 150,
     weeks: [
       {
-        week_id: "W001",
+        week_ID: "W001",
         title: "Introduction to React",
         videos: [
-          { 
-            video_id: "V008", 
-            title: "What is React?", 
+          {
+            video_ID: "V008",
+            title: "What is React?",
             videoUrl: "https://example.com/video/C002/W001/V008",
-            completed: 90 
+            completed: 90
           },
-          { 
-            video_id: "V009", 
-            title: "Setting up your environment", 
+          {
+            video_ID: "V009",
+            title: "Setting up your environment",
             videoUrl: "https://example.com/video/C002/W001/V009",
-            completed: 88 
+            completed: 88
           }
         ]
       },
       {
-        week_id: "W002",
+        week_ID: "W002",
         title: "JSX & Components",
         videos: [
-          { 
-            video_id: "V010", 
-            title: "Understanding JSX", 
+          {
+            video_ID: "V010",
+            title: "Understanding JSX",
             videoUrl: "https://example.com/video/C002/W002/V010",
-            completed: 85 
+            completed: 85
           },
-          { 
-            video_id: "V011", 
-            title: "Creating Your First Component", 
+          {
+            video_ID: "V011",
+            title: "Creating Your First Component",
             videoUrl: "https://example.com/video/C002/W002/V011",
-            completed: 82 
+            completed: 82
           }
         ]
       },
       {
-        week_id: "W003",
+        week_ID: "W003",
         title: "Props & State",
         videos: [
-          { 
-            video_id: "V012", 
-            title: "Working with Props", 
+          {
+            video_ID: "V012",
+            title: "Working with Props",
             videoUrl: "https://example.com/video/C002/W003/V012",
-            completed: 80 
+            completed: 80
           },
-          { 
-            video_id: "V013", 
-            title: "Managing State", 
+          {
+            video_ID: "V013",
+            title: "Managing State",
             videoUrl: "https://example.com/video/C002/W003/V013",
-            completed: 75 
+            completed: 75
           }
         ]
       }
@@ -198,7 +198,7 @@ const mockCourses = [
     ]
   },
   {
-    course_id: "C003",
+    course_ID: "C003",
     title: "UI/UX Fundamentals",
     instructor: "Fiona Tran",
     category: "Design",
@@ -207,38 +207,38 @@ const mockCourses = [
     enrolled: 75,
     weeks: [
       {
-        week_id: "W001",
+        week_ID: "W001",
         title: "Principles of Design",
         videos: [
-          { 
-            video_id: "V014", 
-            title: "Design Theory Basics", 
+          {
+            video_ID: "V014",
+            title: "Design Theory Basics",
             videoUrl: "https://example.com/video/C003/W001/V014",
-            completed: 90 
+            completed: 90
           },
-          { 
-            video_id: "V015", 
-            title: "Color Theory", 
+          {
+            video_ID: "V015",
+            title: "Color Theory",
             videoUrl: "https://example.com/video/C003/W001/V015",
-            completed: 85 
+            completed: 85
           }
         ]
       },
       {
-        week_id: "W002",
+        week_ID: "W002",
         title: "Wireframing",
         videos: [
-          { 
-            video_id: "V016", 
-            title: "Introduction to Wireframes", 
+          {
+            video_ID: "V016",
+            title: "Introduction to Wireframes",
             videoUrl: "https://example.com/video/C003/W002/V016",
-            completed: 78 
+            completed: 78
           },
-          { 
-            video_id: "V017", 
-            title: "Creating Effective Wireframes", 
+          {
+            video_ID: "V017",
+            title: "Creating Effective Wireframes",
             videoUrl: "https://example.com/video/C003/W002/V017",
-            completed: 75 
+            completed: 75
           }
         ]
       }
@@ -249,7 +249,7 @@ const mockCourses = [
     ]
   },
   {
-    course_id: "C004",
+    course_ID: "C004",
     title: "Machine Learning Basics",
     instructor: "Ethan Do",
     category: "Data Science",
@@ -258,56 +258,56 @@ const mockCourses = [
     enrolled: 200,
     weeks: [
       {
-        week_id: "W001",
+        week_ID: "W001",
         title: "Introduction to ML",
         videos: [
-          { 
-            video_id: "V018", 
-            title: "What is Machine Learning?", 
+          {
+            video_ID: "V018",
+            title: "What is Machine Learning?",
             videoUrl: "https://example.com/video/C004/W001/V018",
-            completed: 96 
+            completed: 96
           },
-          { 
-            video_id: "V019", 
-            title: "Types of ML Algorithms", 
+          {
+            video_ID: "V019",
+            title: "Types of ML Algorithms",
             videoUrl: "https://example.com/video/C004/W001/V019",
-            completed: 94 
+            completed: 94
           }
         ]
       },
       {
-        week_id: "W002",
+        week_ID: "W002",
         title: "Supervised Learning",
         videos: [
-          { 
-            video_id: "V020", 
-            title: "Classification vs Regression", 
+          {
+            video_ID: "V020",
+            title: "Classification vs Regression",
             videoUrl: "https://example.com/video/C004/W002/V020",
-            completed: 95 
+            completed: 95
           },
-          { 
-            video_id: "V021", 
-            title: "Decision Trees", 
+          {
+            video_ID: "V021",
+            title: "Decision Trees",
             videoUrl: "https://example.com/video/C004/W002/V021",
-            completed: 92 
+            completed: 92
           }
         ]
       },
       {
-        week_id: "W003",
+        week_ID: "W003",
         title: "Unsupervised Learning",
         videos: [
-          { 
-            video_id: "V022", 
-            title: "Clustering Algorithms", 
+          {
+            video_ID: "V022",
+            title: "Clustering Algorithms",
             videoUrl: "https://example.com/video/C004/W003/V022",
-            completed: 90 
+            completed: 90
           },
-          { 
-            video_id: "V023", 
-            title: "Dimensionality Reduction", 
+          {
+            video_ID: "V023",
+            title: "Dimensionality Reduction",
             videoUrl: "https://example.com/video/C004/W003/V023",
-            completed: 88 
+            completed: 88
           }
         ]
       }
@@ -327,7 +327,7 @@ const mockCourses = [
     ]
   },
   {
-    course_id: "C005",
+    course_ID: "C005",
     title: "Digital Forensics",
     instructor: "Tina Mai",
     category: "Cybersecurity",
@@ -336,20 +336,20 @@ const mockCourses = [
     enrolled: 50,
     weeks: [
       {
-        week_id: "W001",
+        week_ID: "W001",
         title: "Introduction to Forensics",
         videos: [
-          { 
-            video_id: "V024", 
-            title: "What is Digital Forensics?", 
+          {
+            video_ID: "V024",
+            title: "What is Digital Forensics?",
             videoUrl: "https://example.com/video/C005/W001/V024",
-            completed: 60 
+            completed: 60
           },
-          { 
-            video_id: "V025", 
-            title: "Legal Aspects of Digital Forensics", 
+          {
+            video_ID: "V025",
+            title: "Legal Aspects of Digital Forensics",
             videoUrl: "https://example.com/video/C005/W001/V025",
-            completed: 55 
+            completed: 55
           }
         ]
       }
@@ -366,10 +366,11 @@ const CourseManagement = () => {
   const [expanded, setExpanded] = useState(null);
   const [expandedWeek, setExpandedWeek] = useState(null);
   const [displayMode, setDisplayMode] = useState("lessons");
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
-    course_id: "",
+    course_ID: "",
     title: "",
     instructor: "",
     category: "all",
@@ -378,11 +379,34 @@ const CourseManagement = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 10;
-
-  const uniqueCategories = Array.from(new Set(mockCourses.map(course => course.category)));
+  const [uniqueCategories, setUniqueCategories] = useState([]);
 
   useEffect(() => {
-    setCourses(mockCourses);
+    setLoading(true);
+    setError(null);
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/admin/course-management`); // GET /admin/course-management/
+        if (response.data && response.data.success && Array.isArray(response.data.courses)) {
+          setCourses(response.data.courses);
+          const categories = Array.from(new Set(response.data.courses.map(course => course.category).filter(Boolean)));
+          setUniqueCategories(categories);
+        } else {
+          console.error("Unexpected data format received:", response.data);
+          setError("Failed to load courses: Unexpected data format from server.");
+          setCourses([]);
+          setUniqueCategories([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch courses:", err);
+        setError(`Failed to load courses: ${err.response?.data?.message || err.message}`);
+        setCourses([]);
+        setUniqueCategories([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
   }, []);
 
   const handleExpand = (courseId) => {
@@ -390,67 +414,91 @@ const CourseManagement = () => {
     setExpandedWeek(null); // Reset expanded week when collapsing or expanding a course
   };
 
-  const handleDelete = async (courseId) => {
+  const handleDelete = async (courseIdToDelete) => {
+    setError(null);
+    if (!window.confirm(`Are you sure you want to delete user ID ${userIdToDelete}? This action cannot be undone.`)) {
+      return;
+    }
     try {
-      await axios.post("/api/delete-course", { courseId });
-      setCourses((prev) => prev.filter((c) => c.course_id !== courseId));
-    } catch (error) {
-      console.error("Failed to delete course:", error);
+      // Controller expects `courseId` in body
+      await axios.delete(`http://localhost:5000/admin/course-management/delete-course`, { data: { courseId: courseIdToDelete } });
+      setCourses((prev) => prev.filter((c) => c.course_ID !== courseIdToDelete));
+      if (expanded === courseIdToDelete) setExpanded(null);
+    } catch (err) {
+      console.error("Failed to delete course:", err);
+      setError(`Failed to delete course: ${err.response?.data?.message || err.message}`);
     }
   };
-  
+
   // Remove video by courseId, weekId, and videoId
-  const handleRemoveVideo = async (courseId, weekId, videoId) => {
+  const handleRemoveVideo = async (courseId, weekId, videoIdToRemove) => {
+    setError(null);
+    if (!window.confirm(`Are you sure you want to delete this video? This action cannot be undone.`)) {
+      return;
+    }
     try {
-      await axios.post("/api/remove-video", { courseId, weekId, videoId });
+      // Controller expects `videoId` in body
+      await axios.delete(`http://localhost:5000/admin/course-management/remove-video`, { data: { videoId: videoIdToRemove } });
       setCourses((prev) =>
         prev.map((c) =>
-          c.course_id === courseId
+          c.course_ID === courseId
             ? {
-                ...c,
-                weeks: c.weeks.map((w) =>
-                  w.week_id === weekId
-                    ? { ...w, videos: w.videos.filter((v) => v.video_id !== videoId) }
-                    : w
-                ),
-              }
+              ...c,
+              weeks: c.weeks?.map((w) =>
+                w.week_ID === weekId
+                  ? { ...w, videos: w.videos?.filter((v) => v.video_ID !== videoIdToRemove) }
+                  : w
+              ) || [],
+            }
             : c
         )
       );
-    } catch (error) {
-      console.error("Failed to remove video:", error);
+    } catch (err) {
+      console.error("Failed to remove video:", err);
+      setError(`Failed to remove video: ${err.response?.data?.message || err.message}`);
     }
   };
-  
+
   // Remove student by courseId + userId
-  const handleRemoveStudent = async (courseId, userId) => {
+  const handleRemoveStudent = async (courseId, userIdToRemove) => {
+    setError(null);
+    if (!window.confirm(`Are you sure you want to remove this student from the course? This action cannot be undone.`)) {
+      return;
+    }
     try {
-      await axios.post("/api/remove-student", { courseId, userId });
+      // Controller expects `courseId` and `userId` in body
+      await axios.delete(`http://localhost:5000/admin/course-management/remove-student`, { data: { courseId: courseId, userId: userIdToRemove } });
       setCourses((prev) =>
         prev.map((c) =>
-          c.course_id === courseId
-            ? { ...c, students: c.students.filter((s) => s.user_id !== userId) }
+          c.course_ID === courseId
+            ? { ...c, students: c.students?.filter((s) => s.user_ID !== userIdToRemove) || [] }
             : c
         )
       );
-    } catch (error) {
-      console.error("Failed to remove student:", error);
+    } catch (err) {
+      console.error("Failed to remove student:", err);
+      setError(`Failed to remove student: ${err.response?.data?.message || err.message}`);
     }
   };
-  
-  // Remove review by courseId + reviewId
-  const handleRemoveReview = async (courseId, reviewId) => {
+
+  const handleRemoveReview = async (courseId, reviewIdToRemove) => {
+    setError(null);
+    if (!window.confirm(`Are you sure you want to remove this review from the course? This action cannot be undone.`)) {
+      return;
+    }
     try {
-      await axios.post("/api/remove-review", { courseId, reviewId });
+      // Controller expects `reviewId` in body
+      await axios.delete(`http://localhost:5000/admin/course-management/remove-review`, { data: { reviewId: reviewIdToRemove } });
       setCourses((prev) =>
         prev.map((c) =>
-          c.course_id === courseId
-            ? { ...c, reviews: c.reviews.filter((r) => r.review_id !== reviewId) }
+          c.course_ID === courseId
+            ? { ...c, reviews: c.reviews?.filter((r) => r.review_ID !== reviewIdToRemove) || [] }
             : c
         )
       );
-    } catch (error) {
-      console.error("Failed to remove review:", error);
+    } catch (err) {
+      console.error("Failed to remove review:", err);
+      setError(`Failed to remove review: ${err.response?.data?.message || err.message}`);
     }
   };
 
@@ -483,7 +531,7 @@ const CourseManagement = () => {
     }
 
     const otherFiltersMatch =
-      (filters.course_id === "" || course.course_id.toLowerCase().includes(filters.course_id.toLowerCase())) &&
+      (filters.course_ID === "" || course.course_ID.toLowerCase().includes(filters.course_ID.toLowerCase())) &&
       (filters.title === "" || course.title.toLowerCase().includes(filters.title.toLowerCase())) &&
       (filters.instructor === "" || course.instructor.toLowerCase().includes(filters.instructor.toLowerCase()));
 
@@ -561,8 +609,8 @@ const CourseManagement = () => {
                         type="text"
                         className="w-full px-3 py-1 text-[16px] border border-gray-300 rounded-xl"
                         placeholder="Filter ID..."
-                        value={filters.course_id}
-                        onChange={(e) => handleFilterChange("course_id", e.target.value)}
+                        value={filters.course_ID}
+                        onChange={(e) => handleFilterChange("course_ID", e.target.value)}
                       />
                     </th>
                     <th className="px-6 py-2">
@@ -620,9 +668,9 @@ const CourseManagement = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentCourses.length > 0 ? (
                     currentCourses.map((course) => (
-                      <React.Fragment key={course.course_id}>
+                      <React.Fragment key={course.course_ID}>
                         <tr className="border-b border-gray-100">
-                          <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium text-gray-900">{course.course_id}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium text-gray-900">{course.course_ID}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium font-semibold text-blue-700">{course.title}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium text-gray-700">{course.instructor}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-lg font-avant-medium text-gray-700">
@@ -638,13 +686,13 @@ const CourseManagement = () => {
                               <div className="flex gap-3 ml-[-30px]">
                                 <button
                                   className="px-4 py-2 rounded-xl w-[120px] bg-blue-600 text-white font-avant-medium hover:bg-blue-800 transition cursor-pointer"
-                                  onClick={() => handleExpand(course.course_id)}
+                                  onClick={() => handleExpand(course.course_ID)}
                                 >
-                                  {expanded === course.course_id ? "Collapse" : "Details"}
+                                  {expanded === course.course_ID ? "Collapse" : "Details"}
                                 </button>
                                 <button
                                   className="px-4 py-2 rounded-xl bg-red-500 text-white font-avant-medium hover:bg-red-700 transition cursor-pointer"
-                                  onClick={() => handleDelete(course.course_id)}
+                                  onClick={() => handleDelete(course.course_ID)}
                                 >
                                   Delete
                                 </button>
@@ -652,7 +700,7 @@ const CourseManagement = () => {
                             </div>
                           </td>
                         </tr>
-                        {expanded === course.course_id && (
+                        {expanded === course.course_ID && (
                           <tr>
                             <td colSpan="7" className="bg-gray-50 px-12 py-6 border-b border-t border-gray-300">
                               <div className="grid grid-cols-1 md:grid-cols-5 gap-8 animate-fade-in-down">
@@ -746,13 +794,36 @@ const CourseManagement = () => {
                                                   </thead>
                                                   <tbody className="bg-white divide-y divide-gray-200">
                                                     {week.videos.map((video) => (
-                                                      <tr key={video.video_id}>
+                                                      <tr key={video.video_ID}>
                                                         <td className="px-3 py-2 whitespace-nowrap text-gray-600" style={{ width: "40%" }}>{video.title}</td>
-                                                        <td className="px-3 py-2 whitespace-nowrap text-gray-600" style={{ width: "40%" }}>{video.videoUrl}</td>
+                                                        <td className="px-3 py-2 whitespace-nowrap text-gray-600" style={{ width: "40%" }}>
+                                                          {video.videoUrl.length > 50
+                                                            ? (
+                                                              <a
+                                                                href={video.videoUrl}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-blue-600 underline"
+                                                              >
+                                                                {video.videoUrl.slice(0, 50) + "..."}
+                                                              </a>
+                                                            )
+                                                            : (
+                                                              <a
+                                                                href={video.videoUrl}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-blue-600 underline"
+                                                              >
+                                                                {video.videoUrl}
+                                                              </a>
+                                                            )
+                                                          }
+                                                        </td>
                                                         <td className="px-3 py-2 whitespace-nowrap text-center text-gray-600" style={{ width: "10%" }}>{video.completed}%</td>
                                                         <td className="px-3 py-2 whitespace-nowrap text-gray-600" style={{ width: "10%" }}>
                                                           <button
-                                                            onClick={() => handleRemoveVideo(course.course_id, week.week_id, video.video_id)}
+                                                            onClick={() => handleRemoveVideo(course.course_ID, week.week_ID, video.video_ID)}
                                                             className="text-red-600 hover:text-red-900"
                                                           >
                                                             Remove
@@ -794,7 +865,7 @@ const CourseManagement = () => {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap" style={{ width: "10%" }}>
                                                   <button
-                                                    onClick={() => handleRemoveStudent(course.course_id, student.user_id)}
+                                                    onClick={() => handleRemoveStudent(course.course_ID, student.user_id)}
                                                     className="text-red-600 hover:text-red-900"
                                                   >
                                                     Remove
@@ -828,7 +899,7 @@ const CourseManagement = () => {
                                                 </td>
                                                 <td className="px-6 py-4 text-gray-600 whitespace-nowrap">
                                                   <button
-                                                    onClick={() => handleRemoveReview(course.course_id, review.review_id)}
+                                                    onClick={() => handleRemoveReview(course.course_ID, review.review_id)}
                                                     className="text-red-600 hover:text-red-900"
                                                   >
                                                     Remove
@@ -850,7 +921,7 @@ const CourseManagement = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="7" className="px-6 py-4 text-center text-gray-500">
+                      <td colSpan="7" className="px-6 py-4 text-lg text-center text-gray-500">
                         No courses found matching your filters.
                       </td>
                     </tr>
@@ -858,50 +929,52 @@ const CourseManagement = () => {
                 </tbody>
               </table>
             </div>
-          </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-8">
-              <nav className="inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            {/* Pagination */}
+            <div className="px-8 py-4 bg-gray-50 font-avant-medium border-t border-gray-200 flex items-center justify-between">
+              <div className="text-gray-600">
+                Showing {filteredCourses.length === 0 ? 0 : indexOfFirstCourse + 1}
+                -
+                {Math.min(indexOfLastCourse, filteredCourses.length)} of {filteredCourses.length} courses
+              </div>
+              <div className="flex gap-2 items-center">
                 <button
-                  onClick={() => paginate(Math.max(1, currentPage - 1))}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
-                    currentPage === 1 ? "cursor-not-allowed" : ""
-                  }`}
+                  onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
                   disabled={currentPage === 1}
+                  className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === 1
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-800"
+                    }`}
                 >
-                  <span className="sr-only">Previous</span>
-                  &laquo; Previous
+                  Previous
                 </button>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((i) => (
                   <button
-                    key={number}
-                    onClick={() => paginate(number)}
-                    className={`relative inline-flex items-center px-4 py-2 border ${
-                      currentPage === number
-                        ? "bg-blue-50 border-blue-500 text-blue-600"
-                        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                    } text-sm font-medium`}
+                    key={i}
+                    onClick={() => setCurrentPage(i)}
+                    className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === i
+                      ? "bg-blue-100 text-blue-700 border border-blue-600"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                      }`}
+                    style={{ minWidth: 44 }}
                   >
-                    {number}
+                    {i}
                   </button>
                 ))}
-
                 <button
-                  onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 ${
-                    currentPage === totalPages ? "cursor-not-allowed" : ""
-                  }`}
-                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages)}
+                  disabled={currentPage === totalPages || totalPages === 0}
+                  className={`px-4 py-2 rounded-xl font-semibold transition ${currentPage === totalPages || totalPages === 0
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-800"
+                    }`}
                 >
-                  <span className="sr-only">Next</span>
-                  Next &raquo;
+                  Next
                 </button>
-              </nav>
+              </div>
             </div>
-          )}
+
+          </div>
         </div>
       </div>
       <Footer />

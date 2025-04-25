@@ -148,6 +148,8 @@ const ForumManagement = () => {
   const [expanded, setExpanded] = useState(null);
   const [expandedContent, setExpandedContent] = useState({});
   const [expandedAnswers, setExpandedAnswers] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     title: "",
     author: "",
@@ -161,7 +163,27 @@ const ForumManagement = () => {
   const threadsPerPage = 8;
 
   useEffect(() => {
-    setThreads(mockThreads);
+    setLoading(true);
+    setError(null);
+    const fetchThreads = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/admin/forum-management/`);
+        if (response.data && Array.isArray(response.data.threads)) {
+          setThreads(response.data.threads);
+        } else {
+          console.error("Unexpected data format received:", response.data);
+          setError("Failed to load data: Unexpected format.");
+          setThreads([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch threads:", err);
+        setError(`Failed to load forum threads: ${err.message}`);
+        setThreads([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchThreads();
   }, []);
 
   // Handlers
@@ -170,18 +192,28 @@ const ForumManagement = () => {
   };
 
   const handleDeleteThread = async (id) => {
+    setError(null);
+    if (!window.confirm(`Are you sure you want to remove this thread? This action cannot be undone.`)) {
+      return;
+    }
     try {
-      await axios.delete("/api/forum/delete-thread", { data: { thread_id: id } });
+      await axios.delete(`http://localhost:5000/admin/forum-management/delete-thread`, { data: { thread_id: id } });
       setThreads((prev) => prev.filter((t) => t.id !== id));
       if (expanded === id) setExpanded(null);
+      setError(null);
     } catch (err) {
       console.error("Failed to delete thread", err);
+      setError(`Failed to delete thread: ${err.message}`);
     }
   };
-  
+
   const handleDeleteAnswer = async (threadId, answerId) => {
+    setError(null);
+    if (!window.confirm(`Are you sure you want to remove this answer? This action cannot be undone.`)) {
+      return;
+    }
     try {
-      await axios.delete("/api/forum/delete-answer", { data: { thread_id: threadId, answer_id: answerId } });
+      await axios.delete(`http://localhost:5000/admin/forum-management/delete-answer`, { data: { thread_id: threadId, answer_id: answerId } });
       setThreads((prev) =>
         prev.map((t) =>
           t.id === threadId
@@ -189,8 +221,10 @@ const ForumManagement = () => {
             : t
         )
       );
+      setError(null);
     } catch (err) {
       console.error("Failed to delete answer", err);
+      setError(`Failed to delete answer: ${err.message}`);
     }
   };
 
