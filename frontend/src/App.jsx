@@ -193,8 +193,8 @@ const sampleStats = [
 ];
 
 const App = () => {
-  // const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const isAuthenticated = true;
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  // const isAuthenticated = true;
 
   return (
     <>
