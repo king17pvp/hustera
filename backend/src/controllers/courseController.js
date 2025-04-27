@@ -2,6 +2,22 @@ const coursesService = require("../services/courseService");
 const Course = require('../models/courseModel');
 const Search = require('../models/searchModel');
 
+exports.getCourseById = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+
+    const course = await coursesService.getCourseById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+    console.log("Courses retrieved: ", course);
+    return res.status(200).json(course);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
 // Get all courses with optional filtering and search
 exports.getCourses = async (req, res) => {
   try {
