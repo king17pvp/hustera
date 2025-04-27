@@ -34,6 +34,7 @@ const ThreadListing = () => {
         if (filters.tags.length > 0) {
           filters.tags.forEach(tag => params.append("tags", tag));
         }
+        console.log("Params: ", params.toString());
         endpoint = `http://localhost:5000/forum?${params.toString()}`;
         const response = await fetch(endpoint);
         const data = await response.json();
