@@ -10,11 +10,11 @@ const AnswerCard = ({ answer, threadId }) => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const answerId = answer.answer_id;
   const user_ID = user?.id;
-  console.log("Answer id: ", answerId);
+  // console.log("Answer id: ", answerId);
   // console.log(user.id);
   useEffect(() => {
     const fetchUserVote = async () => {
-      // console.log(`CALLING with answerID of ${answerId} and userId of ${user_ID}!!!!`);
+      console.log(`CALLING with answerID of ${answerId} and userId of ${user_ID}!!!!`);
       try {
         console.log(`CALLING with answerID of ${answerId} and userId of ${user_ID}!!!!`);
         const response = await axios.get(
