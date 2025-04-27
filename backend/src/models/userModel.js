@@ -14,7 +14,7 @@ exports.getUserInfo = async (userId) => {
             ui.dob,
             ui.gender,
             ui.avatar_ID,
-            i.image_path as avatar_path
+            i.image as avatar
         FROM user_info ui
         LEFT JOIN images i ON ui.avatar_ID = i.image_ID
         WHERE ui.user_ID = ?`,
@@ -26,6 +26,12 @@ exports.getUserInfo = async (userId) => {
         return null;
     }
 
+    // Convert avatar buffer to base64 if exists
+    let avatarBase64 = null;
+    if (rows[0].avatar) {
+        avatarBase64 = `data:image/png;base64,${Buffer.from(rows[0].avatar).toString('base64')}`;
+    }
+
     // Return the specific fields
     return {
         user_ID: rows[0].user_ID,
@@ -33,7 +39,7 @@ exports.getUserInfo = async (userId) => {
         dob: rows[0].dob,
         gender: rows[0].gender,
         avatar_ID: rows[0].avatar_ID,
-        avatar_path: rows[0].avatar_path
+        avatar: avatarBase64
     };
 };
 
@@ -45,13 +51,11 @@ exports.getEnrolledCourses = async (userId) => {
             c.title,
             c.description,
             c.category,
-            c.thumbnail_ID,
             c.price,
             c.duration,
             c.created_at,
             c.level,
-            ce.enroll_date,
-            i.image_path as thumbnail_path
+            ce.enroll_date
          FROM course_enroll ce
          JOIN courses c ON ce.course_ID = c.course_ID
          LEFT JOIN images i ON c.thumbnail_ID = i.image_ID
@@ -66,13 +70,11 @@ exports.getEnrolledCourses = async (userId) => {
         title: row.title,
         description: row.description,
         category: row.category,
-        thumbnail_ID: row.thumbnail_ID,
         price: row.price,
         duration: row.duration,
         created_at: row.created_at,
         level: row.level,
-        enroll_date: row.enroll_date,
-        thumbnail_path: row.thumbnail_path
+        enroll_date: row.enroll_date
     }));
 };
 

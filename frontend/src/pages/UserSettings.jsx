@@ -48,13 +48,31 @@ const UserSettings = () => {
     return !Object.values(newErrors).some((error) => error);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validateForm()) {
       return;
     }
+    try {
+      // Send user data to backend (no dynamic route)
+      const response = await axios.post("/api/user/update-profile", {
+        name: userData.fullName,
+        dob: userData.dob,
+        gender: userData.gender,
+        avatar: avatar,
+      });
+      
+      // Optionally update Redux or local state here
+      dispatch(updateUserInfo({
+        name: userData.fullName,
+        dob: userData.dob,
+        gender: userData.gender,
+        avatarUrl: response.data.avatarUrl || avatar
+      }));
 
-    // Perform the save operation here
-    console.log("Saving user data...", userData);
+      console.log("User data updated!", response.data);
+    } catch (error) {
+      console.error("Failed to update user data", error);
+    }
   };
 
   return (

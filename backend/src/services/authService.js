@@ -12,9 +12,9 @@ exports.login = async (email, password) => {
     if (!isMatch) {
         throw new Error('Incorrect password');
     }
-    const userInfo = await userModel.getUserInfo(user.user_ID);
-    const enrolledCourses = await userModel.getEnrolledCourses(user.user_ID);
-    const votedThreads = await userModel.getVotedThreads(user.user_ID);
-    const votedAnswers = await userModel.getVotedAnswers(user.user_ID);
+    const userInfo = await userModel.getUserInfo(2);
+    const enrolledCourses = await userModel.getEnrolledCourses(7);
+    const votedThreads = await userModel.getVotedThreads(2);
+    const votedAnswers = await userModel.getVotedAnswers(9);
     return {id: user.user_ID, email: user.email, role: user.role, user_info: userInfo, enrolled_courses: enrolledCourses, voted_threads: votedThreads, voted_answers: votedAnswers};
 }
