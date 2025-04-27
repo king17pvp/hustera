@@ -218,7 +218,8 @@ const App = () => {
                   threads={sampleThreads}
                   stats={sampleStats} />} />
                 <Route path="/courses" element={<CourseListing />} />
-                <Route path="/courses/1" element={<CourseSingle courses={sampleCourses[0]} />} />
+                {/* <Route path="/courses/1" element={<CourseSingle courses={sampleCourses[0]} />} /> */}
+                <Route path="/courses/:courseID" element={<CourseSingle/>}/>
                 <Route path="/forum" element={<ForumListing />} />
                 <Route path="/forum/:threadId" element={<ForumSingle/>} />
                 <Route path="/login" element={<Login />} />
