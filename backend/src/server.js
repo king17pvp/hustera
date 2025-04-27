@@ -5,6 +5,7 @@ const db = require('./config/db');
 
 // Routes imports
 const registerRoutes = require('./routes/registerRoutes');
+const forumRoutes = require('./routes/forumRoutes');
 const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const searchRoutes = require('./routes/searchRoutes');
@@ -39,7 +40,7 @@ app.use('/register', registerRoutes);
 app.use('/auth', authRoutes);
 app.use('/courses', courseRoutes);
 app.use('/search', searchRoutes);
-
+app.use('/forum', forumRoutes);
 // Root endpoint
 app.get('/', (req, res) => res.send('Welcome to Backend'));
 
