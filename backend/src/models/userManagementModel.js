@@ -14,6 +14,8 @@ exports.getAllUsers = async () => {
       user_auth ua
     LEFT JOIN
       user_info ui ON ua.user_ID = ui.user_ID
+    WHERE
+      ua.role != 'admin'
     ORDER BY
       ua.created_at DESC
   `;

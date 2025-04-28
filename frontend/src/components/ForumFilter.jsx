@@ -6,16 +6,26 @@ const ForumFilter = ({ categories, tags, onFilterChange }) => {
     sortBy: "recentComment", // Default sorting option
     tags: [],
   });
+  
   useEffect(() => {
     if (onFilterChange) {
       onFilterChange(selectedFilters);
     }
   }, [selectedFilters]);
-  // Handles single-selection filters (Category, Sort By)
+  
+  // Handles single-selection filters (Sort By)
   const handleSingleSelect = (section, value) => {
     setSelectedFilters((prev) => ({
       ...prev,
       [section]: prev[section] === value ? "" : value, // Deselect if clicked again
+    }));
+  };
+
+  // Handle category selection (single selection)
+  const toggleCategory = (category) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      category: prev.category === category ? "" : category, // Deselect if clicked again
     }));
   };
 
@@ -30,18 +40,29 @@ const ForumFilter = ({ categories, tags, onFilterChange }) => {
   };
 
   return (
-    <div className="w-100 px-3 text-black">
+    <div className="w-100 px-3  font-avant-medium text-black">
       {/* Category Section */}
       <FilterSection title="Thread Category">
-        {categories.map(({ name, thread_count}) => (
-          <RadioCheckbox
-            key={name}
-            label={name}
-            count={thread_count}
-            checked={selectedFilters.category === name}
-            onChange={() => handleSingleSelect("category", name)}
-          />
-        ))}
+        <div className="flex flex-wrap gap-3">
+          {categories.map(({ name, thread_count }) => (
+            <button
+              key={name}
+              onClick={() => toggleCategory(name)}
+              className={`px-4 py-2 rounded-xl font-avant-medium text-lg border transition cursor-pointer flex justify-between items-center ${
+                selectedFilters.category === name
+                  ? "bg-gray-800 border-gray-800 text-white"
+                  : "bg-white border-gray-300 hover:bg-gray-100 text-gray-600"
+              }`}
+            >
+              <span>{name}</span>
+              {thread_count !== undefined && (
+                <span className="ml-2 text-sm px-2 py-1 rounded-full bg-opacity-20 bg-gray-200">
+                  {thread_count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       </FilterSection>
 
       {/* Sort By Section */}

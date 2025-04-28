@@ -148,7 +148,6 @@ const ForumUpload = () => {
 
     try {
       // Step 2: Send the data to the backend using Axios
-      console.log(data);
       const response = await axios.post("http://localhost:5000/forum/uploadForum", {
         ...data,            // hoặc title, body, tags, attachments...
         user_ID: user?.id,  // truyền kèm user_ID nếu không dùng token
