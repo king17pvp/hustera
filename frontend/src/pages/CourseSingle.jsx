@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CourseSingleHeader from "../components/CourseSingleHeader";
 import CourseSingleCards from "../components/CourseSingleCards";
 import Breadcrumb from "../components/BreadCrumb";
-
+import { useParams } from "react-router-dom";
 const sampleCourse = {
   course_id: 1,
   title: "The Ultimate Guide To The Best WordPress LMS Plugin",
@@ -96,7 +98,40 @@ const sampleCourse = {
   enrollment_count: 156
 };
 
-const CourseSingle = ({ course = sampleCourse }) => {
+const CourseSingle = () => {
+  const { courseID } = useParams();
+  const [course, setCourse] = useState(null); // course data
+  const [loading, setLoading] = useState(true); // loading state
+  const [error, setError] = useState(null);     // error state
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:5000/courses/${courseID}`);
+        setCourse(response.data);
+      } catch (err) {
+        console.error("Failed to fetch course:", err);
+        setError("Failed to load course");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourse();
+  }, [courseID]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-xl">Loading course...</div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-500 text-xl">{error}</div>;
+  }
+
+  if (!course) {
+    return <div className="min-h-screen flex items-center justify-center text-xl">Course not found</div>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -107,11 +142,8 @@ const CourseSingle = ({ course = sampleCourse }) => {
         <CourseSingleHeader course={course} />
 
         <div className="flex flex-col items-center justify-center w-full p-6">
-          {/* Course Tabs Section */}
           <div className="w-[1680px] items-center justify-between">
-            <CourseSingleCards 
-              course={course} 
-            />
+            <CourseSingleCards course={course} />
           </div>
         </div>
       </div>
@@ -120,5 +152,4 @@ const CourseSingle = ({ course = sampleCourse }) => {
     </div>
   );
 };
-
 export default CourseSingle;

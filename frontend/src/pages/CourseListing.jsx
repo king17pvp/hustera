@@ -325,7 +325,7 @@ const CourseListing = () => {
 
     fetchFilters();
   }, []);
-
+  console.log("Retrieved courses", courses);
   return (
     <>
       <Navbar currentState="Courses" />

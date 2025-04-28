@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaStar, FaChevronLeft, FaChevronRight, FaUsers, FaBookOpen } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const CourseVideoOverlay = ({ course, selectedVideo, closeVideo, handleVideoClick, expandedSections, toggleSection }) => {
   if (!selectedVideo) return null;
@@ -160,6 +161,7 @@ const CourseSingleCards = ({ course }) => {
   const [ratingError, setRatingError] = useState("");
   const [commentError, setCommentError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  // const [reloadFlag, setReloadFlag] = useState(false);
   const reviewsPerPage = 3;
 
   const { user } = useSelector((state) => state.auth);
@@ -188,7 +190,7 @@ const CourseSingleCards = ({ course }) => {
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   const currentReviews = course.reviews.slice(indexOfFirstReview, indexOfLastReview);
-
+  
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -215,7 +217,16 @@ const CourseSingleCards = ({ course }) => {
       console.error("Failed to update watched video", err);
     }
   };
-
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/courses/${course.course_id}/reviews`);
+      const updatedReviews = response.data.reviews;
+      course.reviews = updatedReviews;    // <- directly update course.reviews
+      setCurrentPage(1);                  // optional: go back to page 1 after posting
+    } catch (error) {
+      console.error("Failed to fetch updated reviews", error);
+    }
+  };
   const handlePostComment = async (e) => {
     e.preventDefault();
     let hasError = false;
@@ -244,23 +255,26 @@ const CourseSingleCards = ({ course }) => {
     if (hasError) return;
 
     const payload = {
-      user_id: user.id,
+      user_id: user?.id,
       course_id: course.course_id,
       rating,
       review: comment.trim(),
     };
     try {
       console.log("Posting review:", payload);
-      await axios.post("/api/course/post-review", payload);
+      await axios.post("http://localhost:5000/courses/post-review", payload);
       setComment("");
       setRating(0);
       setHovered(0);
       setRatingError("");
       setCommentError("");
-      // Optionally: fetch updated reviews here
+      await fetchReviews();
     } catch (err) {
-      setRatingError("Failed to post review. Please try again.");
-      console.error("Failed to post review", err);
+      if (err.response?.status === 400) {
+        setRatingError(err.response.data.message); 
+      } else {
+        setRatingError("Failed to post review. Please try again.");
+      }
     }
   };
 

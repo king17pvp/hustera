@@ -4,5 +4,9 @@ const coursesController = require("../controllers/courseController");
 
 router.get("/", coursesController.getCourses);
 router.get("/filters", coursesController.getFilters);
+router.get('/:courseId', coursesController.getCourseById);
+router.get('/:courseID/reviews', coursesController.getCourseReviews);
+router.post('/enroll-course', coursesController.enrollUserInCourse);
+router.post('/post-review', coursesController.postCourseReview);
 
 module.exports = router;

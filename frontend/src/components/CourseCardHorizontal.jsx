@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CourseCardHorizontal = ({
   thumbnailUrl,
@@ -8,14 +9,31 @@ const CourseCardHorizontal = ({
   duration,
   level,          // renamed from levels
   price,
+  courseID,
 }) => {
-  
+  const course = {
+    thumbnailUrl,
+    category,
+    title,
+    instructor,     // renamed from author
+    duration,
+    level,          // renamed from levels
+    price,
+    courseID,
+  }
+  console.log("Courses?: ", course);
+  const navigate = useNavigate();
   useEffect(() => {
     console.log("Thumbnail URL: ", thumbnailUrl); // Debugging: Check the thumbnail URL
   }, [thumbnailUrl]);
-
+  const handleClick = () => {
+    navigate(`/courses/${courseID}`); // <-- Navigate to detail page
+  };
   return (
-    <div className="group relative h-80 w-310 flex bg-white rounded-2xl overflow-hidden border border-gray-200 transition-transform duration-300 hover:shadow-2xl hover:-translate-y-2 hover:bg-gray-50 cursor-pointer">
+    <div 
+      className="group relative h-80 w-310 flex bg-white rounded-2xl overflow-hidden border border-gray-200 transition-transform duration-300 hover:shadow-2xl hover:-translate-y-2 hover:bg-gray-50 cursor-pointer"
+      onClick = {handleClick}
+    >
       {/* Left: Image + Category Badge */}
       <div className="relative w-140 bg-gray-100">
         {thumbnailUrl ? (
