@@ -1,5 +1,40 @@
 const db = require("../config/db");
 
+exports.checkUserAlreadyReviewed = async (userID, courseID) => {
+  const [rows] = await db.query(
+    `
+    SELECT COUNT(*) AS reviewCount
+    FROM course_reviews
+    WHERE reviewer_ID = ? AND course_ID = ?
+    `,
+    [userID, courseID]
+  );
+  return rows[0].reviewCount > 0;
+};
+
+exports.postCourseReview = async (userID, courseID, rating, review) => {
+  const [result] = await db.query(
+    `
+    INSERT INTO course_reviews (reviewer_ID, course_ID, rating, review)
+    VALUES (?, ?, ?, ?)
+    `,
+    [userID, courseID, rating, review]
+  );
+  return result;
+};
+
+exports.enrollUserInCourse = async (userID, courseID) => {
+  const [result] = await db.query(
+    `
+    INSERT INTO course_enroll (student_ID, course_ID)
+    VALUES (?, ?)
+    ON DUPLICATE KEY UPDATE enroll_date = CURRENT_TIMESTAMP
+    `,
+    [userID, courseID]
+  );
+  return result;
+};
+
 exports.getCourseBasicInfo = async (courseId) => {
   const [rows] = await db.query(`
     SELECT c.course_ID AS course_id, c.title, c.description, c.category, c.thumbnail_ID, 

@@ -1,5 +1,26 @@
 const coursesModel = require("../models/courseModel");
 
+exports.postCourseReview = async (userID, courseID, rating, review) => {
+  const alreadyReviewed = await coursesModel.checkUserAlreadyReviewed(userID, courseID);
+  
+  if (alreadyReviewed) {
+    const error = new Error("You have already reviewed this course");
+    error.statusCode = 400; // Bad Request
+    throw error;
+  }
+
+  return await coursesModel.postCourseReview(userID, courseID, rating, review);
+  // return await coursesModel.postCourseReview(userID, courseID, rating, review);
+};
+
+exports.getCourseReviews = async (courseID) => {
+  return await coursesModel.getCourseReviews(courseID);
+};
+exports.enrollUserInCourse = async (userID, courseID) => {
+  return await coursesModel.enrollUserInCourse(userID, courseID);
+};
+
+
 exports.getCourses = async ({ category, instructor, level, price, page, limit }) => {
     return await coursesModel.getCourses({ category, instructor, level, price, page, limit });
 };

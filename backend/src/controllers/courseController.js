@@ -2,6 +2,53 @@ const coursesService = require("../services/courseService");
 const Course = require('../models/courseModel');
 const Search = require('../models/searchModel');
 
+exports.getCourseReviews = async (req, res) => {
+  try {
+    const { courseID } = req.params;
+    const reviews = await coursesService.getCourseReviews(courseID);
+    res.status(200).json({ reviews });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch reviews" });
+  }
+};
+exports.postCourseReview = async (req, res) => {
+  try {
+    const { user_id, course_id, rating, review } = req.body;
+
+    if (!user_id || !course_id || !rating || !review) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    await coursesService.postCourseReview(user_id, course_id, rating, review);
+
+    return res.status(201).json({ message: "Review posted successfully" });
+  } catch (error) {
+    console.error("Post review error:", error);
+    const statusCode = error.statusCode || 500;
+    const message = error.message || "Failed to post review";
+    return res.status(statusCode).json({ message });
+  }
+};
+
+exports.enrollUserInCourse = async (req, res) => {
+  try {
+    const { user_id, course_id } = req.body;
+
+    if (!user_id || !course_id) {
+      return res.status(400).json({ message: "Missing user_id or course_id" });
+    }
+
+    await coursesService.enrollUserInCourse(user_id, course_id);
+
+    return res.status(200).json({ message: "User enrolled successfully" });
+  } catch (error) {
+    console.error("Enroll user error:", error);
+    return res.status(500).json({ message: "Failed to enroll user" });
+  }
+};
+
+
 exports.getCourseById = async (req, res) => {
   try {
     const { courseId } = req.params;
