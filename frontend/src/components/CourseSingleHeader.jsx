@@ -6,7 +6,7 @@ import axios from "axios";
 const CourseSingleHeader = ({ course }) => {
   const { user } = useSelector((state) => state.auth);
   const [showQRModal, setShowQRModal] = useState(false);
-
+  console.log("ALO ALO", course);
   // Calculate total number of videos across all weeks
   const totalVideos = course.weeks.reduce((total, week) => {
     return total + week.videos.length;
@@ -24,8 +24,9 @@ const CourseSingleHeader = ({ course }) => {
 
   const handleEnrollAfterPayment = async () => {
     try {
-      await axios.post("/api/user/enroll-course", {
-        user_id: user.id,
+      // console.log("ALO ALO", user?.id, course.course_id);
+      await axios.post(`http://localhost:5000/courses/enroll-course`, {
+        user_id: user?.id,
         course_id: course.course_id,
       });
       // Close the QR modal
