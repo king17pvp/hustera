@@ -15,7 +15,7 @@ const ForumQuestion = ({ thread }) => {
         const response = await axios.get(
           `http://localhost:5000/forum/${threadId}/getVote/${user?.id}`, // Adjust the URL based on your backend route
         );
-        
+
         if (response.data.success) {
           // Set the user vote based on the response from the backend
           console.log("Data: ", response.data);
@@ -68,6 +68,28 @@ const ForumQuestion = ({ thread }) => {
     sendVote("downvote");
   };
 
+  const handleOpenImage = (base64String) => {
+    const imageType = base64String.substring(
+      base64String.indexOf(':') + 1,
+      base64String.indexOf(';')
+    ); // Extract "image/png", etc.
+
+    // Convert base64 to a Blob
+    const byteString = atob(base64String.split(',')[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+
+    for (let i = 0; i < byteString.length; i++) {
+      intArray[i] = byteString.charCodeAt(i);
+    }
+
+    const blob = new Blob([intArray], { type: imageType });
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Open in a new tab
+    window.open(blobUrl, "_blank");
+  };
+
   return (
     <div className="mb-10 border-b pb-6 flex gap-6">
       {/* Voting Section */}
@@ -114,9 +136,10 @@ const ForumQuestion = ({ thread }) => {
                 <div key={index} className="border rounded-lg overflow-hidden flex-shrink-0">
                   <a href={attachment} target="_blank" rel="noopener noreferrer">
                     <img
-                      src={attachment} // Base64 string
+                      src={attachment}
                       alt={`Attachment ${index + 1}`}
-                      className="w-48 h-48 object-cover hover:opacity-90 transition"
+                      className="w-48 h-48 object-cover hover:opacity-90 transition cursor-pointer"
+                      onClick={() => handleOpenImage(attachment)}
                     />
                   </a>
                 </div>

@@ -65,8 +65,8 @@ const Navbar = ({ currentState }) => {
                 key={index}
                 onClick={() => handleNavClick(item)}
                 className={`w-36 px-6 py-5 h-20 text-xl font-avant-medium text-center transition-colors duration-300 cursor-pointer ${active === item.title
-                    ? "bg-gray-200 text-blue-600"
-                    : "text-black hover:bg-gray-200"
+                  ? "bg-gray-200 text-blue-600"
+                  : "text-black hover:bg-gray-200"
                   }`}
               >
                 {item.title}
@@ -78,61 +78,82 @@ const Navbar = ({ currentState }) => {
 
       {/* Login / User Dropdown Menu */}
       <div className={`${user ? "w-1/3" : "w-1/2"} flex justify-end relative`}>
-      {user ? (
-        <div
-          ref={dropdownRef}
-          className="relative flex items-center space-x-3 px-3 py-2 rounded-full cursor-pointer"
-          onClick={() => setDropdownOpen(!isDropdownOpen)}
-        >
-          {/* User Name (Fixed Width) */}
-          <span className="text-[24px] font-medium truncate max-w-[300px] text-right">
-            {user.email}
-          </span>
-
-          {/* User Avatar (Fixed Size) */}
-          <img
-            src={user.avatar || "https://preview.redd.it/tralalero-tralala-v0-js5l752hvlke1.png?width=640&crop=smart&auto=webp&s=29563222d72bedb05ff0bd2e624c51d0e898762b"}
-            alt="User Avatar"
-            className="w-15 h-15 rounded-full border border-gray-300 flex-shrink-0"
-          />
-
-          {/* Dropdown Arrow (Fixed Size Container to Prevent Jiggling) */}
-          <div className="w-6 h-6 flex items-center justify-center">
-            {isDropdownOpen ? (
-              <FiChevronUp className="w-5 h-5 text-gray-600 transition-transform duration-200" />
-            ) : (
-              <FiChevronDown className="w-5 h-5 text-gray-600 transition-transform duration-200" />
-            )}
-          </div>
-
-          {/* Dropdown Menu - Absolutely Positioned Below */}
+        {user ? (
           <div
-            className={`absolute right-0 top-full mt-2 w-40 bg-white shadow-md rounded-lg overflow-hidden z-50 transition-opacity duration-200 ${
-              isDropdownOpen ? "opacity-100 visible" : "opacity-0 invisible"
-            }`}
+            ref={dropdownRef}
+            className="relative flex items-center space-x-3 px-3 py-2 rounded-full cursor-pointer"
+            onClick={() => setDropdownOpen(!isDropdownOpen)}
           >
-            <button 
-              onClick={() => navigate("/settings")}
-              className="block w-full px-7 py-2 text-left text-[21px] font-avant-medium hover:bg-gray-200 cursor-pointer">
-              Settings
-            </button>
-            <button
-              onClick={handleLogout}
-              className="block w-full px-7 py-2 text-left text-[21px] font-avant-medium text-red-600 hover:bg-gray-200 cursor-pointer"
+            {/* User Name (Fixed Width) */}
+            <span className="text-[24px] font-medium truncate max-w-[300px] text-right">
+              {user.user_info.name || user.email}
+            </span>
+
+            {/* User Avatar (Fixed Size) */}
+            <img
+              src={user.user_info.avatar || "https://preview.redd.it/tralalero-tralala-v0-js5l752hvlke1.png?width=640&crop=smart&auto=webp&s=29563222d72bedb05ff0bd2e624c51d0e898762b"}
+              alt="User Avatar"
+              className="w-15 h-15 rounded-full border border-gray-300 flex-shrink-0"
+            />
+
+            {/* Dropdown Arrow (Fixed Size Container to Prevent Jiggling) */}
+            <div className="w-6 h-6 flex items-center justify-center">
+              {isDropdownOpen ? (
+                <FiChevronUp className="w-5 h-5 text-gray-600 transition-transform duration-200" />
+              ) : (
+                <FiChevronDown className="w-5 h-5 text-gray-600 transition-transform duration-200" />
+              )}
+            </div>
+
+            {/* Dropdown Menu - Absolutely Positioned Below */}
+            <div
+              className={`absolute right-0 top-full mt-2 w-70 bg-white shadow-md rounded-lg overflow-hidden z-50 transition-opacity duration-200 ${isDropdownOpen ? "opacity-100 visible" : "opacity-0 invisible"
+                }`}
             >
-              Logout
-            </button>
+              <button
+                onClick={() => navigate("/settings")}
+                className="block w-full px-7 py-2 text-left text-[21px] font-avant-medium hover:bg-gray-200 cursor-pointer">
+                Settings
+              </button>
+              {user.role === "admin" && (
+                <>
+                  <button
+                    onClick={() => navigate("/admin/user-management")}
+                    className="block w-full px-7 py-2 text-left text-[21px] font-avant-medium hover:bg-gray-200 cursor-pointer"
+                  >
+                    User Management
+                  </button>
+                  <button
+                    onClick={() => navigate("/admin/course-management")}
+                    className="block w-full px-7 py-2 text-left text-[21px] font-avant-medium hover:bg-gray-200 cursor-pointer"
+                  >
+                    Course Management
+                  </button>
+                  <button
+                    onClick={() => navigate("/admin/forum-management")}
+                    className="block w-full px-7 py-2 text-left text-[21px] font-avant-medium hover:bg-gray-200 cursor-pointer"
+                  >
+                    Forum Management
+                  </button>
+                </>
+              )}
+              <button
+                onClick={handleLogout}
+                className="block w-full px-7 py-2 text-left text-[21px] font-avant-medium text-red-600 hover:bg-gray-200 cursor-pointer"
+              >
+                Logout
+              </button>
+            </div>
           </div>
-        </div>
-      ) : (
-        <button
-          onClick={handleLoginClick}
-          className="px-9 py-3 text-xl font-avant-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition cursor-pointer"
-        >
-          Login
-        </button>
-      )}
-    </div>
+        ) : (
+          <button
+            onClick={handleLoginClick}
+            className="px-9 py-3 text-xl font-avant-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition cursor-pointer"
+          >
+            Login
+          </button>
+        )}
+      </div>
     </nav>
   );
 };

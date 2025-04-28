@@ -18,3 +18,11 @@ exports.login = async (email, password) => {
     const votedAnswers = await userModel.getVotedAnswers(user.user_ID);
     return {id: user.user_ID, email: user.email, role: user.role, user_info: userInfo, enrolled_courses: enrolledCourses, voted_threads: votedThreads, voted_answers: votedAnswers};
 }
+
+exports.updateProfile = async (userId, name, dob, gender, avatar) => {
+    const updatedUser = await userModel.updateProfile(userId, name, dob, gender, avatar);
+    if (!updatedUser) {
+        throw new Error('Failed to update profile');
+    }
+    return updatedUser;
+}

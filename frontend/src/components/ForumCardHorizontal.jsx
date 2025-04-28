@@ -11,7 +11,7 @@ const ForumCardHorizontal = ({
   author,
 }) => {
   return (
-    <div className="flex w-full max-w-[1230px] border border-gray-200 rounded-xl px-6 py-6 hover:shadow-md hover:-translate-y-1 transition cursor-pointer bg-white group relative">
+    <div className="flex w-full max-w-[1230px] h-46 border border-gray-200 rounded-xl px-6 py-6 hover:shadow-md hover:-translate-y-1 transition cursor-pointer bg-white group relative">
       {/* Category Badge */}
       <div className="absolute top-4 right-6 bg-gray-500 text-white px-5 py-1 rounded-xl text-[18px] font-avant-medium z-10">
         {category}
@@ -38,7 +38,7 @@ const ForumCardHorizontal = ({
         </h3>
 
         {/* Description */}
-        <p className="text-gray-600 text-xl mt-1 line-clamp-2">
+        <p className="text-gray-600 text-xl mt-1 line-clamp-2 h-14 flex">
           {description}
         </p>
 

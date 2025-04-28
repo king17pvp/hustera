@@ -5,6 +5,29 @@ exports.findByEmail = async (email) => {
     return rows[0];
 };
 
+exports.updateProfile = async (userId, name, dob, gender, avatar) => {
+    // Insert new image and get its ID
+    if (avatar) {
+        // Convert base64 string to Buffer for storage
+        const base64Data = avatar.split(';base64,').pop();
+        const imageBuffer = Buffer.from(base64Data, 'base64');
+
+        // Insert new image and get its ID
+        const [imageResult] = await db.query(
+            "INSERT INTO images (image) VALUES (?)",
+            [imageBuffer]
+        );
+        avatarId = imageResult.insertId;
+    }
+
+    // Update user_info with new data and avatar_ID
+    const [result] = await db.query(
+        'UPDATE user_info SET name = ?, dob = ?, gender = ?, avatar_ID = ? WHERE user_ID = ?',
+        [name, dob, gender, avatarId, userId]
+    );
+    return result.affectedRows > 0;
+};
+
 // Get user's profile information
 exports.getUserInfo = async (userId) => {
     const [rows] = await db.query(
@@ -29,8 +52,10 @@ exports.getUserInfo = async (userId) => {
     // Convert avatar buffer to base64 if exists
     let avatarBase64 = null;
     if (rows[0].avatar) {
-        avatarBase64 = `data:image/png;base64,${Buffer.from(rows[0].avatar).toString('base64')}`;
+        const base64Data = Buffer.from(rows[0].avatar).toString('base64');
+        avatarBase64 = `data:image/png;base64,${base64Data}`;
     }
+
 
     // Return the specific fields
     return {
@@ -45,48 +70,17 @@ exports.getUserInfo = async (userId) => {
 
 exports.getEnrolledCourses = async (userId) => {
     const [rows] = await db.query(
-        `SELECT 
-            c.course_ID,
-            c.instructor_ID,
-            c.title,
-            c.description,
-            c.category,
-            c.price,
-            c.duration,
-            c.created_at,
-            c.level,
-            ce.enroll_date
-         FROM course_enroll ce
-         JOIN courses c ON ce.course_ID = c.course_ID
-         LEFT JOIN images i ON c.thumbnail_ID = i.image_ID
-         WHERE ce.student_ID = ?
-         ORDER BY ce.enroll_date DESC`,
+        `SELECT course_ID FROM course_enroll WHERE student_ID = ? ORDER BY enroll_date DESC`,
         [userId]
     );
 
-    return rows.map(row => ({
-        course_ID: row.course_ID,
-        instructor_ID: row.instructor_ID,
-        title: row.title,
-        description: row.description,
-        category: row.category,
-        price: row.price,
-        duration: row.duration,
-        created_at: row.created_at,
-        level: row.level,
-        enroll_date: row.enroll_date
-    }));
+    return rows.map(row => row.course_ID);
 };
 
 exports.getVotedThreads = async (userId) => {
     const [rows] = await db.query(
         `SELECT 
             t.thread_ID,
-            t.author_ID,
-            t.title,
-            t.category,
-            t.content,
-            t.created_at,
             tv.vote_type
          FROM thread_votes tv
          JOIN threads t ON tv.thread_ID = t.thread_ID
@@ -94,14 +88,10 @@ exports.getVotedThreads = async (userId) => {
         [userId]
     );
 
+    // Return as list of { thread_ID, vote_type }
     return rows.map(row => ({
         thread_ID: row.thread_ID,
-        author_ID: row.author_ID,
-        title: row.title,
-        category: row.category,
-        content: row.content,
-        created_at: row.created_at,
-        vote_type: row.vote_type
+        vote_type: row.vote_type // 1 for upvote, -1 for downvote
     }));
 };
 
@@ -109,29 +99,17 @@ exports.getVotedAnswers = async (userId) => {
     const [rows] = await db.query(
         `SELECT 
             ta.answer_ID,
-            ta.thread_ID,
-            ta.author_ID,
-            ta.content,
-            ta.created_at,
-            ta.accepted,
-            tav.vote_type,
-            t.title as thread_title
+            tav.vote_type
          FROM thread_answer_votes tav
          JOIN thread_answers ta ON tav.answer_ID = ta.answer_ID
-         JOIN threads t ON ta.thread_ID = t.thread_ID
          WHERE tav.voter_ID = ?`,
         [userId]
     );
 
+    // Return as list of { answer_ID, vote_type }
     return rows.map(row => ({
         answer_ID: row.answer_ID,
-        thread_ID: row.thread_ID,
-        author_ID: row.author_ID,
-        content: row.content,
-        created_at: row.created_at,
-        accepted: row.accepted,
-        vote_type: row.vote_type,
-        thread_title: row.thread_title
+        vote_type: row.vote_type // 1 for upvote, -1 for downvote
     }));
 };
 

@@ -84,8 +84,10 @@ exports.getTotalPages = async ({category, searchQuery, tags}) => {
     throw err;
   }
 };
+
 exports.getThreadById = async (threadId) => {
-  const [rows] = await db.query(`
+  // First query: Get thread with tags
+  const [threadRows] = await db.query(`
     SELECT 
       t.thread_ID,
       t.title,
@@ -100,40 +102,50 @@ exports.getThreadById = async (threadId) => {
       (
         SELECT COUNT(*) FROM thread_votes 
         WHERE thread_ID = t.thread_ID AND vote_type = 'downvote'
-      ) AS score,
-      i.image AS image_blob
+      ) AS score
     FROM threads t
     JOIN user_auth u ON u.user_ID = t.author_ID
     LEFT JOIN thread_tags tt ON tt.thread_ID = t.thread_ID
     LEFT JOIN tags tg ON tg.tag_ID = tt.tag_ID
-    LEFT JOIN thread_images ti ON ti.thread_ID = t.thread_ID
-    LEFT JOIN images i ON i.image_ID = ti.image_ID
     WHERE t.thread_ID = ?
   `, [threadId]);
 
-  if (!rows.length) return null;
+  if (!threadRows.length) return null;
+
+  // Second query: Get images separately
+  const [imageRows] = await db.query(`
+    SELECT i.image AS image_blob
+    FROM thread_images ti
+    JOIN images i ON i.image_ID = ti.image_ID
+    WHERE ti.thread_ID = ?
+  `, [threadId]);
 
   const thread = {
-    thread_ID: rows[0].thread_ID,
-    title: rows[0].title,
-    content: rows[0].content,
-    created_at: rows[0].created_at,
-    author: rows[0].author,
+    thread_ID: threadRows[0].thread_ID,
+    title: threadRows[0].title,
+    content: threadRows[0].content,
+    created_at: threadRows[0].created_at,
+    author: threadRows[0].author,
     tags: [],
-    score: rows[0].score,
+    score: threadRows[0].score,
     image_urls: [],
   };
 
-  for (const row of rows) {
+  // Process tags
+  for (const row of threadRows) {
     if (row.tag_name && !thread.tags.includes(row.tag_name)) {
       thread.tags.push(row.tag_name);
     }
+  }
 
+  // Process images
+  for (const row of imageRows) {
     if (row.image_blob) {
       const base64Image = `data:image/png;base64,${row.image_blob.toString('base64')}`;
       thread.image_urls.push(base64Image);
     }
   }
+
   return thread;
 };
 

@@ -74,6 +74,28 @@ const AnswerCard = ({ answer, threadId }) => {
     sendVote("downvote");
   };
 
+  const handleOpenImage = (base64String) => {
+    const imageType = base64String.substring(
+      base64String.indexOf(':') + 1,
+      base64String.indexOf(';')
+    ); // Extract "image/png", etc.
+
+    // Convert base64 to a Blob
+    const byteString = atob(base64String.split(',')[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+
+    for (let i = 0; i < byteString.length; i++) {
+      intArray[i] = byteString.charCodeAt(i);
+    }
+
+    const blob = new Blob([intArray], { type: imageType });
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Open in a new tab
+    window.open(blobUrl, "_blank");
+  };
+
   return (
     <div
       className={`flex gap-6 border-3 rounded-xl p-4 mb-6 ${answer.is_accepted ? "border-blue-400 bg-blue-50" : "border-gray-600"
@@ -119,10 +141,11 @@ const AnswerCard = ({ answer, threadId }) => {
               {answer.attachments.map((attachment, index) => (
                 <div key={index} className="border rounded-lg overflow-hidden flex-shrink-0">
                   <a href={attachment} target="_blank" rel="noopener noreferrer">
-                    <img
+                  <img
                       src={attachment}
                       alt={`Attachment ${index + 1}`}
-                      className="w-48 h-48 object-cover hover:opacity-90 transition"
+                      className="w-48 h-48 object-cover hover:opacity-90 transition cursor-pointer"
+                      onClick={() => handleOpenImage(attachment)}
                     />
                   </a>
                 </div>

@@ -18,3 +18,16 @@ exports.logout = async (req, res) => {
         res.status(200).json({ success: true, message: 'Logged out successfully' });
     });
 }
+
+exports.updateProfile = async (req, res) => {
+    const { userId, name, dob, gender, avatar } = req.body;
+    try {
+        const updatedUser = await authService.updateProfile(userId, name, dob, gender, avatar);
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        res.status(200).json({ success: true, message: 'Profile updated successfully', user: updatedUser });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
