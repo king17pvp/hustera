@@ -23,78 +23,6 @@ const sampleTestimonials = [
   { text: "Balancing university studies with online courses can be tough, but HUSTera makes it easier. The flexible learning schedule and self-paced courses allow me to learn at my own speed. The quizzes and coding challenges keep me motivated. Love it!", author: "Khoat Than", role: "Robot" },
 ];
 
-const sampleThreads = [
-  {
-    title: "Best Online Courses 2025",
-    date: "2025-03-09T14:30:00",
-    description: "Discover the top courses on Hustera. I'm looking for recommendations in web development and data science fields that offer certifications.",
-    tags: ["Courses", "Recommendations", "Certifications"],
-    category: "General",
-    answers: 12,
-    votes: 35,
-    author: "JaneDoe"
-  },
-  {
-    title: "How to Excel in Online Learning",
-    date: "2025-02-20T09:15:00",
-    description: "Tips and strategies to stay productive while learning online. What are your best approaches for managing time between multiple courses?",
-    tags: ["Study Tips", "Productivity", "Time Management"],
-    category: "Learning",
-    answers: 24,
-    votes: 47,
-    author: "ProductivityPro"
-  },
-  {
-    title: "Top 10 Programming Languages to Learn",
-    date: "2025-01-15T18:22:00",
-    description: "Explore the most in-demand programming languages this year. Is Python still dominating or should I focus on Rust and Go?",
-    tags: ["Programming", "Career", "Tech Skills"],
-    category: "Programming",
-    answers: 18,
-    votes: 63,
-    author: "CodeMaster"
-  },
-  {
-    title: "AI & Machine Learning: The Future of Tech",
-    date: "2024-12-10T11:45:00",
-    description: "How AI is revolutionizing industries and what you should learn. Lookin g for course recommendations to transition into AI from web development.",
-    tags: ["AI", "Machine Learning", "Career Change"],
-    category: "Technology",
-    answers: 9,
-    votes: 41,
-    author: "TechFuturist"
-  },
-  {
-    title: "Mastering Web Development in 2025",
-    date: "2024-11-05T16:20:00",
-    description: "A complete guide to becoming a full-stack web developer. What's the optimal learning path from beginner to employment ready?",
-    tags: ["Web Dev", "Full Stack", "Career Path"],
-    category: "Programming",
-    answers: 31,
-    votes: 52,
-    author: "WebDevGuru"
-  },
-  {
-    title: "The Importance of Data Science in Business",
-    date: "2024-10-22T08:30:00",
-    description: "Why every company needs data science and how to get started. Seeking advice on transitioning from analytics to data science roles.",
-    tags: ["Data Science", "Business", "Career"],
-    category: "Business",
-    answers: 16,
-    votes: 38,
-    author: "DataDriven"
-  }
-];
-
-
-const sampleStats = [
-  { stat: "25K+", title: "Active Students" },
-  { stat: "899", title: "Total Courses" },
-  { stat: "158", title: "Instructors" },
-  { stat: "100%", title: "Satisfaction Rate" },
-
-];
-
 const App = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   // const isAuthenticated = true;
@@ -114,10 +42,7 @@ const App = () => {
             :
             (
               <>
-                <Route path="/" element={<Homepage
-                  testimonials={sampleTestimonials}
-                  threads={sampleThreads}
-                  stats={sampleStats} />} />
+                <Route path="/" element={<Homepage/>} />
                 <Route path="/courses" element={<CourseListing />} />
                 {/* <Route path="/courses/1" element={<CourseSingle courses={sampleCourses[0]} />} /> */}
                 <Route path="/courses/:courseID" element={<CourseSingle/>}/>
