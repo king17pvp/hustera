@@ -16,127 +16,6 @@ import UserManagement from "./pages/UserManagement.jsx";
 import CourseManagement from "./pages/CourseManagement.jsx";
 import ForumManagement from "./pages/ForumManagement.jsx";
 
-const sampleCategories = [
-  { iconPath: "icons/art_design.png", title: "Art & Design", courseCount: 38 },
-  { iconPath: "icons/development.png", title: "Development", courseCount: 22 },
-  { iconPath: "icons/communication.png", title: "Communication", courseCount: 48 },
-  { iconPath: "icons/videography.png", title: "Videography", courseCount: 30 },
-  { iconPath: "icons/photography.png", title: "Photography", courseCount: 15 },
-  { iconPath: "icons/marketing.png", title: "Marketing", courseCount: 20 },
-  { iconPath: "icons/contentwriting.png", title: "Content Writing", courseCount: 25 },
-  { iconPath: "icons/finance.png", title: "Finance", courseCount: 10 },
-  { iconPath: "icons/science.png", title: "Science", courseCount: 35 },
-  { iconPath: "icons/network.png", title: "Network", courseCount: 18 },
-];
-const sampleThread = {
-  "question_id": 987654,
-  "title": "How do I merge two dictionaries in Python?",
-  "author": "codeMaster77",
-  "created_utc": "2025-03-23T12:15:00Z",
-  "tags": ["python", "dictionary", "merge"],
-  "score": 124,
-  "content": "I'm trying to merge two Python dictionaries. I want to combine their keys and values into one. What is the most Pythonic way to do this in Python 3.9 or later?",
-  "answers": [
-    {
-      "answer_id": 2001,
-      "author": "devStack",
-      "created_utc": "2025-03-23T13:00:00Z",
-      "content": "In Python 3.9 and later, you can use the merge operator `|`:\n```python\ndict1 = {'a': 1, 'b': 2}\ndict2 = {'b': 3, 'c': 4}\nmerged = dict1 | dict2\n```\nThis will result in `{'a': 1, 'b': 3, 'c': 4}` — keys in the second dict will override those in the first.",
-      "score": 182,
-      "is_accepted": true,
-      "comments": [
-        {
-          "comment_id": 1002,
-          "author": "py_noob",
-          "content": "That `|` operator is new to me, thanks!",
-          "score": 9,
-          "created_utc": "2025-03-23T13:15:00Z"
-        }, 
-        {
-          "comment_id": 1001,
-          "author": "py_fan",
-          "content": "Are there any edge cases we should consider like overlapping keys?",
-          "score": 12,
-          "created_utc": "2025-03-23T12:30:00Z"
-        }
-      ]
-    },
-    {
-      "answer_id": 2002,
-      "author": "oldTimer",
-      "created_utc": "2025-03-23T13:45:00Z",
-      "content": "If you're using Python < 3.9, you can merge using:\n```python\nmerged = {**dict1, **dict2}\n```\nIt's clean and works well, though `dict2` values still overwrite `dict1` in case of key collisions.",
-      "score": 97,
-      "is_accepted": false,
-      "comments": []
-    }
-  ]
-};
-const sampleCourses = [
-  {
-    courseId: 1,
-    thumbnailUrl: "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220714150931/JavaScript-Introduction.jpg",
-    category: "Programming",
-    title: "Intro to JavaScript",
-    author: "John Doe",
-    duration: "3 Weeks",
-    students: 150,
-    price: 29.99,
-    lessons: 20,
-    quizzes: 3,
-    description: "LearnPress is a comprehensive WordPress LMS Plugin...",
-    image: "/learnpress-banner.png",
-    level: "All Levels",
-    originalPrice: 59.0,
-    discountedPrice: 49.0
-  },
-  {
-    thumbnailUrl: "https://beecrowd.com/wp-content/uploads/2024/04/2022-07-19-Melhores-cursos-de-Python.jpg",
-    category: "Programming",
-    title: "Python for Beginners",
-    author: "Alice Johnson",
-    duration: "5 Weeks",
-    students: 200,
-    price: 39.99,
-  },
-  {
-    thumbnailUrl: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
-    category: "Web Development",
-    title: "Mastering JavaScript ES6+",
-    author: "Robert Brown",
-    duration: "6 Weeks",
-    students: 180,
-    price: 44.99,
-  },
-  {
-    thumbnailUrl: "https://toidicodedao.com/wp-content/uploads/2018/07/react.png?w=1200",
-    category: "Frontend Development",
-    title: "React from Scratch",
-    author: "Emily Davis",
-    duration: "4 Weeks",
-    students: 250,
-    price: 49.99,
-  },
-  {
-    thumbnailUrl: "https://m.media-amazon.com/images/M/MV5BNzU5NzM4OTQxNV5BMl5BanBnXkFtZTgwOTQ5NjU0NzE@._V1_QL75_UX500_CR0,47,500,281_.jpg",
-    category: "Backend Development",
-    title: "Django for Web Apps",
-    author: "Michael Wilson",
-    duration: "6 Weeks",
-    students: 120,
-    price: 59.99,
-  },
-  {
-    thumbnailUrl: "https://cnet.edu.vn/storage/blog/html-css/html.jpg",
-    category: "Web Development",
-    title: "HTML & CSS Mastery",
-    author: "Sophia Martinez",
-    duration: "3 Weeks",
-    students: 300,
-    price: 24.99,
-  }  
-];
-
 const sampleTestimonials = [
   { text: "HUSTera has transformed my learning experience! The courses are well-structured, and the interactive exercises make complex topics easy to understand. The Q&A forum is super helpful, allowing me to clear doubts instantly. Highly recommend for any aspiring developer!", author: "Khue Nguyen", role: "Janitor" },
   { text: "I enrolled in the Python and AI courses, and I must say, they exceeded my expectations! The hands-on projects and real-world examples helped me grasp concepts better. Plus, the instructors are knowledgeable and always available for support. 10/10 experience!", author: "Hai Ta", role: "Developer" },
@@ -146,41 +25,65 @@ const sampleTestimonials = [
 
 const sampleThreads = [
   {
-    thumbnailUrl: "https://knowledge.hubspot.com/hubfs/freeonlinecourses-1.webp",
     title: "Best Online Courses 2025",
-    date: "Mar 9, 2025",
-    description: "Discover the top courses on Hustera.",
+    date: "2025-03-09T14:30:00",
+    description: "Discover the top courses on Hustera. I'm looking for recommendations in web development and data science fields that offer certifications.",
+    tags: ["Courses", "Recommendations", "Certifications"],
+    category: "General",
+    answers: 12,
+    votes: 35,
+    author: "JaneDoe"
   },
   {
-    thumbnailUrl: "https://imageio.forbes.com/specials-images/imageserve/5f8472dc6a02f19410b389be/Online-business-class--alternative-to-MBA/960x0.jpg?format=jpg&width=960",
     title: "How to Excel in Online Learning",
-    date: "Feb 20, 2025",
-    description: "Tips and strategies to stay productive while learning online.",
+    date: "2025-02-20T09:15:00",
+    description: "Tips and strategies to stay productive while learning online. What are your best approaches for managing time between multiple courses?",
+    tags: ["Study Tips", "Productivity", "Time Management"],
+    category: "Learning",
+    answers: 24,
+    votes: 47,
+    author: "ProductivityPro"
   },
   {
-    thumbnailUrl: "https://extension.harvard.edu/wp-content/uploads/sites/8/2020/10/computer-programming.jpg",
     title: "Top 10 Programming Languages to Learn",
-    date: "Jan 15, 2025",
-    description: "Explore the most in-demand programming languages this year.",
+    date: "2025-01-15T18:22:00",
+    description: "Explore the most in-demand programming languages this year. Is Python still dominating or should I focus on Rust and Go?",
+    tags: ["Programming", "Career", "Tech Skills"],
+    category: "Programming",
+    answers: 18,
+    votes: 63,
+    author: "CodeMaster"
   },
   {
-    thumbnailUrl: "https://ant.ncc.asia/wp-content/uploads/2024/05/8212123_What-is-Artiificial-IntelligenceAI.webp",
     title: "AI & Machine Learning: The Future of Tech",
-    date: "Dec 10, 2024",
-    description: "How AI is revolutionizing industries and what you should learn.",
+    date: "2024-12-10T11:45:00",
+    description: "How AI is revolutionizing industries and what you should learn. Lookin g for course recommendations to transition into AI from web development.",
+    tags: ["AI", "Machine Learning", "Career Change"],
+    category: "Technology",
+    answers: 9,
+    votes: 41,
+    author: "TechFuturist"
   },
   {
-    thumbnailUrl: "https://caodang.fpt.edu.vn/wp-content/uploads/2-595.jpg",
     title: "Mastering Web Development in 2025",
-    date: "Nov 5, 2024",
-    description: "A complete guide to becoming a full-stack web developer.",
+    date: "2024-11-05T16:20:00",
+    description: "A complete guide to becoming a full-stack web developer. What's the optimal learning path from beginner to employment ready?",
+    tags: ["Web Dev", "Full Stack", "Career Path"],
+    category: "Programming",
+    answers: 31,
+    votes: 52,
+    author: "WebDevGuru"
   },
   {
-    thumbnailUrl: "https://cloud.z.com/vn/wp-content/uploads/2023/06/what-is-data-science.jpg",
     title: "The Importance of Data Science in Business",
-    date: "Oct 22, 2024",
-    description: "Why every company needs data science and how to get started.",
-  },
+    date: "2024-10-22T08:30:00",
+    description: "Why every company needs data science and how to get started. Seeking advice on transitioning from analytics to data science roles.",
+    tags: ["Data Science", "Business", "Career"],
+    category: "Business",
+    answers: 16,
+    votes: 38,
+    author: "DataDriven"
+  }
 ];
 
 
@@ -212,8 +115,6 @@ const App = () => {
             (
               <>
                 <Route path="/" element={<Homepage
-                  courses={sampleCourses}
-                  categories={sampleCategories}
                   testimonials={sampleTestimonials}
                   threads={sampleThreads}
                   stats={sampleStats} />} />
