@@ -78,3 +78,13 @@ exports.fetchCourses = async () => {
     throw error; // Re-throw for controller to handle
   }
 };
+
+exports.fetchThreads = async () => {
+  try {
+    const popularThreads = await homepageModel.fetchThreads();
+    return popularThreads;
+  } catch (error) {
+    console.error('Service error fetching popular threads:', error);
+    throw error; // Re-throw for controller to handle
+  }
+};
