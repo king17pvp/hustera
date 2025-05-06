@@ -6,7 +6,8 @@ exports.findByEmail = async (email) => {
 };
 
 exports.updateProfile = async (userId, name, dob, gender, avatar) => {
-    // Insert new image and get its ID
+    let avatarId = null;
+
     if (avatar) {
         // Convert base64 string to Buffer for storage
         const base64Data = avatar.split(';base64,').pop();
@@ -20,11 +21,16 @@ exports.updateProfile = async (userId, name, dob, gender, avatar) => {
         avatarId = imageResult.insertId;
     }
 
-    // Update user_info with new data and avatar_ID
-    const [result] = await db.query(
-        'UPDATE user_info SET name = ?, dob = ?, gender = ?, avatar_ID = ? WHERE user_ID = ?',
-        [name, dob, gender, avatarId, userId]
-    );
+    let query, params;
+    if (avatarId) {
+        query = 'UPDATE user_info SET name = ?, dob = ?, gender = ?, avatar_ID = ? WHERE user_ID = ?';
+        params = [name, dob, gender, avatarId, userId];
+    } else {
+        query = 'UPDATE user_info SET name = ?, dob = ?, gender = ? WHERE user_ID = ?';
+        params = [name, dob, gender, userId];
+    }
+
+    const [result] = await db.query(query, params);
     return result.affectedRows > 0;
 };
 

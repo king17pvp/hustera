@@ -17,8 +17,8 @@ const forumManagementRoutes = require('./routes/forumManagementRoutes');
 const app = express();
 
 // Middleware
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+app.use(express.json({ limit: '30mb' }));
+app.use(express.urlencoded({ extended: true, limit: '40mb' }));
 app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true

@@ -5,11 +5,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Trash2, X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
 
-const predefinedTags = ["JavaScript", "React", "Python", "SQL", "Machine Learning"];
 const predefinedCategories = [
   "Accounting",
   "Anthropology",
@@ -58,7 +57,8 @@ const predefinedCategories = [
 const CourseUpload = () => {
 
   const { user } = useSelector((state) => state.auth);
-
+  const [allTags, setAllTags] = useState([]);
+  const [tagSearch, setTagSearch] = useState("");
   const [phase, setPhase] = useState(1);
   const [direction, setDirection] = useState(1);
   const [validationErrors, setValidationErrors] = useState([]);
@@ -86,6 +86,24 @@ const CourseUpload = () => {
   ]);
 
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    // Fetch all tags from backend
+    const fetchTags = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/courses/get-tags");
+        console.log("Tags response:", response.data.success, response.data.tags);
+        if (response.data.success) {
+          setAllTags(response.data.tags);
+        } else {
+          setAllTags([]);
+        }
+      } catch (err) {
+        setAllTags([]);
+      }
+    };
+    fetchTags();
+  }, []);
 
   const validateFieldsPhase1 = () => {
     const newErrors = {
@@ -196,16 +214,18 @@ const CourseUpload = () => {
       description: basicInfo.description,
       category: basicInfo.category,
       tags: basicInfo.tags.split(",").map(tag => tag.trim()),
-      price: basicInfo.price,
+      price: basicInfo.price === "Free" ? 0 : basicInfo.price,
       difficulty: basicInfo.difficulty,
       thumbnail: basicInfo.thumbnail, // Base64-encoded thumbnail
       curriculum,
     };
 
-    try {
-      const response = await axios.post("https://your-backend-api.com/courses", data);
+    console.log("Data", data);
 
-      if (response.status === 200) {
+    try {
+      const response = await axios.post("http://localhost:5000/courses/upload", data);
+
+      if (response.status === 201) {
         alert("Course submitted successfully!");
         console.log("Response:", response.data);
         setBasicInfo({
@@ -436,30 +456,47 @@ const CourseUpload = () => {
 
                   {/* Tags */}
                   <div>
-                    <label className="block mb-2 text-[23px] font-avant-medium font-semibold">Tags</label>
-                    <div className="flex flex-wrap gap-3">
-                      {predefinedTags.map((tag) => (
-                        <button
-                          key={tag}
-                          type="button"
-                          onClick={() => {
-                            const current = basicInfo.tags.split(",").map((t) => t.trim()).filter(Boolean);
-                            const updated = current.includes(tag)
-                              ? current.filter((t) => t !== tag)
-                              : [...current, tag];
-                            setBasicInfo((prev) => ({
-                              ...prev,
-                              tags: updated.join(","),
-                            }));
-                          }}
-                          className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${basicInfo.tags.split(",").includes(tag)
-                            ? "bg-gray-800 border-gray-800 text-white"
-                            : "bg-white border-gray-400 hover:bg-gray-100"
-                            }`}
-                        >
-                          {tag}
-                        </button>
-                      ))}
+                    <div className="flex items-center gap-3 mb-2 justify-between">
+                      <label className="block text-[23px] font-avant-medium font-semibold">Tags</label>
+                      <input
+                        type="text"
+                        placeholder="Search tags..."
+                        className="px-4 py-2 border-2 rounded-xl font-avant-medium text-lg text-gray-600 border-gray-400 w-[260px]"
+                        value={tagSearch}
+                        onChange={e => setTagSearch(e.target.value)}
+                      />
+                    </div>
+                    <div
+                      className="flex flex-wrap gap-3 mt-5"
+                      style={{
+                        maxHeight: "300px",
+                        overflowY: "auto",
+                      }}
+                    >
+                      {allTags
+                        .filter(tag => !tagSearch || tag.toLowerCase().includes(tagSearch.toLowerCase()))
+                        .map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => {
+                              const current = basicInfo.tags.split(",").map((t) => t.trim()).filter(Boolean);
+                              const updated = current.includes(tag)
+                                ? current.filter((t) => t !== tag)
+                                : [...current, tag];
+                              setBasicInfo((prev) => ({
+                                ...prev,
+                                tags: updated.join(","),
+                              }));
+                            }}
+                            className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${basicInfo.tags.split(",").includes(tag)
+                              ? "bg-gray-800 border-gray-800 text-white"
+                              : "bg-white border-gray-400 hover:bg-gray-100"
+                              }`}
+                          >
+                            {tag}
+                          </button>
+                        ))}
                     </div>
                   </div>
                 </div>

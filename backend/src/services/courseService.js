@@ -71,3 +71,23 @@ exports.getCourseById = async (courseId) => {
       enrollment_count: enrollmentCount
     };
   };
+
+exports.uploadCourse = async (instructor, title, description, category, tags, price, difficulty, thumbnail, curriculum) => {
+  try {
+    const courseId = await coursesModel.uploadCourse(instructor, title, description, category, tags, price, difficulty, thumbnail, curriculum);
+    return courseId;
+  } catch (error) {
+    console.error('Service Error - uploadCourse:', error);
+    throw error;
+  }
+};
+
+exports.getAllTags = async () => {
+  try {
+    const tags = await coursesModel.getAllTags();
+    return tags;
+  } catch (error) {
+    console.error('Service Error - getAllTags:', error);
+    throw error;
+  }
+};
