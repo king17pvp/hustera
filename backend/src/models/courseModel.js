@@ -45,16 +45,6 @@ exports.getCourseBasicInfo = async (courseId) => {
   return rows[0];
 };
 
-exports.getCourseTags = async (courseId) => {
-  const [rows] = await db.query(`
-    SELECT t.tag_name
-    FROM course_tags ct
-    JOIN tags t ON ct.tag_ID = t.tag_ID
-    WHERE ct.course_ID = ?
-  `, [courseId]);
-  return rows.map(row => row.tag_name);
-};
-
 exports.getCourseReviews = async (courseId) => {
   const [rows] = await db.query(`
     SELECT ua.email AS reviewer_name, ui.avatar_ID AS reviewer_avatar_id,
@@ -202,4 +192,113 @@ exports.getFilters = async () => {
   `);
 
   return { categories, instructors };
+};
+
+exports.uploadCourse = async (instructor_id, title, description, category, tags, price, difficulty, thumbnail, curriculum) => {
+  try {
+    // Insert thumbnail into images table
+    const [imageResult] = await db.query(
+      'INSERT INTO images (image) VALUES (FROM_BASE64(?))',
+      [thumbnail.replace(/^data:image\/\w+;base64,/, '')] // Remove base64 prefix if present
+    );
+    const thumbnailId = imageResult.insertId;
+
+    // Insert course into courses table
+    const [courseResult] = await db.query(
+      `INSERT INTO courses (
+        instructor_ID, 
+        title, 
+        description, 
+        category, 
+        thumbnail_ID, 
+        price, 
+        level, 
+        duration
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        instructor_id,
+        title,
+        description,
+        category,
+        thumbnailId,
+        price,
+        difficulty,
+        curriculum.length // Calculate duration based on number of weeks in curriculum
+      ]
+    );
+    const courseId = courseResult.insertId;
+
+    // Process tags
+    if (tags && tags.length > 0) {
+      for (const tagName of tags) {
+        // Skip empty tags
+        if (!tagName.trim()) continue;
+        
+        // Check if tag exists
+        const [existingTags] = await db.query(
+          'SELECT tag_ID FROM tags WHERE tag_name = ?',
+          [tagName.trim()]
+        );
+        
+        let tagId;
+        if (existingTags.length === 0) {
+          // Create new tag
+          const [tagResult] = await db.query(
+            'INSERT INTO tags (tag_name) VALUES (?)',
+            [tagName.trim()]
+          );
+          tagId = tagResult.insertId;
+        } else {
+          tagId = existingTags[0].tag_ID;
+        }
+        
+        // Link tag to course
+        await db.query(
+          'INSERT INTO course_tags (course_ID, tag_ID) VALUES (?, ?)',
+          [courseId, tagId]
+        );
+      }
+    }
+
+    // Insert curriculum into weeks table
+    for (let weekIndex = 0; weekIndex < curriculum.length; weekIndex++) {
+      const week = curriculum[weekIndex];
+
+      // Insert week
+      const [weekResult] = await db.query(
+        'INSERT INTO weeks (course_ID, week_number, title) VALUES (?, ?, ?)',
+        [courseId, weekIndex + 1, week.title]
+      );
+      const weekId = weekResult.insertId;
+
+      // Insert videos for this week
+      for (const video of week.videos) {
+        await db.query(
+          'INSERT INTO videos (week_ID, title, url) VALUES (?, ?, ?)',
+          [weekId, video.title, video.url]
+        );
+      }
+    }
+    return { success: true, courseId };
+  } catch (error) {
+    console.error("Error uploading course:", error);
+    return { success: false, message: error.message };
+  }
+};
+
+exports.getCourseTags = async (courseId) => {
+  const [rows] = await db.query(`
+    SELECT t.tag_name
+    FROM course_tags ct
+    JOIN tags t ON ct.tag_ID = t.tag_ID
+    WHERE ct.course_ID = ?
+  `, [courseId]);
+  return rows.map(row => row.tag_name);
+};
+
+exports.getAllTags = async () => {
+  const [rows] = await db.query(`
+    SELECT DISTINCT tag_name AS tag FROM tags
+  `);
+  return rows.map(row => row.tag);
 };

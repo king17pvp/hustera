@@ -130,3 +130,36 @@ exports.searchCourses = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to search courses' });
   }
 };
+
+exports.uploadCourse = async (req, res) => {
+  try {
+    const { instructor_id, title, description, category, tags, price, difficulty, thumbnail, curriculum } = req.body;
+
+    const newCourse = await coursesService.uploadCourse(
+      instructor_id, 
+      title, 
+      description, 
+      category, 
+      tags,
+      price, 
+      difficulty, 
+      thumbnail, 
+      curriculum
+    );
+
+    return res.status(201).json({ message: "Course uploaded successfully", course: newCourse });
+  } catch (error) {
+    console.error("Upload course error:", error);
+    return res.status(500).json({ message: "Failed to upload course" });
+  }
+}
+
+exports.getAllTags = async (req, res) => {
+  try {
+    const tags = await coursesService.getAllTags();
+    res.status(200).json({ success: true, tags: tags });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Failed to fetch tags" });
+  }
+};

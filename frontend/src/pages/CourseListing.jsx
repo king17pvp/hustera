@@ -330,50 +330,51 @@ const CourseListing = () => {
     <>
       <Navbar currentState="Courses" />
       <Breadcrumb paths={["Homepage", "Courses"]} />
-      <div className="flex justify-center w-full">
-        <div className="flex flex-col md:flex-row justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
-          <div className="w-full md:w-4/5">
-            <EnhancedSearchBar onSearch={handleSearch} currentSearchTerm={searchTerm} title="All Courses" />
-            
-            {/* Create New Course button for non-students */}
-            {user?.role !== "student" && (
-              <div className="my-4 flex justify-end">
-                <button
-                  onClick={() => {
-                    navigate("/courses/upload");
-                  }}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-xl font-avant-medium text-lg hover:bg-blue-700 transition cursor-pointer"
-                >
-                  + Create New Course
-                </button>
+      <div className="flex flex-col min-h-screen"> {/* Add this wrapper */}
+        <div className="flex-grow flex justify-center w-full">
+          <div className="flex flex-col md:flex-row justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
+            <div className="w-full md:w-4/5">
+              <EnhancedSearchBar onSearch={handleSearch} currentSearchTerm={searchTerm} title="All Courses" />
+              {/* Create New Course button for non-students */}
+              {user?.role !== "student" && (
+                <div className="my-4 flex justify-end">
+                  <button
+                    onClick={() => {
+                      navigate("/courses/upload");
+                    }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-xl font-avant-medium text-lg hover:bg-blue-700 transition cursor-pointer"
+                  >
+                    + Create New Course
+                  </button>
+                </div>
+              )}
+  
+              {loading ? (
+                <p>Loading courses...</p>
+              ) : courses.length > 0 ? (
+                <div className="grid grid-cols-1 gap-7">
+                  {courses.map((course) => (
+                    <CourseCardHorizontal key={course.courseID} {...course} />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-gray-600">No courses match your criteria</p>
+              )}
+              <div className="mt-6 flex justify-center">
+                <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
               </div>
-            )}
-
-            {loading ? (
-              <p>Loading courses...</p>
-            ) : courses.length > 0 ? (
-              <div className="grid grid-cols-1 gap-7">
-                {courses.map((course) => (
-                  <CourseCardHorizontal key={course.courseID} {...course} />
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-gray-600">No courses match your criteria</p>
-            )}
-            <div className="mt-6 flex justify-center">
-              <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+            </div>
+            <div className="w-full md:w-1/4">
+              <InlineCourseFilter 
+                filterData={filterData} 
+                selectedFilters={filters} 
+                setFilters={handleFilterChange} 
+              />
             </div>
           </div>
-          <div className="w-full md:w-1/4">
-            <InlineCourseFilter 
-              filterData={filterData} 
-              selectedFilters={filters} 
-              setFilters={handleFilterChange} 
-            />
-          </div>
         </div>
+        <Footer /> {/* Move Footer inside the flex-col wrapper */}
       </div>
-      <Footer />
     </>
   );
 };
