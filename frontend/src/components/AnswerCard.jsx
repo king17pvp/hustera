@@ -98,7 +98,7 @@ const AnswerCard = ({ answer, threadId }) => {
 
   return (
     <div
-      className={`flex gap-6 border-3 rounded-xl p-4 mb-6 ${answer.is_accepted ? "border-blue-400 bg-blue-50" : "border-gray-600"
+      className={`flex gap-6 border-3 rounded-xl p-4 font-avant-medium mb-6 ${answer.is_accepted ? "border-blue-400 bg-blue-50" : "border-gray-600"
         }`}
     >
       {/* Voting Section */}

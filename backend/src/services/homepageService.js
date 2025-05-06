@@ -7,16 +7,16 @@ exports.fetchCategories = async () => {
     
     // Map database results to expected format with icons
     const categoryIcons = {
-      'Art & Creativity': 'icons/art_design.png',
-      'Computer Science': 'icons/development.png',
-      'Communication': 'icons/communication.png',
-      'Media Studies': 'icons/videography.png',
-      'Sociology': 'icons/photography.png',
-      'Marketing': 'icons/marketing.png',
-      'Linguistic': 'icons/contentwriting.png',
-      'Finance': 'icons/finance.png',
-      'Physics': 'icons/science.png',
-      'Graphic Design': 'icons/network.png'
+      'art-&-creativity': 'icons/art_design.png',
+      'computer-science': 'icons/development.png',
+      'communication': 'icons/communication.png',
+      'media Studies': 'icons/videography.png',
+      'sociology': 'icons/photography.png',
+      'marketing': 'icons/marketing.png',
+      'linguistic': 'icons/contentwriting.png',
+      'finance': 'icons/finance.png',
+      'physics': 'icons/science.png',
+      'graphic-design': 'icons/network.png'
     };
 
     // Filter to only include supported categories (those with icons)

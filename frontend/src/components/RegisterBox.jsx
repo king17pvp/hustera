@@ -43,7 +43,7 @@ const RegisterBox = () => {
       setAttemptedRegister(false);
       const response = await axios.post('http://localhost:5000/register', form);
       console.log(response.data.user);
-      navigate('/login');
+      navigate('/settings');
     } catch (err) {
       setError(err.response?.data?.message || 'Error register');
     }
