@@ -1,16 +1,25 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import qrcode from "../assets/qrcode.png"; // Placeholder for QR code image
 import axios from "axios";
+import { enrollCourse } from "../redux/features/authSlice";
 
 const CourseSingleHeader = ({ course }) => {
-  const { user } = useSelector((state) => state.auth);
+  const { user, enrolledCourses } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  console.log("User from Redux:", enrolledCourses);
   const [showQRModal, setShowQRModal] = useState(false);
+  const isEnrolled = enrolledCourses.includes(course.course_id) || false;
   console.log("ALO ALO", course);
+
   // Calculate total number of videos across all weeks
   const totalVideos = course.weeks.reduce((total, week) => {
     return total + week.videos.length;
   }, 0);
+
+  const isFree = course.price === "0.00";
 
   const handleStartNow = async () => {
     if (!user) {
@@ -18,20 +27,42 @@ const CourseSingleHeader = ({ course }) => {
       return;
     }
 
-    // Show QR code modal instead of direct enrollment
-    setShowQRModal(true);
+    if (isFree) {
+      try {
+        await axios.post(`http://localhost:5000/courses/enroll-course`, {
+          user_id: user?.id,
+          course_id: course.course_id,
+        });
+
+        // Dispatch to Redux store
+        dispatch(enrollCourse(course.course_id));
+        navigate(`/courses/${course.course_id}`); // Redirect to courses page
+
+        alert("You are now enrolled in this free course!");
+      } catch (err) {
+        console.error("Failed to enroll in course", err);
+        alert("Failed to enroll in course. Please try again.");
+      }
+    } else {
+      // Show QR code modal for paid courses
+      setShowQRModal(true);
+    }
   };
 
   const handleEnrollAfterPayment = async () => {
     try {
-      // console.log("ALO ALO", user?.id, course.course_id);
       await axios.post(`http://localhost:5000/courses/enroll-course`, {
         user_id: user?.id,
         course_id: course.course_id,
       });
+
       // Close the QR modal
       setShowQRModal(false);
-      // You can add additional confirmation logic here
+
+      // Dispatch to Redux store
+      dispatch(enrollCourse(course.course_id));
+      navigate(`/courses/${course.course_id}`);
+
       alert("Payment received! You are now enrolled in the course.");
     } catch (err) {
       console.error("Failed to enroll in course", err);
@@ -81,22 +112,27 @@ const CourseSingleHeader = ({ course }) => {
           {/* Image Section - Using placeholder with thumbnail_ID reference */}
           <div>
             <img
-              src={course.thumbnail_ID}
+              src={course.thumbnail}
               alt="Course Preview"
               className="w-full h-70 object-cover rounded-t-xl"
             />
           </div>
 
           {/* Price & Button Section */}
-          <div className="p-6 ml-15 mr-15 flex justify-between items-center">
+          <div className="p-6 h-25 ml-15 mr-15 flex justify-between items-center">
             <p className="text-2xl font-avant-medium font-bold text-gray-700">
-              ${course.price}
+              {isFree ? "Free" : `$${course.price}`}
             </p>
-            <button
-              onClick={handleStartNow}
-              className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition cursor-pointer">
-              Start Now
-            </button>
+            {!isEnrolled && (
+              <button
+                onClick={handleStartNow}
+                className="bg-blue-600 text-white py-3 px-6 rounded-full text-lg font-avant-medium hover:bg-blue-700 transition cursor-pointer">
+                Start Now
+              </button>
+            )}
+            {isEnrolled && (
+              <span className="text-green-600 font-bold text-2xl">Enrolled</span>
+            )}
           </div>
         </div>
       </div>

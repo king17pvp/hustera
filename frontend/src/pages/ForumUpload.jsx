@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
@@ -12,6 +12,8 @@ import { ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
 const ForumUpload = () => {
   const [phase, setPhase] = useState(1);
   const [viewMode, setViewMode] = useState("Text");
+  const [allTags, setAllTags] = useState([]);
+  const [tagSearch, setTagSearch] = useState("");
   const [basicInfo, setBasicInfo] = useState({
     title: "",
     body: "",
@@ -20,7 +22,6 @@ const ForumUpload = () => {
     tags: "",
   });
   const { user } = useSelector((state) => state.auth);
-  const predefinedTags = ["React", "JavaScript", "Tailwind", "CSS", "HTML"];
   const predefinedCategories = [
     "Accounting",
     "Anthropology",
@@ -65,8 +66,25 @@ const ForumUpload = () => {
     "Theology",
     "UI/UX Design"
   ];
-  
-  
+
+  useEffect(() => {
+    // Fetch all tags from backend
+    const fetchTags = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/courses/get-tags");
+        console.log("Tags response:", response.data.success, response.data.tags);
+        if (response.data.success) {
+          setAllTags(response.data.tags);
+        } else {
+          setAllTags([]);
+        }
+      } catch (err) {
+        setAllTags([]);
+      }
+    };
+    fetchTags();
+  }, []);
+
   const navigate = useNavigate();
   const [errors, setErrors] = useState({
     title: false,
@@ -353,24 +371,55 @@ const ForumUpload = () => {
 
                     {/* Tags */}
                     <div className="mt-6">
-                      <label className="block mb-2 text-[23px] font-avant-medium font-semibold">Tags</label>
-                      <label className="block text-lg text-gray-700 font-avant-medium mt-[-10px] mb-2">Select tags that are relevant to your thread's content</label>
-                      <div className="flex flex-wrap gap-3">
-                        {predefinedTags.map((tag) => (
+                      <div className="flex items-center gap-3 mb-2 justify-between">
+                        <label className="block text-[23px] font-avant-medium font-semibold">Tags</label>
+                        <input
+                          type="text"
+                          placeholder="Search tags..."
+                          className="px-4 py-2 border-2 rounded-xl font-avant-medium text-lg text-gray-600 border-gray-400 w-[260px]"
+                          value={tagSearch}
+                          onChange={e => setTagSearch(e.target.value)}
+                          autoComplete="off"
+                        />
+                        {tagSearch && (
                           <button
-                            key={tag}
                             type="button"
-                            onClick={() => handleTagClick(tag)}
-                            className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${basicInfo.tags.split(",").includes(tag)
-                              ? "bg-gray-800 border-gray-800 text-white"
-                              : "bg-white border-gray-400 hover:bg-gray-100"
-                              }`}
+                            className="ml-1 px-2 py-1 rounded text-gray-500 hover:text-gray-800"
+                            onClick={() => setTagSearch("")}
+                            aria-label="Clear tag search"
                           >
-                            {tag}
+                            ×
                           </button>
-                        ))}
+                        )}
                       </div>
-                    </div>
+                      <label className="block text-lg text-gray-700 font-avant-medium mt-[-10px] mb-2">
+                        Select tags that are relevant to your thread's content
+                      </label>
+                      <div
+                        className="flex flex-wrap gap-3"
+                        style={{
+                          maxHeight: "500px",
+                          overflowY: "auto",
+                        }}
+                      >
+                        {allTags
+                          .filter(tag => !tagSearch || tag.toLowerCase().includes(tagSearch.toLowerCase()))
+                          .map((tag) => (
+                            <button
+                              key={tag}
+                              type="button"
+                              onClick={() => handleTagClick(tag)}
+                              className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${basicInfo.tags.split(",").includes(tag)
+                                ? "bg-gray-800 border-gray-800 text-white"
+                                : "bg-white border-gray-400 hover:bg-gray-100"
+                                }`}
+                            >
+                              {tag}
+                            </button>
+                          ))}
+                      </div>
+                    </div>r
+
                   </motion.div>
                 )}
 

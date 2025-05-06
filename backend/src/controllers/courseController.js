@@ -163,3 +163,15 @@ exports.getAllTags = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch tags" });
   }
 };
+
+exports.watchVideo = async (req, res) => {
+  try {
+    const { user_id, video_id } = req.body;
+    await coursesService.watchVideo(user_id, video_id);
+
+    return res.status(200).json({ message: "Video watched successfully" });
+  } catch (error) {
+    console.error("Watch video error:", error);
+    return res.status(500).json({ message: "Failed to watch video" });
+  }
+}

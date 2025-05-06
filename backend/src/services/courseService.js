@@ -91,3 +91,12 @@ exports.getAllTags = async () => {
     throw error;
   }
 };
+
+exports.watchVideo = async (userId, videoId) => {
+  try {
+    await coursesModel.watchVideo(userId, videoId);
+  } catch (error) {
+    console.error('Service Error - watchVideo:', error);
+    throw error;
+  }
+};

@@ -6,6 +6,8 @@ const ForumFilter = ({ categories, tags, onFilterChange }) => {
     sortBy: "recentComment", // Default sorting option
     tags: [],
   });
+
+  const [tagSearch, setTagSearch] = useState(""); 
   
   useEffect(() => {
     if (onFilterChange) {
@@ -40,7 +42,7 @@ const ForumFilter = ({ categories, tags, onFilterChange }) => {
   };
 
   return (
-    <div className="w-100 px-3  font-avant-medium text-black">
+    <div className="w-110 px-3  font-avant-medium text-black">
       {/* Category Section */}
       <FilterSection title="Thread Category">
         <div className="flex flex-wrap gap-3">
@@ -85,21 +87,43 @@ const ForumFilter = ({ categories, tags, onFilterChange }) => {
       </FilterSection>
 
       {/* Tags Section */}
-      <FilterSection title="Tags">
-        <div className="flex flex-wrap gap-3">
-          {tags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => toggleTag(tag)}
-              className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${
-                selectedFilters.tags.includes(tag)
-                  ? "bg-gray-800 border-gray-800 text-white"
-                  : "bg-white border-gray-300 hover:bg-gray-100"
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
+      <FilterSection
+        title={
+          <div className="flex items-center gap-3 justify-between">
+            <span>Tags</span>
+            <input
+              type="text"
+              placeholder="Search tags..."
+              className="px-3 py-1 border-2 rounded-xl font-avant-medium text-base text-gray-600 border-gray-300 w-[180px]"
+              value={tagSearch}
+              onChange={e => setTagSearch(e.target.value)}
+              autoComplete="off"
+            />
+          </div>
+        }
+      >
+        <div
+          className="flex flex-wrap gap-3"
+          style={{
+            maxHeight: "500px",
+            overflowY: "auto",
+          }}
+        >
+          {tags
+            .filter(tag => !tagSearch || tag.toLowerCase().includes(tagSearch.toLowerCase()))
+            .map((tag, index) => (
+              <button
+                key={index}
+                onClick={() => toggleTag(tag)}
+                className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${
+                  selectedFilters.tags.includes(tag)
+                    ? "bg-gray-800 border-gray-800 text-white"
+                    : "bg-white border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                {tag}
+              </button>
+            ))}
         </div>
       </FilterSection>
     </div>

@@ -12,7 +12,7 @@ const Footer = () => {
         <div className="w-1/5 flex-col">
           <img src={logo} alt="Hustera Logo" className="h-20 mb-2" /> {/* Increased size */}
           <p className="text-lg leading-relaxed">
-            Hustera is a comprehensive e-learning platform designed to provide high-quality courses and a collaborative community for learners. 
+            Hustera is a comprehensive e-learning platform designed to provide high-quality courses and a collaborative community for learners.
             Explore a variety of subjects, engage in discussions, and enhance your skills at your own pace.
           </p>
         </div>
@@ -32,11 +32,46 @@ const Footer = () => {
           <div>
             <h3 className="font-avant-medium font-bold text-2xl text-gray-900">PROGRAMS</h3>
             <ul className="mt-2 space-y-2 text-sm">
-              <li><button onClick={() => navigate("/courses")} className="hover:text-blue-600 text-xl transition cursor-pointer">Art & Design</button></li>
-              <li><button onClick={() => navigate("/courses")} className="hover:text-blue-600 text-xl transition cursor-pointer">Business</button></li>
-              <li><button onClick={() => navigate("/coursese")} className="hover:text-blue-600 text-xl transition cursor-pointer">IT & Software</button></li>
-              <li><button onClick={() => navigate("/courses")} className="hover:text-blue-600 text-xl transition cursor-pointer">Languages</button></li>
-              <li><button onClick={() => navigate("/courses")} className="hover:text-blue-600 text-xl transition cursor-pointer">Programming</button></li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=art-%26-creativity")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Art & Creativity
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=communication")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Communication
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=sociology")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Sociology
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=finance")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Finance
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=marketing")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Marketing
+                </button>
+              </li>
             </ul>
           </div>
 

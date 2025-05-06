@@ -164,7 +164,8 @@ const CourseSingleCards = ({ course }) => {
   // const [reloadFlag, setReloadFlag] = useState(false);
   const reviewsPerPage = 3;
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, enrolledCourses } = useSelector((state) => state.auth);
+  const isEnrolled = enrolledCourses.includes(course.course_id) || false;
 
   // Calculate average rating
   const totalRatings = course.reviews.length;
@@ -205,18 +206,23 @@ const CourseSingleCards = ({ course }) => {
 
   // Function to handle video selection
   const handleVideoClick = async (video) => {
+    if (!isEnrolled) {
+      alert("You must be enrolled in this course to watch the videos.");
+      return;
+    }
     setSelectedVideo(video);
     const payload = {
       user_id: user.id,
       video_id: video.video_id,
     };
     try {
-      await axios.post("/api/user/watch-video", payload);
+      await axios.post("http://localhost:5000/courses/watch-video", payload);
       // Optionally handle response or show a notification
     } catch (err) {
       console.error("Failed to update watched video", err);
     }
   };
+
   const fetchReviews = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/courses/${course.course_id}/reviews`);
@@ -227,33 +233,38 @@ const CourseSingleCards = ({ course }) => {
       console.error("Failed to fetch updated reviews", error);
     }
   };
+
   const handlePostComment = async (e) => {
-    e.preventDefault();
-    let hasError = false;
+  e.preventDefault();
+  let hasError = false;
 
-    if (!user) {
-      setRatingError("You must be logged in to post a comment.");
-      hasError = true;
-    } else {
-      setRatingError("");
-    }
+  if (!user) {
+    setRatingError("You must be logged in to post a comment.");
+    hasError = true;
+  } else {
+    setRatingError("");
+  }
 
+  if (!isEnrolled) {
+    setRatingError("You must be enrolled in this course to post a review.");
+    hasError = true;
+  } else {
     if (!rating) {
       setRatingError("Please select a rating.");
       hasError = true;
-    } else if (user) {
+    } else if (user && isEnrolled) {
       setRatingError("");
     }
-
+  
     if (!comment.trim()) {
       setCommentError("Please enter a comment.");
       hasError = true;
     } else {
       setCommentError("");
     }
-
+  
     if (hasError) return;
-
+  
     const payload = {
       user_id: user?.id,
       course_id: course.course_id,
@@ -276,7 +287,8 @@ const CourseSingleCards = ({ course }) => {
         setRatingError("Failed to post review. Please try again.");
       }
     }
-  };
+  }
+};
 
   // Function to close video modal
   const closeVideo = () => {
@@ -314,7 +326,7 @@ const CourseSingleCards = ({ course }) => {
               {/* Instructor Info */}
               <div className="flex items-center">
                 <img
-                  src={course.instructor.avatar_id ? `/api/images/${course.instructor.avatar_id}` : "/api/placeholder/150/150"}
+                  src={course.instructor.avatar_image || `https://i.ytimg.com/vi/Sk0RvHrQ_NE/sd2.jpg?sqp=-oaymwEoCIAFEOAD8quKqQMcGADwAQH4Ab4EgALABIoCDAgAEAEYZSBVKEkwDw==&rs=AOn4CLBIcYMt0XHF2Q0Ey-kukRFtHrW_TA`}
                   alt="Instructor"
                   className="w-32 h-32 rounded-lg object-cover mr-6"
                 />
@@ -405,12 +417,12 @@ const CourseSingleCards = ({ course }) => {
                   <div key={index} className="bg-white px-6 py-4 rounded-xl">
                     <div className="flex items-center">
                       <img
-                        src={review.reviewer_avatar_id || "https://www.svgrepo.com/show/5125/avatar.svg"}
+                        src={review.reviewer_avatar_image || "https://www.svgrepo.com/show/5125/avatar.svg"}
                         alt="User"
                         className="w-12 h-12 rounded-full object-cover mr-4"
                       />
                       <div>
-                        <h4 className="font-semibold text-xl">{review.reviewer_name}</h4>
+                        <h4 className="font-semibold text-xl">{review.reviewer_name || review.reviewer_email}</h4>
                         <p className="text-gray-500 text-base">{formatDate(review.rated_at)}</p>
                       </div>
                     </div>

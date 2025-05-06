@@ -10,5 +10,7 @@ router.get('/:courseID/reviews', coursesController.getCourseReviews);
 router.post('/enroll-course', coursesController.enrollUserInCourse);
 router.post('/post-review', coursesController.postCourseReview);
 router.post('/upload', coursesController.uploadCourse);
+router.post('/watch-video', coursesController.watchVideo);
+
 
 module.exports = router;

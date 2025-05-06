@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CourseCardHorizontal from "../components/CourseCardHorizontal";
 import Breadcrumb from "../components/BreadCrumb";
+import axios from "axios";
 
 // Pagination Component
 const Pagination = ({ totalPages, currentPage, onPageChange }) => {
@@ -25,9 +26,8 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         <button
           key={idx}
           onClick={() => onPageChange(startPage + idx)}
-          className={`w-14 h-14 flex items-center text-xl font-avant-medium justify-center rounded-full border cursor-pointer ${
-            currentPage === startPage + idx ? "bg-black text-white font-bold" : "hover:bg-gray-200"
-          }`}
+          className={`w-14 h-14 flex items-center text-xl font-avant-medium justify-center rounded-full border cursor-pointer ${currentPage === startPage + idx ? "bg-black text-white font-bold" : "hover:bg-gray-200"
+            }`}
         >
           {startPage + idx}
         </button>
@@ -101,13 +101,16 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
             <li key={idx} className="mb-1">
               <button
                 onClick={() => handleFilterClick("category", cat.category)}
-                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
-                  selectedFilters.category === cat.category
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }`}
+                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${selectedFilters.category === cat.category
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200"
+                  }`}
               >
-                {cat.category} ({cat.count})
+                {cat.category
+                  .split('-')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')
+                } ({cat.count})
               </button>
             </li>
           ))
@@ -124,11 +127,10 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
             <li key={idx} className="mb-1">
               <button
                 onClick={() => handleFilterClick("instructor", ins.instructor)}
-                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
-                  selectedFilters.instructor === ins.instructor
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }`}
+                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${selectedFilters.instructor === ins.instructor
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200"
+                  }`}
               >
                 {ins.instructor} ({ins.count})
               </button>
@@ -146,9 +148,8 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
           <li key={idx} className="mb-1">
             <button
               onClick={() => handleFilterClick("level", lvl)}
-              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
-                selectedFilters.level === lvl ? "bg-blue-600 text-white" : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${selectedFilters.level === lvl ? "bg-blue-600 text-white" : "bg-gray-200"
+                }`}
             >
               {lvl}
             </button>
@@ -167,9 +168,8 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
           <li key={idx} className="mb-1">
             <button
               onClick={() => handleFilterClick("price", prc.value)}
-              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
-                selectedFilters.price === prc.value ? "bg-blue-600 text-white" : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${selectedFilters.price === prc.value ? "bg-blue-600 text-white" : "bg-gray-200"
+                }`}
             >
               {prc.label}
             </button>
@@ -190,7 +190,7 @@ const CourseListing = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const { user } = useSelector((state) => state.auth);
 
   // Extract search term and filters from URL on initial load
@@ -200,14 +200,14 @@ const CourseListing = () => {
     if (title) {
       setSearchTerm(title);
     }
-    
+
     // Extract any filters from URL
     const categoryParam = searchParams.get("category");
     const instructorParam = searchParams.get("instructor");
     const levelParam = searchParams.get("level");
     const priceParam = searchParams.get("price");
     const pageParam = searchParams.get("page");
-    
+
     // Set initial filters from URL if they exist
     setFilters({
       category: categoryParam || "",
@@ -215,7 +215,7 @@ const CourseListing = () => {
       level: levelParam || "",
       price: priceParam || "",
     });
-    
+
     // Set page if it exists in URL
     if (pageParam) {
       setCurrentPage(parseInt(pageParam));
@@ -236,14 +236,14 @@ const CourseListing = () => {
   // Update URL with current params
   const updateURLWithParams = (title, currentFilters, page) => {
     const params = new URLSearchParams();
-    
+
     if (title) params.set("title", title);
     if (currentFilters.category) params.set("category", currentFilters.category);
     if (currentFilters.instructor) params.set("instructor", currentFilters.instructor);
     if (currentFilters.level) params.set("level", currentFilters.level);
     if (currentFilters.price) params.set("price", currentFilters.price);
     if (page > 1) params.set("page", page.toString());
-    
+
     navigate(`/courses?${params.toString()}`);
   };
 
@@ -259,35 +259,37 @@ const CourseListing = () => {
     updateURLWithParams(searchTerm, filters, page);
   };
 
+
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        
+
         // Build query parameters for the API call
         const params = new URLSearchParams({
           page: currentPage,
           limit: 6
         });
-        
+
         // Add search term if exists
         if (searchTerm) {
           params.append("title", searchTerm);
         }
-        
+
         // Add filters if they exist
         if (filters.category) params.append("category", filters.category);
         if (filters.instructor) params.append("instructor", filters.instructor);
         if (filters.level) params.append("level", filters.level);
         if (filters.price) params.append("price", filters.price);
-        
+
         // Use a consistent endpoint that supports both search and filters
         const endpoint = `http://localhost:5000/courses?${params.toString()}`;
-        
-        const response = await fetch(endpoint);
-        const data = await response.json();
+
+        const response = await axios.get(endpoint);
+        const data = response.data;
         console.log("Fetched courses data:", data);
-        
+
         if (data.success) {
           setCourses(data.courses);
           setTotalPages(data.totalPages);
@@ -307,8 +309,8 @@ const CourseListing = () => {
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const response = await fetch("http://localhost:5000/courses/filters");
-        const data = await response.json();
+        const response = await axios.get("http://localhost:5000/courses/filters");
+        const data = response.data;
         console.log("Fetched filter data:", data);
         if (data.success) {
           setFilterData({
@@ -325,6 +327,7 @@ const CourseListing = () => {
 
     fetchFilters();
   }, []);
+
   console.log("Retrieved courses", courses);
   return (
     <>
@@ -348,7 +351,7 @@ const CourseListing = () => {
                   </button>
                 </div>
               )}
-  
+
               {loading ? (
                 <p>Loading courses...</p>
               ) : courses.length > 0 ? (
@@ -365,10 +368,10 @@ const CourseListing = () => {
               </div>
             </div>
             <div className="w-full md:w-1/4">
-              <InlineCourseFilter 
-                filterData={filterData} 
-                selectedFilters={filters} 
-                setFilters={handleFilterChange} 
+              <InlineCourseFilter
+                filterData={filterData}
+                selectedFilters={filters}
+                setFilters={handleFilterChange}
               />
             </div>
           </div>

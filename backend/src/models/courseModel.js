@@ -38,22 +38,47 @@ exports.enrollUserInCourse = async (userID, courseID) => {
 exports.getCourseBasicInfo = async (courseId) => {
   const [rows] = await db.query(`
     SELECT c.course_ID AS course_id, c.title, c.description, c.category, c.thumbnail_ID, 
-           c.price, c.duration, c.level
+           c.price, c.duration, c.level, img.image AS thumbnail
     FROM courses c
+    JOIN images img ON c.thumbnail_ID = img.image_ID
     WHERE c.course_ID = ?
   `, [courseId]);
-  return rows[0];
+
+  if (!rows[0]) return null;
+
+  let thumbnailBase64 = null;
+  if (rows[0].thumbnail) {
+    const base64Data = Buffer.from(rows[0].thumbnail).toString('base64');
+    thumbnailBase64 = `data:image/png;base64,${base64Data}`;
+  }
+
+  return {
+    ...rows[0],
+    thumbnail: thumbnailBase64,
+  };
 };
 
 exports.getCourseReviews = async (courseId) => {
   const [rows] = await db.query(`
-    SELECT ua.email AS reviewer_name, ui.avatar_ID AS reviewer_avatar_id,
+    SELECT ua.email AS reviewer_email, ui.name AS reviewer_name, ui.avatar_ID AS reviewer_avatar_id, img.image AS reviewer_avatar_image,
            cr.rating, cr.rated_at, cr.review
     FROM course_reviews cr
     JOIN user_auth ua ON cr.reviewer_ID = ua.user_ID
     JOIN user_info ui ON ua.user_ID = ui.user_ID
+    LEFT JOIN images img ON ui.avatar_ID = img.image_ID
     WHERE cr.course_ID = ?
   `, [courseId]);
+
+  // Convert avatar image to base64 if present
+  for (const row of rows) {
+    if (row.reviewer_avatar_image) {
+      const base64Data = Buffer.from(row.reviewer_avatar_image).toString('base64');
+      row.reviewer_avatar_image = `data:image/png;base64,${base64Data}`;
+    } else {
+      row.reviewer_avatar_image = null;
+    }
+  }
+
   return rows;
 };
 
@@ -70,15 +95,24 @@ exports.getCourseWeeksAndVideos = async (courseId) => {
 
 exports.getCourseInstructorInfo = async (courseId) => {
   const [rows] = await db.query(`
-    SELECT ua.user_ID, ua.email, ui.name, ui.avatar_ID,
+    SELECT ua.user_ID, ua.email, ui.name, ui.avatar_ID, img.image AS avatar_image,
       (SELECT COUNT(*) FROM courses WHERE instructor_ID = c.instructor_ID) AS num_courses,
       (SELECT COUNT(*) FROM course_enroll WHERE course_ID IN (SELECT course_ID FROM courses WHERE instructor_ID = c.instructor_ID)) AS num_students
     FROM courses c
     JOIN user_auth ua ON c.instructor_ID = ua.user_ID
     JOIN user_info ui ON ua.user_ID = ui.user_ID
+    LEFT JOIN images img ON ui.avatar_ID = img.image_ID
     WHERE c.course_ID = ?
   `, [courseId]);
-  return rows[0];
+
+  let instructor = rows[0];
+  if (instructor && instructor.avatar_image) {
+    const base64Data = Buffer.from(instructor.avatar_image).toString('base64');
+    instructor.avatar_image = `data:image/png;base64,${base64Data}`;
+  } else if (instructor) {
+    instructor.avatar_image = null;
+  }
+  return instructor;
 };
 
 exports.getCourseEnrollmentCount = async (courseId) => {
@@ -145,13 +179,23 @@ exports.getCourses = async ({ category, instructor, level, price, title, page = 
       c.level,
       c.price,
       img.image AS thumbnailUrl,
-      ui.name AS instructor
+      ui.name AS instructor,
+      ua.email AS instructorEmail
     ${baseQuery}
     LIMIT ? OFFSET ?
   `;
 
   const coursesQueryParams = [...queryParams, parseInt(limit), (parseInt(page) - 1) * parseInt(limit)];
   const [courses] = await db.query(coursesQuery, coursesQueryParams);
+
+  for (const course of courses) {
+    if (course.thumbnailUrl) {
+      const base64Data = Buffer.from(course.thumbnailUrl).toString('base64');
+      course.thumbnailUrl = `data:image/png;base64,${base64Data}`;
+    } else {
+      course.thumbnailUrl = null;
+    }
+  }
 
   // Get total count for pagination
   const countQuery = `SELECT COUNT(*) AS total ${baseQuery}`;
@@ -302,3 +346,15 @@ exports.getAllTags = async () => {
   `);
   return rows.map(row => row.tag);
 };
+
+exports.watchVideo = async (userId, videoId) => {
+  const [result] = await db.query(
+    `
+    INSERT INTO video_watch (student_ID, video_ID, status)
+    VALUES (?, ?, 'completed')
+    ON DUPLICATE KEY UPDATE status = 'completed'
+    `,
+    [userId, videoId]
+  );
+  return result;
+}

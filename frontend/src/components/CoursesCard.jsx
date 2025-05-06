@@ -12,7 +12,12 @@ const CourseCard = ({ course }) => {
     <div onClick={handleCardClick} className="relative bg-white rounded-4xl overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-3 hover:bg-gray-50 w-135 h-140 cursor-pointer flex flex-col group border border-gray-200">
       {/* Badge */}
       <div className="absolute top-6 left-6 bg-gray-800 text-white px-4 py-2 rounded-xl">
-        {course.category}
+        {course.category
+          ? course.category
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
+          : ""}
       </div>
 
       {/* Thumbnail */}
@@ -41,7 +46,9 @@ const CourseCard = ({ course }) => {
         <div className="mt-auto">
           <div className="mx-auto border-t border-gray-300 mb-3"></div>
           <div className="text-center text-base">
-            <span className="text-gray-700 font-semibold text-xl">${course.price}</span>
+            <span className="text-gray-700 font-semibold text-xl">
+              {course.price === "0.00" ? "Free" : `$${course.price}`}
+            </span>
           </div>
         </div>
       </div>

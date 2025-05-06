@@ -6,11 +6,9 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
 import ForumQuestion from "../components/ForumQuestion";
-
 import ForumReplyCard from "../components/ForumReplyCard";
 import AnswerCard from "../components/AnswerCard";
 import { useSelector } from "react-redux"; 
-import { ArrowUp, ArrowDown, MessageCircle } from "lucide-react";
 
 const ForumSingle = () => {
   const { threadId } = useParams();
@@ -56,7 +54,7 @@ const ForumSingle = () => {
   //   </div>
   // );
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex font-avant-medium flex-col">
       <Navbar currentState="Courses/" />
   
       <div className="flex-1">
