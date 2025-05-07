@@ -95,7 +95,7 @@ const ThreadListing = () => {
         <div className="flex justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
 
           {/* Left Section: Search & Courses */}
-          <div className="w-3/4">
+          <div className="w-72/100">
             <SearchBar title="All Threads" />
 
             {/* "Start a New Thread" Button */}
@@ -134,10 +134,10 @@ const ThreadListing = () => {
           </div>
 
           {/* Right Section: Welcome + Banner + Course Filters */}
-          <div className="w-1/4 space-y-6 mt-15">
+          <div className="w-28/100 space-y-6 mt-15">
 
             {/* Welcome to Forum box */}
-            <div className="p-5 max-w-[390px] bg-yellow-50 border-3 border-yellow-500 rounded-xl text-lg space-y-4 mb-8">
+            <div className="p-5 max-w-[450px] bg-yellow-50 border-3 border-yellow-500 rounded-xl text-lg space-y-4 mb-8">
               <div>
                 <h3 className="font-bold font-avant-medium text-[27px] text-gray-800 mb-4">Welcome to the Forum 👋</h3>
                 <p className="text-gray-700 text-xl">
@@ -153,7 +153,7 @@ const ThreadListing = () => {
             </div>
 
             {/* Hustera Banner */}
-            <div className="max-w-[390px] rounded-xl p-5 bg-gradient-to-r from-indigo-600 to-blue-500 shadow-md text-white text-center">
+            <div className="max-w-[450px] rounded-xl p-5 bg-gradient-to-r from-indigo-600 to-blue-500 shadow-md text-white text-center">
               <h3 className="text-5xl font-avant-medium font-bold tracking-wide">hustera</h3>
               <p className="text-md font-avant-medium">education for everyone</p>
             </div>

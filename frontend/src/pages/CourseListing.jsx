@@ -32,11 +32,10 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         <button
           key={idx}
           onClick={() => onPageChange(startPage + idx)}
-          className={`w-14 h-14 flex items-center text-xl font-avant-medium justify-center rounded-full border cursor-pointer ${
-            currentPage === startPage + idx
-              ? "bg-black text-white font-bold"
-              : "bg-white hover:bg-gray-200"
-          }`}
+          className={`w-14 h-14 flex items-center text-xl font-avant-medium justify-center rounded-full border cursor-pointer ${currentPage === startPage + idx
+            ? "bg-black text-white font-bold"
+            : "bg-white hover:bg-gray-200"
+            }`}
         >
           {startPage + idx}
         </button>
@@ -113,23 +112,32 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
     <div className="mt-12">
       {/* Category Filter */}
       <h3 className="text-3xl font-avant-medium font-bold mt-4 mb-3">Categories</h3>
-      <ul>
+      <ul className="flex flex-wrap gap-2">
         {filterData.categories?.length > 0 ? (
           filterData.categories.map((cat, idx) => (
-            <li key={idx} className="mb-1">
+            <li key={idx}>
               <button
                 onClick={() => handleFilterClick("category", cat.category)}
-                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
-                  selectedFilters.category === cat.category
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }`}
+                className={`px-4 py-2 rounded-xl font-avant-medium text-lg border transition cursor-pointer flex items-center ${selectedFilters.category === cat.category
+                  ? "bg-gray-800 border-gray-800 text-white"
+                  : "bg-white border-gray-300 hover:bg-gray-100 text-gray-600"
+                  }`}
               >
-                {cat.category
-                  .split('-')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ')
-                } ({cat.count})
+                <span>
+                  {cat.category
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')
+                  }
+                </span>
+                <span
+                  className={`ml-2 text-sm px-2 py-1 rounded-full bg-opacity-20 ${selectedFilters.category === cat.category
+                    ? "bg-yellow-400 text-gray-900"
+                    : "bg-gray-200 text-gray-700"
+                    }`}
+                >
+                  {cat.count}
+                </span>
               </button>
             </li>
           ))
@@ -140,19 +148,26 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
 
       {/* Instructor Filter */}
       <h3 className="text-3xl font-avant-medium font-bold mt-4 mb-3">Instructors</h3>
-      <ul>
+      <ul className="flex flex-wrap gap-2">
         {filterData.instructors?.length > 0 ? (
           filterData.instructors.map((ins, idx) => (
-            <li key={idx} className="mb-1">
+            <li key={idx}>
               <button
                 onClick={() => handleFilterClick("instructor", ins.instructor)}
-                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
-                  selectedFilters.instructor === ins.instructor
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }`}
+                className={`px-4 py-2 font-avant-medium text-lg border rounded-xl transition cursor-pointer flex items-center ${selectedFilters.instructor === ins.instructor
+                  ? "bg-blue-600 border-blue-600 text-white"
+                  : "bg-white border-gray-300 hover:bg-gray-100 text-gray-600"
+                  }`}
               >
-                {ins.instructor} ({ins.count})
+                <span>{ins.instructor}</span>
+                <span
+                  className={`ml-2 text-sm px-2 py-1 rounded-full bg-opacity-20 ${selectedFilters.instructor === ins.instructor
+                    ? "bg-yellow-400 text-gray-900"
+                    : "bg-gray-200 text-gray-700"
+                    }`}
+                >
+                  {ins.count}
+                </span>
               </button>
             </li>
           ))
@@ -163,41 +178,64 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
 
       {/* Level Filter */}
       <h3 className="text-3xl font-avant-medium font-bold mt-4 mb-3">Levels</h3>
-      <ul>
-        {["Beginner", "Intermediate", "Advanced"].map((lvl, idx) => (
-          <li key={idx} className="mb-1">
+      <div className="relative bg-gray-200 rounded-full p-1 flex w-full max-w-xl mt-2 mb-6">
+        <div className="relative flex w-full px-1">
+          {/* Highlight bar only if a level is selected */}
+          {["Beginner", "Intermediate", "Advanced"].includes(selectedFilters.level) && (
+            <div
+              className="absolute top-0 bottom-0 w-1/3 rounded-full bg-gray-800 z-0 transition-all"
+              style={{
+                left: `${["Beginner", "Intermediate", "Advanced"].indexOf(selectedFilters.level) * 33.3333}%`,
+              }}
+            />
+          )}
+          {["Beginner", "Intermediate", "Advanced"].map((lvl) => (
             <button
-              onClick={() => handleFilterClick("level", lvl)}
-              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
-                selectedFilters.level === lvl ? "bg-blue-600 text-white" : "bg-gray-200"
-              }`}
+              key={lvl}
+              onClick={() =>
+                handleFilterClick("level", selectedFilters.level === lvl ? "" : lvl)
+              }
+              className={`relative z-10 w-1/3 text-center py-2 rounded-full transition-all font-avant-medium text-[17px] cursor-pointer ${selectedFilters.level === lvl ? "text-white" : "text-gray-700"
+                }`}
             >
               {lvl}
             </button>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      </div>
 
       {/* Price Filter */}
+      {/* Price Filter */}
       <h3 className="text-3xl font-avant-medium font-bold mt-4 mb-3">Price</h3>
-      <ul>
-        {[
-          { label: "Under $30", value: "under30" },
-          { label: "$30 - $50", value: "30to50" },
-          { label: "Above $50", value: "above50" },
-        ].map((prc, idx) => (
-          <li key={idx} className="mb-1">
+      <div className="relative bg-gray-200 rounded-full p-1 flex w-full max-w-xl mt-2 mb-6">
+        <div className="relative flex w-full px-1">
+          {/* Highlight bar only if a price is selected */}
+          {["under30", "30to50", "above50"].includes(selectedFilters.price) && (
+            <div
+              className="absolute top-0 bottom-0 w-1/3 rounded-full bg-blue-600 z-0 transition-all"
+              style={{
+                left: `${["under30", "30to50", "above50"].indexOf(selectedFilters.price) * 33.3333}%`,
+              }}
+            />
+          )}
+          {[
+            { label: "Under $30", value: "under30" },
+            { label: "$30 - $50", value: "30to50" },
+            { label: "Above $50", value: "above50" },
+          ].map((prc) => (
             <button
-              onClick={() => handleFilterClick("price", prc.value)}
-              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
-                selectedFilters.price === prc.value ? "bg-blue-600 text-white" : "bg-gray-200"
-              }`}
+              key={prc.value}
+              onClick={() =>
+                handleFilterClick("price", selectedFilters.price === prc.value ? "" : prc.value)
+              }
+              className={`relative z-10 w-1/3 text-center py-2 rounded-full transition-all font-avant-medium text-[17px] cursor-pointer ${selectedFilters.price === prc.value ? "text-white" : "text-gray-700"
+                }`}
             >
               {prc.label}
             </button>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -232,28 +270,28 @@ const CourseListing = () => {
   // Extract search term and filters from URL on initial load
   useEffect(() => {
     const params = parseUrlParams();
-    
+
     // Only update state if we're actually changing something to avoid rerenders
     if (params.title !== searchTerm) {
       setSearchTerm(params.title);
     }
-    
+
     const newFilters = {
       category: params.category,
       instructor: params.instructor,
       level: params.level,
       price: params.price
     };
-    
+
     // Check if filters actually changed before updating
     if (JSON.stringify(newFilters) !== JSON.stringify(filters)) {
       setFilters(newFilters);
     }
-    
+
     if (params.page !== currentPage) {
       setCurrentPage(params.page);
     }
-    
+
     // Mark that we've processed the initial URL parameters
     if (isInitialLoad) {
       setIsInitialLoad(false);
@@ -302,7 +340,7 @@ const CourseListing = () => {
   useEffect(() => {
     // Skip the initial render since we'll load from URL params
     if (isInitialLoad) return;
-    
+
     const fetchCourses = async () => {
       try {
         setLoading(true);
@@ -325,7 +363,7 @@ const CourseListing = () => {
         if (filters.price) params.append("price", filters.price);
 
         const endpoint = `http://localhost:5000/courses?${params.toString()}`;
-        
+
         const response = await axios.get(endpoint);
         const data = response.data;
 
@@ -351,7 +389,7 @@ const CourseListing = () => {
       try {
         const response = await axios.get("http://localhost:5000/courses/filters");
         const data = response.data;
-        
+
         if (data.success) {
           setFilterData({
             categories: data.categories,
@@ -375,13 +413,13 @@ const CourseListing = () => {
       <div className="flex flex-col min-h-screen">
         <div className="flex-grow flex justify-center w-full">
           <div className="flex flex-col md:flex-row justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
-            <div className="w-full md:w-4/5">
-              <EnhancedSearchBar 
-                onSearch={handleSearch} 
-                currentSearchTerm={searchTerm} 
-                title="All Courses" 
+            <div className="w-full md:w-72/100">
+              <EnhancedSearchBar
+                onSearch={handleSearch}
+                currentSearchTerm={searchTerm}
+                title="All Courses"
               />
-              
+
               {/* Create New Course button for non-students */}
               {user?.role !== "student" && (
                 <div className="my-4 flex justify-end">
@@ -409,19 +447,41 @@ const CourseListing = () => {
                   <p className="text-xl text-gray-600">No courses match your criteria</p>
                 </div>
               )}
-              
+
               {totalPages > 1 && (
                 <div className="mt-6 flex justify-center">
-                  <Pagination 
-                    totalPages={totalPages} 
-                    currentPage={currentPage} 
-                    onPageChange={handlePageChange} 
+                  <Pagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               )}
             </div>
-            
-            <div className="w-full md:w-1/4">
+
+            <div className="w-full md:w-28/100">
+              {/* Welcome to Forum box */}
+              <div className="p-5 max-w-[450px] bg-yellow-50 border-3 border-yellow-500 rounded-xl text-lg space-y-4 mt-10 mb-8">
+                <div>
+                  <h3 className="font-bold font-avant-medium text-[27px] text-gray-800 mb-4">Welcome to the Forum 👋</h3>
+                  <p className="text-gray-700 text-xl">
+                    This is your space to ask questions, share insights, and collaborate with others on your learning journey.
+                  </p>
+                  <ul className="list-disc text-xl list-inside mt-4 text-gray-700 space-y-1">
+                    <li>Ask and answer questions</li>
+                    <li>Use tags to find topics of interest</li>
+                    <li>Vote for answers</li>
+                    <li>Connect with instructors and peers</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Hustera Banner */}
+              <div className="max-w-[450px] rounded-xl p-5 bg-gradient-to-r from-indigo-600 to-blue-500 shadow-md text-white text-center mb-8">
+                <h3 className="text-5xl font-avant-medium font-bold tracking-wide">hustera</h3>
+                <p className="text-md font-avant-medium">education for everyone</p>
+              </div>
+
               <InlineCourseFilter
                 filterData={filterData}
                 selectedFilters={filters}

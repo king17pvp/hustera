@@ -7,14 +7,14 @@ const ForumFilter = ({ categories, tags, onFilterChange }) => {
     tags: [],
   });
 
-  const [tagSearch, setTagSearch] = useState(""); 
-  
+  const [tagSearch, setTagSearch] = useState("");
+
   useEffect(() => {
     if (onFilterChange) {
       onFilterChange(selectedFilters);
     }
   }, [selectedFilters]);
-  
+
   // Handles single-selection filters (Sort By)
   const handleSingleSelect = (section, value) => {
     setSelectedFilters((prev) => ({
@@ -50,15 +50,19 @@ const ForumFilter = ({ categories, tags, onFilterChange }) => {
             <button
               key={name}
               onClick={() => toggleCategory(name)}
-              className={`px-4 py-2 rounded-xl font-avant-medium text-lg border transition cursor-pointer flex justify-between items-center ${
-                selectedFilters.category === name
+              className={`px-4 py-2 rounded-xl font-avant-medium text-lg border transition cursor-pointer flex justify-between items-center ${selectedFilters.category === name
                   ? "bg-gray-800 border-gray-800 text-white"
                   : "bg-white border-gray-300 hover:bg-gray-100 text-gray-600"
-              }`}
+                }`}
             >
               <span>{name}</span>
               {thread_count !== undefined && (
-                <span className="ml-2 text-sm px-2 py-1 rounded-full bg-opacity-20 bg-gray-200">
+                <span
+                  className={`ml-2 text-sm px-2 py-1 rounded-full bg-opacity-20 ${selectedFilters.category === name
+                      ? "bg-yellow-400 text-gray-900"
+                      : "bg-gray-200 text-gray-700"
+                    }`}
+                >
                   {thread_count}
                 </span>
               )}
@@ -115,11 +119,10 @@ const ForumFilter = ({ categories, tags, onFilterChange }) => {
               <button
                 key={index}
                 onClick={() => toggleTag(tag)}
-                className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${
-                  selectedFilters.tags.includes(tag)
+                className={`px-4 py-2 rounded-xl font-avant-medium text-lg text-gray-600 border transition cursor-pointer ${selectedFilters.tags.includes(tag)
                     ? "bg-gray-800 border-gray-800 text-white"
                     : "bg-white border-gray-300 hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 {tag}
               </button>
