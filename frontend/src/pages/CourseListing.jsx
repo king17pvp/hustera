@@ -205,7 +205,6 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
       </div>
 
       {/* Price Filter */}
-      {/* Price Filter */}
       <h3 className="text-3xl font-avant-medium font-bold mt-4 mb-3">Price</h3>
       <div className="relative bg-gray-200 rounded-full p-1 flex w-full max-w-xl mt-2 mb-6">
         <div className="relative flex w-full px-1">
@@ -460,18 +459,18 @@ const CourseListing = () => {
             </div>
 
             <div className="w-full md:w-28/100">
-              {/* Welcome to Forum box */}
-              <div className="p-5 max-w-[450px] bg-yellow-50 border-3 border-yellow-500 rounded-xl text-lg space-y-4 mt-10 mb-8">
+              {/* Welcome to Courses box */}
+              <div className="p-5 max-w-[450px] bg-blue-50 border-3 border-blue-500 rounded-xl text-lg space-y-4 mt-10 mb-8">
                 <div>
-                  <h3 className="font-bold font-avant-medium text-[27px] text-gray-800 mb-4">Welcome to the Forum 👋</h3>
+                  <h3 className="font-bold font-avant-medium text-[27px] text-gray-800 mb-4">Welcome to Courses 📚</h3>
                   <p className="text-gray-700 text-xl">
-                    This is your space to ask questions, share insights, and collaborate with others on your learning journey.
+                    Discover a wide range of courses to boost your knowledge and skills. Use the filters below to find the perfect course for you!
                   </p>
                   <ul className="list-disc text-xl list-inside mt-4 text-gray-700 space-y-1">
-                    <li>Ask and answer questions</li>
-                    <li>Use tags to find topics of interest</li>
-                    <li>Vote for answers</li>
-                    <li>Connect with instructors and peers</li>
+                    <li>Browse by category, instructor, level, or price</li>
+                    <li>Search for specific topics</li>
+                    <li>Enroll and start learning instantly</li>
+                    <li>Track your progress and achievements</li>
                   </ul>
                 </div>
               </div>
