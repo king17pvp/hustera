@@ -37,10 +37,10 @@ exports.enrollUserInCourse = async (userID, courseID) => {
 
 exports.getCourseBasicInfo = async (courseId) => {
   const [rows] = await db.query(`
-    SELECT c.course_ID AS course_id, c.title, c.description, c.category, c.thumbnail_ID, 
+    SELECT c.course_ID AS course_id, c.title, c.description, c.category, c.thumbnail_ID, c.thumbnail_url,
            c.price, c.duration, c.level, img.image AS thumbnail
     FROM courses c
-    JOIN images img ON c.thumbnail_ID = img.image_ID
+    LEFT JOIN images img ON c.thumbnail_ID = img.image_ID
     WHERE c.course_ID = ?
   `, [courseId]);
 
@@ -123,12 +123,13 @@ exports.getCourseEnrollmentCount = async (courseId) => {
   `, [courseId]);
   return rows[0]?.enrollment_count || 0;
 };
+
 exports.getCourses = async ({ category, instructor, level, price, title, page = 1, limit = 10 }) => {
   let baseQuery = `
     FROM courses c
     JOIN user_auth ua ON c.instructor_ID = ua.user_ID
     JOIN user_info ui ON ua.user_ID = ui.user_ID
-    JOIN images img ON c.thumbnail_ID = img.image_ID
+    LEFT JOIN images img ON c.thumbnail_ID = img.image_ID
     WHERE 1=1
   `;
   const queryParams = [];
@@ -179,6 +180,7 @@ exports.getCourses = async ({ category, instructor, level, price, title, page = 
       c.level,
       c.price,
       img.image AS thumbnailUrl,
+      c.thumbnail_url AS thumbnailUrl2,
       ui.name AS instructor,
       ua.email AS instructorEmail
     ${baseQuery}

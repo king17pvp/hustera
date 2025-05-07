@@ -1,10 +1,10 @@
 const db = require('../config/db');
 
 exports.getTags = async () => {
-  
+
 }
 
-exports.getTotalPages = async ({category, searchQuery, tags}) => {
+exports.getTotalPages = async ({ category, searchQuery, tags }) => {
   const params = [];
   const limit = 9;
   const conditions = [];
@@ -36,13 +36,13 @@ exports.getTotalPages = async ({category, searchQuery, tags}) => {
       JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
       JOIN tags tg ON tt.tag_ID = tg.tag_ID
     `;
-  
+
     // Always treat tags as an array
     const tagArray = Array.isArray(tags) ? tags : [tags];
-  
+
     // Add condition
     conditions.push(`tg.tag_name IN (${tagArray.map(() => '?').join(',')})`);
-  
+
     // Add values
     params.push(...tagArray);
   } else {
@@ -171,6 +171,7 @@ exports.getAnswersByThreadId = async (threadId) => {
     LEFT JOIN thread_answer_images tai ON tai.answer_ID = a.answer_ID
     LEFT JOIN images i ON i.image_ID = tai.image_ID
     WHERE a.thread_ID = ?
+    ORDER BY a.accepted DESC, score DESC, a.created_at ASC
   `, [threadId]);
 
   // Gom từng answer_ID → mảng ảnh
@@ -200,7 +201,7 @@ exports.getAnswersByThreadId = async (threadId) => {
   return Object.values(answerMap);
 };
 
-exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page = 1}) => {
+exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page = 1 }) => {
   const limit = 9;
   const offset = (page - 1) * limit; // Calculate the offset for pagination
   const params = [];
@@ -233,13 +234,13 @@ exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page
       JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
       JOIN tags tg ON tt.tag_ID = tg.tag_ID
     `;
-  
+
     // Always treat tags as an array
     const tagArray = Array.isArray(tags) ? tags : [tags];
-  
+
     // Add condition
     conditions.push(`tg.tag_name IN (${tagArray.map(() => '?').join(',')})`);
-  
+
     // Add values
     params.push(...tagArray);
   } else {
@@ -314,7 +315,7 @@ exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page
       ...row,
       tags: row.tags ? row.tags.split(',') : [],  // convert to array
     }));
-    
+
     return formattedRows;
   } catch (err) {
     console.error('Error executing query in getForum:', err);
@@ -359,30 +360,30 @@ exports.getFilters = async () => {
     throw err;
   }
 };
-exports.getThreadVote = async(threadId, userId) => {
+exports.getThreadVote = async (threadId, userId) => {
   const [existing] = await db.execute(
     `SELECT * FROM thread_votes WHERE thread_ID = ? AND voter_ID = ?`,
     [threadId, userId]
   );
   if (existing.length > 0) {
-    return {status: true, vote_type: existing[0].vote_type};
+    return { status: true, vote_type: existing[0].vote_type };
   }
   else {
-    return {status: false}
+    return { status: false }
   }
 }
-exports.getAnswerVote = async(answerId, userId) => {
+exports.getAnswerVote = async (answerId, userId) => {
   const [existing] = await db.execute(
     `SELECT * FROM thread_answer_votes WHERE answer_ID = ? AND voter_ID = ?`,
     [answerId, userId]
   );
   console.log("ALO ALO", existing);
   if (existing.length > 0) {
-    
-    return {status: true, vote_type: existing[0].vote_type};
+
+    return { status: true, vote_type: existing[0].vote_type };
   }
   else {
-    return {status: false}
+    return { status: false }
   }
 }
 exports.upsertThreadVote = async (threadId, userId, voteType) => {
@@ -490,7 +491,7 @@ exports.createAnswer = async (threadId, authorId, contents, attachments = []) =>
 
 
 exports.uploadForum = async (threadData, authorId) => {
-  const { title, body, tags, attachments, category} = threadData;
+  const { title, body, tags, attachments, category } = threadData;
   let parsedTags = tags ? tags.split(',') : [];
   try {
     // Step 1: Insert thread
@@ -503,14 +504,14 @@ exports.uploadForum = async (threadData, authorId) => {
     const threadId = threadResult.insertId;
     const uniqueTags = [...new Set(parsedTags.map(tag => tag.trim().toLowerCase()))];
 
-    
+
 
     for (const tagName of uniqueTags) {
       const [tagRows] = await db.execute(
         `SELECT tag_ID FROM tags WHERE tag_name = ?`,
         [tagName]
       );
-    
+
       let tagId;
       if (tagRows.length > 0) {
         tagId = tagRows[0].tag_ID;
@@ -521,7 +522,7 @@ exports.uploadForum = async (threadData, authorId) => {
         );
         tagId = tagInsert.insertId;
       }
-    
+
       await db.execute(
         `INSERT INTO thread_tags (thread_ID, tag_ID) VALUES (?, ?)`,
         [threadId, tagId]

@@ -35,13 +35,14 @@ exports.fetchCourses = async () => {
         c.level,
         c.price,
         img.image AS thumbnail,
+        c.thumbnail_url AS thumbnailUrl,
         ui.name AS instructor,
         COUNT(ce.student_ID) AS studentCount
       FROM 
         courses c
         JOIN user_auth ua ON c.instructor_ID = ua.user_ID
         JOIN user_info ui ON ua.user_ID = ui.user_ID
-        JOIN images img ON c.thumbnail_ID = img.image_ID
+        LEFT JOIN images img ON c.thumbnail_ID = img.image_ID
         LEFT JOIN course_enroll ce ON c.course_ID = ce.course_ID
       GROUP BY 
         c.course_ID, c.title, c.category, c.description, c.duration, 

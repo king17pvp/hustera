@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const CourseCardHorizontal = ({
   thumbnailUrl,
+  thumbnailUrl2,
   category,
   title,
   instructor,
@@ -15,6 +16,7 @@ const CourseCardHorizontal = ({
 }) => {
   const course = {
     thumbnailUrl,
+    thumbnailUrl2,
     category,
     title,
     instructor,
@@ -25,11 +27,7 @@ const CourseCardHorizontal = ({
     price,
     courseID,
   }
-  console.log("Courses?: ", course);
   const navigate = useNavigate();
-  useEffect(() => {
-    // console.log("Thumbnail URL: ", thumbnailUrl); // Debugging: Check the thumbnail URL
-  }, [thumbnailUrl]);
   const handleClick = () => {
     navigate(`/courses/${courseID}`); // <-- Navigate to detail page
   };
@@ -40,9 +38,9 @@ const CourseCardHorizontal = ({
     >
       {/* Left: Image + Category Badge */}
       <div className="relative w-140 bg-gray-100">
-        {thumbnailUrl ? (
+        {thumbnailUrl || thumbnailUrl2 ? (
           <img
-            src={thumbnailUrl}
+            src={thumbnailUrl || thumbnailUrl2}
             alt="Course Thumbnail"
             className="w-full h-full object-cover"
           />
