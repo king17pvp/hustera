@@ -1,5 +1,5 @@
 // frontend/src/pages/CourseListing.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
@@ -20,20 +20,35 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
   return (
     <div className="flex space-x-2">
       {currentPage > 1 && (
-        <button onClick={() => onPageChange(currentPage - 1)}>Prev</button>
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          className="w-14 h-14 flex items-center justify-center rounded-full border text-xl font-avant-medium cursor-pointer bg-white hover:bg-gray-200"
+          aria-label="Previous Page"
+        >
+          &lt;
+        </button>
       )}
       {Array.from({ length: endPage - startPage + 1 }, (_, idx) => (
         <button
           key={idx}
           onClick={() => onPageChange(startPage + idx)}
-          className={`w-14 h-14 flex items-center text-xl font-avant-medium justify-center rounded-full border cursor-pointer ${currentPage === startPage + idx ? "bg-black text-white font-bold" : "hover:bg-gray-200"
-            }`}
+          className={`w-14 h-14 flex items-center text-xl font-avant-medium justify-center rounded-full border cursor-pointer ${
+            currentPage === startPage + idx
+              ? "bg-black text-white font-bold"
+              : "bg-white hover:bg-gray-200"
+          }`}
         >
           {startPage + idx}
         </button>
       ))}
       {currentPage < totalPages && (
-        <button onClick={() => onPageChange(currentPage + 1)}>Next</button>
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          className="w-14 h-14 flex items-center justify-center rounded-full border text-xl font-avant-medium cursor-pointer bg-white hover:bg-gray-200"
+          aria-label="Next Page"
+        >
+          &gt;
+        </button>
       )}
     </div>
   );
@@ -41,6 +56,10 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
 
 const EnhancedSearchBar = ({ onSearch, currentSearchTerm, title }) => {
   const [searchTerm, setSearchTerm] = useState(currentSearchTerm || "");
+
+  useEffect(() => {
+    setSearchTerm(currentSearchTerm || "");
+  }, [currentSearchTerm]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -82,7 +101,6 @@ const EnhancedSearchBar = ({ onSearch, currentSearchTerm, title }) => {
   );
 };
 
-
 // Inline Course Filter Component
 const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
   const handleFilterClick = (type, value) => {
@@ -101,10 +119,11 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
             <li key={idx} className="mb-1">
               <button
                 onClick={() => handleFilterClick("category", cat.category)}
-                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${selectedFilters.category === cat.category
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
-                  }`}
+                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
+                  selectedFilters.category === cat.category
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200"
+                }`}
               >
                 {cat.category
                   .split('-')
@@ -127,10 +146,11 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
             <li key={idx} className="mb-1">
               <button
                 onClick={() => handleFilterClick("instructor", ins.instructor)}
-                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${selectedFilters.instructor === ins.instructor
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
-                  }`}
+                className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
+                  selectedFilters.instructor === ins.instructor
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200"
+                }`}
               >
                 {ins.instructor} ({ins.count})
               </button>
@@ -148,8 +168,9 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
           <li key={idx} className="mb-1">
             <button
               onClick={() => handleFilterClick("level", lvl)}
-              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${selectedFilters.level === lvl ? "bg-blue-600 text-white" : "bg-gray-200"
-                }`}
+              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
+                selectedFilters.level === lvl ? "bg-blue-600 text-white" : "bg-gray-200"
+              }`}
             >
               {lvl}
             </button>
@@ -168,8 +189,9 @@ const InlineCourseFilter = ({ filterData, selectedFilters, setFilters }) => {
           <li key={idx} className="mb-1">
             <button
               onClick={() => handleFilterClick("price", prc.value)}
-              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${selectedFilters.price === prc.value ? "bg-blue-600 text-white" : "bg-gray-200"
-                }`}
+              className={`px-4 py-2 font-avant-medium text-gray-600 rounded-xl cursor-pointer ${
+                selectedFilters.price === prc.value ? "bg-blue-600 text-white" : "bg-gray-200"
+              }`}
             >
               {prc.label}
             </button>
@@ -188,53 +210,58 @@ const CourseListing = () => {
   const [filters, setFilters] = useState({ category: "", instructor: "", level: "", price: "" });
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
 
-  // Extract search term and filters from URL on initial load
-  useEffect(() => {
+  // Function to parse URL parameters - extracted for reuse
+  const parseUrlParams = useCallback(() => {
     const searchParams = new URLSearchParams(location.search);
-    const title = searchParams.get("title");
-    if (title) {
-      setSearchTerm(title);
-    }
-
-    // Extract any filters from URL
-    const categoryParam = searchParams.get("category");
-    const instructorParam = searchParams.get("instructor");
-    const levelParam = searchParams.get("level");
-    const priceParam = searchParams.get("price");
-    const pageParam = searchParams.get("page");
-
-    // Set initial filters from URL if they exist
-    setFilters({
-      category: categoryParam || "",
-      instructor: instructorParam || "",
-      level: levelParam || "",
-      price: priceParam || "",
-    });
-
-    // Set page if it exists in URL
-    if (pageParam) {
-      setCurrentPage(parseInt(pageParam));
-    }
+    return {
+      title: searchParams.get("title") || "",
+      category: searchParams.get("category") || "",
+      instructor: searchParams.get("instructor") || "",
+      level: searchParams.get("level") || "",
+      price: searchParams.get("price") || "",
+      page: parseInt(searchParams.get("page") || "1")
+    };
   }, [location.search]);
 
-  // Reset page when filters or search term change
+  // Extract search term and filters from URL on initial load
   useEffect(() => {
-    setCurrentPage(1);
-  }, [filters, searchTerm]);
+    const params = parseUrlParams();
+    
+    // Only update state if we're actually changing something to avoid rerenders
+    if (params.title !== searchTerm) {
+      setSearchTerm(params.title);
+    }
+    
+    const newFilters = {
+      category: params.category,
+      instructor: params.instructor,
+      level: params.level,
+      price: params.price
+    };
+    
+    // Check if filters actually changed before updating
+    if (JSON.stringify(newFilters) !== JSON.stringify(filters)) {
+      setFilters(newFilters);
+    }
+    
+    if (params.page !== currentPage) {
+      setCurrentPage(params.page);
+    }
+    
+    // Mark that we've processed the initial URL parameters
+    if (isInitialLoad) {
+      setIsInitialLoad(false);
+    }
+  }, [location.search, isInitialLoad]);
 
-  // Handle search submission
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-    updateURLWithParams(term, filters, 1);
-  };
-
-  // Update URL with current params
-  const updateURLWithParams = (title, currentFilters, page) => {
+  // Update URL with current params - extracted for reuse
+  const updateURLWithParams = useCallback((title, currentFilters, page) => {
     const params = new URLSearchParams();
 
     if (title) params.set("title", title);
@@ -244,24 +271,38 @@ const CourseListing = () => {
     if (currentFilters.price) params.set("price", currentFilters.price);
     if (page > 1) params.set("page", page.toString());
 
-    navigate(`/courses?${params.toString()}`);
-  };
+    // Avoid unnecessary navigation if the URL is already correct
+    const newUrl = `/courses?${params.toString()}`;
+    if (location.pathname + location.search !== newUrl) {
+      navigate(newUrl);
+    }
+  }, [navigate, location]);
+
+  // Handle search submission
+  const handleSearch = useCallback((term) => {
+    setSearchTerm(term);
+    setCurrentPage(1); // Reset to page 1 when searching
+    updateURLWithParams(term, filters, 1);
+  }, [filters, updateURLWithParams]);
 
   // Update filters and URL
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = useCallback((newFilters) => {
     setFilters(newFilters);
+    setCurrentPage(1); // Reset to page 1 when filtering
     updateURLWithParams(searchTerm, newFilters, 1);
-  };
+  }, [searchTerm, updateURLWithParams]);
 
   // Handle page change
-  const handlePageChange = (page) => {
+  const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
     updateURLWithParams(searchTerm, filters, page);
-  };
+  }, [searchTerm, filters, updateURLWithParams]);
 
-
-
+  // Fetch courses whenever pagination, filters, or search term change
   useEffect(() => {
+    // Skip the initial render since we'll load from URL params
+    if (isInitialLoad) return;
+    
     const fetchCourses = async () => {
       try {
         setLoading(true);
@@ -283,12 +324,10 @@ const CourseListing = () => {
         if (filters.level) params.append("level", filters.level);
         if (filters.price) params.append("price", filters.price);
 
-        // Use a consistent endpoint that supports both search and filters
         const endpoint = `http://localhost:5000/courses?${params.toString()}`;
-
+        
         const response = await axios.get(endpoint);
         const data = response.data;
-        console.log("Fetched courses data:", data);
 
         if (data.success) {
           setCourses(data.courses);
@@ -304,14 +343,15 @@ const CourseListing = () => {
     };
 
     fetchCourses();
-  }, [currentPage, filters, searchTerm]);
+  }, [currentPage, filters, searchTerm, isInitialLoad]);
 
+  // Fetch filter data only once when component mounts
   useEffect(() => {
     const fetchFilters = async () => {
       try {
         const response = await axios.get("http://localhost:5000/courses/filters");
         const data = response.data;
-        console.log("Fetched filter data:", data);
+        
         if (data.success) {
           setFilterData({
             categories: data.categories,
@@ -328,23 +368,25 @@ const CourseListing = () => {
     fetchFilters();
   }, []);
 
-  console.log("Retrieved courses", courses);
   return (
     <>
       <Navbar currentState="Courses" />
       <Breadcrumb paths={["Homepage", "Courses"]} />
-      <div className="flex flex-col min-h-screen"> {/* Add this wrapper */}
+      <div className="flex flex-col min-h-screen">
         <div className="flex-grow flex justify-center w-full">
           <div className="flex flex-col md:flex-row justify-between gap-10 px-6 py-13 max-w-[1720px] w-full">
             <div className="w-full md:w-4/5">
-              <EnhancedSearchBar onSearch={handleSearch} currentSearchTerm={searchTerm} title="All Courses" />
+              <EnhancedSearchBar 
+                onSearch={handleSearch} 
+                currentSearchTerm={searchTerm} 
+                title="All Courses" 
+              />
+              
               {/* Create New Course button for non-students */}
               {user?.role !== "student" && (
                 <div className="my-4 flex justify-end">
                   <button
-                    onClick={() => {
-                      navigate("/courses/upload");
-                    }}
+                    onClick={() => navigate("/courses/upload")}
                     className="bg-blue-600 text-white px-4 py-2 rounded-xl font-avant-medium text-lg hover:bg-blue-700 transition cursor-pointer"
                   >
                     + Create New Course
@@ -353,7 +395,9 @@ const CourseListing = () => {
               )}
 
               {loading ? (
-                <p>Loading courses...</p>
+                <div className="text-center py-8">
+                  <p className="text-xl text-gray-600">Loading courses...</p>
+                </div>
               ) : courses.length > 0 ? (
                 <div className="grid grid-cols-1 gap-7">
                   {courses.map((course) => (
@@ -361,12 +405,22 @@ const CourseListing = () => {
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-gray-600">No courses match your criteria</p>
+                <div className="text-center py-8">
+                  <p className="text-xl text-gray-600">No courses match your criteria</p>
+                </div>
               )}
-              <div className="mt-6 flex justify-center">
-                <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
-              </div>
+              
+              {totalPages > 1 && (
+                <div className="mt-6 flex justify-center">
+                  <Pagination 
+                    totalPages={totalPages} 
+                    currentPage={currentPage} 
+                    onPageChange={handlePageChange} 
+                  />
+                </div>
+              )}
             </div>
+            
             <div className="w-full md:w-1/4">
               <InlineCourseFilter
                 filterData={filterData}
@@ -376,7 +430,7 @@ const CourseListing = () => {
             </div>
           </div>
         </div>
-        <Footer /> {/* Move Footer inside the flex-col wrapper */}
+        <Footer />
       </div>
     </>
   );

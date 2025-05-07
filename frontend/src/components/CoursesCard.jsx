@@ -22,7 +22,7 @@ const CourseCard = ({ course }) => {
 
       {/* Thumbnail */}
       <img
-        src={course.thumbnail}
+        src={course.thumbnailUrl || course.thumbnail}
         alt="Category Thumbnail"
         className="w-full h-85 object-fill rounded-t-3xl"
       />

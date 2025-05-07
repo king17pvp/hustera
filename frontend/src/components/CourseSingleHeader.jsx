@@ -77,7 +77,12 @@ const CourseSingleHeader = ({ course }) => {
         <div className="text-left max-w-[1100px]">
           <div className="flex items-center space-x-4">
             <span className="bg-gray-700 text-xl text-white px-4 py-2 rounded-xl">
-              {course.category}
+              {course.category
+                ? course.category
+                  .split('-')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')
+                : ""}
             </span>
             <span className="text-xl text-gray-400">
               by {course.instructor.name}
@@ -112,7 +117,7 @@ const CourseSingleHeader = ({ course }) => {
           {/* Image Section - Using placeholder with thumbnail_ID reference */}
           <div>
             <img
-              src={course.thumbnail}
+              src={course.thumbnail || course.thumbnail_url}
               alt="Course Preview"
               className="w-full h-70 object-cover rounded-t-xl"
             />

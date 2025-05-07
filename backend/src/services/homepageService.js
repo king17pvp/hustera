@@ -10,7 +10,7 @@ exports.fetchCategories = async () => {
       'art-&-creativity': 'icons/art_design.png',
       'computer-science': 'icons/development.png',
       'communication': 'icons/communication.png',
-      'media Studies': 'icons/videography.png',
+      'media-studies': 'icons/videography.png',
       'sociology': 'icons/photography.png',
       'marketing': 'icons/marketing.png',
       'linguistic': 'icons/contentwriting.png',
@@ -61,6 +61,7 @@ exports.fetchCourses = async () => {
       return {
         courseId: course.courseID,
         thumbnail: course.thumbnail,
+        thumbnailUrl: course.thumbnailUrl,
         category: course.category,
         title: course.title,
         author: course.instructor,
