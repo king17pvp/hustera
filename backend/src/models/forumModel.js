@@ -206,17 +206,10 @@ exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page
   const offset = (page - 1) * limit; // Calculate the offset for pagination
   const params = [];
   const conditions = [];
-  // console.log(category);
-  // console.log(searchQuery);
-  // console.log(tags);
-  // console.log(sortBy);
-  // console.log(page);
-  // Filter by category
   if (category) {
     conditions.push('t.category = ?');
     params.push(category);
   } else {
-    searchQuery = "";
     conditions.push('t.category LIKE ?')
     params.push(`%%`);
   }

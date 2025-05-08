@@ -45,7 +45,6 @@ exports.getForumOnClick = async ({ threadId }) => {
 
 exports.getForum = async ({category, searchQuery, tags, sortBy, page}) => {
   try {
-    // console.log("Category from forum service", category);
     const threads = await forumModel.getForum({
       category: category, 
       searchQuery: searchQuery, 

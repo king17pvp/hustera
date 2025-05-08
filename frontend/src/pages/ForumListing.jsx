@@ -5,13 +5,13 @@ import Breadcrumb from "../components/BreadCrumb";
 import ForumFilter from "../components/ForumFilter";
 import SearchBar from "../components/SectionHeader";
 import Pagination from "../components/Pagination";
-import faqImage from "../assets/faqs.png"; 
+import faqImage from "../assets/faqs.png";
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ThreadListing = () => {
   const [threads, setThreads] = useState([]);
-  const [filterData, setFilterData] = useState({ categories: [], tags: []});
+  const [filterData, setFilterData] = useState({ categories: [], tags: [] });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({ category: "", tags: [], sortBy: "" });
@@ -42,7 +42,7 @@ const ThreadListing = () => {
         if (data.success) {
           setThreads(data.threads);
           setTotalPages(data.totalPages);
-          
+
         } else {
           console.error("Failed to fetch threads:", data.message);
         }
@@ -69,7 +69,7 @@ const ThreadListing = () => {
             categories: data.categories,
             tags: data.tags.map(tags => tags.tag_name),
           });
-          
+
         } else {
           console.error("Failed to fetch filters:", data.message);
         }
@@ -80,9 +80,10 @@ const ThreadListing = () => {
 
     fetchFilters();
   }, []);
-    useEffect(() => {
-      console.log("Updated filterData:", filterData);
-    }, [filterData]);
+
+  useEffect(() => {
+    console.log("Updated filterData:", filterData);
+  }, [filterData]);
 
   const navigate = useNavigate();
   // console.log("Total pages: ", totalPages, "Current page: ", currentPage);
@@ -100,14 +101,14 @@ const ThreadListing = () => {
 
             {/* "Start a New Thread" Button */}
             <div className="flex justify-end mb-6">
-              <button 
+              <button
                 onClick={() => navigate("/forum/upload")}
                 className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-avant-medium py-2 px-5 rounded-xl shadow-md transition duration-300 cursor-pointer">
                 + Start a New Thread
               </button>
             </div>
 
-            {/* Courses Grid (6x1) */}           
+            {/* Courses Grid (6x1) */}
             <div className="grid grid-rows-9 gap-5">
               {loading ? (
                 <p>Loading threads...</p> // This will show when loading is true
@@ -161,7 +162,7 @@ const ThreadListing = () => {
             {/* Course Filters */}
             <ForumFilter categories={filterData.categories} tags={filterData.tags} onFilterChange={setFilters} />
 
-            
+
             <div className="mt-20">
               <img
                 src={faqImage}

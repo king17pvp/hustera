@@ -47,7 +47,7 @@ exports.getForum = async (req, res) => {
       page: parseInt(req.query.page) || 1,
       tags: req.query.tags || ""
     };
-    // console.log(filters);
+    // console.log("Hello",filters);
     const {threads, totalPages} = await forumService.getForum({
       category: filters.category,
       searchQuery: filters.searchQuery,
