@@ -365,6 +365,7 @@ const CourseListing = () => {
 
         const response = await axios.get(endpoint);
         const data = response.data;
+        console.log("Fetched courses data:", data);
 
         if (data.success) {
           setCourses(data.courses);
@@ -388,6 +389,7 @@ const CourseListing = () => {
       try {
         const response = await axios.get("http://localhost:5000/courses/filters");
         const data = response.data;
+        console.log("Fetched filter data:", data);
 
         if (data.success) {
           setFilterData({

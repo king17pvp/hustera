@@ -85,7 +85,7 @@ const CourseSingleHeader = ({ course }) => {
                 : ""}
             </span>
             <span className="text-xl text-gray-400">
-              by {course.instructor.name}
+              by {course.instructor.name || course.instructor.email}
             </span>
           </div>
           <h1 className="text-5xl leading-[1.2] font-avant-medium font-bold mt-3">
