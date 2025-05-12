@@ -33,8 +33,9 @@ CREATE TRIGGER after_user_auth_insert
 AFTER INSERT ON user_auth
 FOR EACH ROW
 BEGIN
-    INSERT INTO user_info (user_ID)
-    VALUES (NEW.user_ID);
+    -- Extract the part before @ in email and use it as the name
+    INSERT INTO user_info (user_ID, name)
+    VALUES (NEW.user_ID, SUBSTRING_INDEX(NEW.email, '@', 1));
 END//
 
 DELIMITER ;
