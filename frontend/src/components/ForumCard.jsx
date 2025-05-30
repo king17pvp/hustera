@@ -16,7 +16,7 @@ const ForumCard = ({ thread }) => {
       {/* Content Section */}
       <div className="p-5">
         {/* Title */}
-        <h3 className="text-blue-600 text-2xl w-5/6 font-avant-medium font-semibold group-hover:text-blue-800 pr-20 mb-3 h-15 line-clamp-2">
+        <h3 className="text-blue-600 text-2xl w-5/6 font-avant-medium font-semibold group-hover:text-blue-800 pr-20 mb-3 h-16 line-clamp-2">
           {thread.title}
         </h3>
 

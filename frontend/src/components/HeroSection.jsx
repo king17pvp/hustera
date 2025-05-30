@@ -1,4 +1,4 @@
-import heroBg from "../assets/herobanner2.jpg";
+import heroBg from "../assets/hero-image.png";
 
 const HeroSection = () => {
   return (
@@ -11,9 +11,9 @@ const HeroSection = () => {
           <h1 className="text-7xl font-avant-medium font-bold text-black leading-tight">
             Build Skills With <br /> Online Course
           </h1>
-          <p className="text-xl text-gray-700 mt-4">
-            We denounce with righteous indignation and dislike men who are so
-            beguiled and demoralized that cannot trouble.
+          <p className="text-[22px] font-avant-medium text-gray-700 mt-4">
+            Empower your learning journey at HUSTera. 
+            Explore, enroll, and master new skills with courses designed for everyone, everywhere.
           </p>
         </div>
       </div>
