@@ -203,55 +203,47 @@ exports.getAnswersByThreadId = async (threadId) => {
 
 exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page = 1 }) => {
   const limit = 9;
-  const offset = (page - 1) * limit; // Calculate the offset for pagination
+  const offset = (page - 1) * limit;
   const params = [];
   const conditions = [];
+
   if (category) {
     conditions.push('t.category = ?');
     params.push(category);
   } else {
-    conditions.push('t.category LIKE ?')
+    conditions.push('t.category LIKE ?');
     params.push(`%%`);
   }
-  let searchTerm = ``;
+
+  let searchTerm = '';
   conditions.push('(t.title LIKE ? OR t.content LIKE ?)');
-  if (!searchQuery) {
-    searchQuery = "";
-  }
+  if (!searchQuery) searchQuery = "";
   searchTerm = `%${searchQuery}%`;
-  params.push(searchTerm, searchTerm);  // Two parameters for LIKE
-  // Filter by tag name (join with thread_tags and tags)
+  params.push(searchTerm, searchTerm);
+
   let tagJoin = '';
+  let havingClause = '';
   if (tags && (Array.isArray(tags) ? tags.length > 0 : tags !== '')) {
     tagJoin = `
       JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
       JOIN tags tg ON tt.tag_ID = tg.tag_ID
     `;
-
-    // Always treat tags as an array
     const tagArray = Array.isArray(tags) ? tags : [tags];
-
-    // Add condition
-    conditions.push(`tg.tag_name IN (${tagArray.map(() => '?').join(',')})`);
-
-    // Add values
+    // Only threads that have all tags
+    havingClause = `HAVING COUNT(DISTINCT CASE WHEN tg.tag_name IN (${tagArray.map(() => '?').join(',')}) THEN tg.tag_name END) = ${tagArray.length}`;
     params.push(...tagArray);
   } else {
-    let tag = '';
     tagJoin = `
       JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
       JOIN tags tg ON tt.tag_ID = tg.tag_ID
     `;
     conditions.push('tg.tag_name LIKE ?');
-    const tagSearch = `%${tag}%`;
-    params.push(tagSearch);
+    params.push('%%');
   }
 
-  // // Create WHERE clause
   const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
-  // // Sorting logic
-  let orderByClause = 'ORDER BY t.created_at DESC'; // Default to latest threads
+  let orderByClause = 'ORDER BY t.created_at DESC';
   let activeSelect = 't.created_at AS last_active';
 
   if (sortBy === 'oldest') {
@@ -264,11 +256,8 @@ exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page
       ) AS last_active
     `;
     orderByClause = 'ORDER BY last_active DESC';
-  } else {
-    orderByClause = 'ORDER BY t.created_at DESC';
   }
 
-  // // SQL query to fetch threads based on the conditions and sorting
   const query = `
     SELECT 
       t.thread_ID,
@@ -283,30 +272,24 @@ exports.getForum = async ({ category, searchQuery, tags, sortBy = 'latest', page
       COUNT(DISTINCT tv.voter_ID) AS votes,
       COUNT(DISTINCT ta.answer_ID) AS answers,
       ${activeSelect}
-      FROM threads t
-      JOIN user_auth ua ON t.author_ID = ua.user_ID
-      JOIN thread_tags tt ON t.thread_ID = tt.thread_ID
-      JOIN tags tg ON tt.tag_ID = tg.tag_ID
-      LEFT JOIN user_info ui ON ua.user_ID = ui.user_ID
-      LEFT JOIN thread_votes tv ON t.thread_ID = tv.thread_ID
-      LEFT JOIN thread_answers ta ON t.thread_ID = ta.thread_ID
-      ${whereClause}
-      GROUP BY t.thread_ID
-      ${orderByClause}
-      LIMIT 9 OFFSET ${offset.toString()};
+    FROM threads t
+    JOIN user_auth ua ON t.author_ID = ua.user_ID
+    ${tagJoin}
+    LEFT JOIN user_info ui ON ua.user_ID = ui.user_ID
+    LEFT JOIN thread_votes tv ON t.thread_ID = tv.thread_ID
+    LEFT JOIN thread_answers ta ON t.thread_ID = ta.thread_ID
+    ${whereClause}
+    GROUP BY t.thread_ID
+    ${havingClause}
+    ${orderByClause}
+    LIMIT 9 OFFSET ${offset.toString()};
   `;
-  // console.log('Executing query:', query);
-  // console.log('With parameters:', params);
-  // console.log(tags);
-  // console.log(searchQuery);
-  // Add pagination parameters
-  // params.push(limit, offset);
 
   try {
     const [rows] = await db.execute(query, params);
     const formattedRows = rows.map(row => ({
       ...row,
-      tags: row.tags ? row.tags.split(',') : [],  // convert to array
+      tags: row.tags ? row.tags.split(',') : [],
     }));
 
     return formattedRows;

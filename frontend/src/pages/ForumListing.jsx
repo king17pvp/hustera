@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const ThreadListing = () => {
   const [threads, setThreads] = useState([]);
   const [filterData, setFilterData] = useState({ categories: [], tags: [] });
+  console.log("Filter Data: ", filterData);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({ category: "", tags: [], sortBy: "" });
