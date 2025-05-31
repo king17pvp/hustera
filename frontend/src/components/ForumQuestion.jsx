@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
 
 const ForumQuestion = ({ thread }) => {
   const [score, setScore] = useState(thread.score);
@@ -114,7 +115,7 @@ const ForumQuestion = ({ thread }) => {
           Asked by <span className="font-medium">{thread.author}</span> on{" "}
           {new Date(thread.created_utc).toLocaleString()}
         </div>
-        <div className="mb-3 text-gray-700 text-xl whitespace-pre-wrap">{thread.content}</div>
+        <div className="mb-3 text-gray-700 text-xl whitespace-pre-wrap"><ReactMarkdown>{thread.content}</ReactMarkdown></div>
 
         <div className="flex flex-wrap gap-2 text-lg mb-4">
           {thread.tags.map((tag) => (
