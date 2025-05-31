@@ -10,12 +10,12 @@ const TestimonialCard = ({ text, author, role }) => {
       {/* Testimonial Content (Text + Author Info) */}
       <div className="flex flex-col flex-grow">
         {/* Testimonial Text */}
-        <p className="text-black text-xl leading-relaxed flex-grow">{text}</p>
+        <p className="text-gray-600 font-avant-medium text-xl leading-relaxed flex-grow">{text}</p>
 
         {/* Author Info */}
         <div className="mt-6">
           <h3 className="text-black font-avant-medium font-bold text-3xl">{author}</h3>
-          <p className="text-gray-500 text-xl">{role}</p>
+          <p className="text-gray-500 font-avant-medium text-xl">{role}</p>
         </div>
       </div>
     </div>

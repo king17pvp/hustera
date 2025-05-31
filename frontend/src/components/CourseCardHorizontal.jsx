@@ -60,7 +60,7 @@ const CourseCardHorizontal = ({
       </div>
 
       {/* Right: Course Details */}
-      <div className="p-7 flex flex-col flex-grow">
+      <div className="p-7 font-avant-medium flex flex-col flex-grow">
         <p className="text-black">
           by{" "}
           <span className="font-semibold">
@@ -76,7 +76,7 @@ const CourseCardHorizontal = ({
         </h3>
 
         {/* Course Info */}
-        <div className="flex items-center text-gray-500 text-lg mt-3 space-x-4 flex-wrap">
+        <div className="flex items-center font-avant-medium text-gray-500 text-lg mt-3 space-x-4 flex-wrap">
           {duration && <span>⏳ {duration}</span>}
           {level && <span>📊 {level}</span>}
         </div>

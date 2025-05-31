@@ -111,7 +111,7 @@ const Homepage = () => {
         <div className="flex justify-between items-center mb-6 p-1">
           <div>
             <h2 className="text-4xl font-avant-medium font-bold text-black mb-3">Top Categories</h2>
-            <p className="text-gray-500 text-xl">Explore our Popular Categories</p>
+            <p className="text-gray-500 font-avant-medium text-xl">Explore our Popular Categories</p>
           </div>
         </div>
 
@@ -134,7 +134,7 @@ const Homepage = () => {
         <div className="flex justify-between items-center mb-6 p-1">
           <div>
             <h2 className="text-4xl font-avant-medium font-bold text-black mb-3">Featured Courses</h2>
-            <p className="text-gray-500 text-xl">Explore our Popular Courses</p>
+            <p className="text-gray-500 font-avant-medium text-xl">Explore our Popular Courses</p>
           </div>
           <button onClick={handleAllCoursesClick} className="px-6 py-2 border-3 border-black rounded-full text-black text-xl font-avant-medium hover:bg-gray-100 transition cursor-pointer">
             All Courses
@@ -158,7 +158,7 @@ const Homepage = () => {
         <div className="flex justify-between items-center mb-6 p-1">
           <div>
             <h2 className="text-4xl font-avant-medium font-bold text-black mb-3">Hottest Topics</h2>
-            <p className="text-gray-500 text-xl">Find out what is currently being discussed</p>
+            <p className="text-gray-500 font-avant-medium text-xl">Find out what is currently being discussed</p>
           </div>
           <button onClick={handleAllThreadsClick} className="px-6 py-2 border-3 border-black rounded-full text-black text-xl font-avant-medium hover:bg-gray-100 transition cursor-pointer">
             All Threads

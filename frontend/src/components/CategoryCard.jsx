@@ -27,7 +27,7 @@ const CategoryCard = ({ iconPath, title, courseCount }) => {
         }
       </h3>
       {/* Course Count */}
-      <p className="text-gray-500 text-xl">{courseCount} Courses</p>
+      <p className="text-gray-500 font-avant-medium text-xl">{courseCount} Courses</p>
     </div>
   );
 };

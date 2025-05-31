@@ -11,7 +11,7 @@ const CourseCard = ({ course }) => {
   return (
     <div onClick={handleCardClick} className="relative bg-white rounded-4xl overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-3 hover:bg-gray-50 w-135 h-140 cursor-pointer flex flex-col group border border-gray-200">
       {/* Badge */}
-      <div className="absolute top-6 left-6 bg-gray-800 text-white px-4 py-2 rounded-xl">
+      <div className="absolute top-6 left-6 bg-gray-800 text-white font-avant-medium px-4 py-2 rounded-xl">
         {course.category
           ? course.category
             .split('-')
@@ -28,7 +28,7 @@ const CourseCard = ({ course }) => {
       />
 
       {/* Course Info (Flexible Container) */}
-      <div className="p-7 flex-grow flex flex-col">
+      <div className="p-7 flex-grow font-avant-medium flex flex-col">
         <p className="text-gray-500 mb-1">
           by <span className="text-black font-semibold">{course.author}</span>
         </p>
@@ -36,7 +36,7 @@ const CourseCard = ({ course }) => {
           {course.title}
         </h3>
 
-        <div className="flex items-center text-gray-500 mt-2 space-x-4">
+        <div className="flex items-center text-gray-500 text-lg mt-2 space-x-4">
           <span>⏳ {course.duration} Weeks</span>
           <span>🎓 {course.students} Students</span>
           <span>⭐ {course.level}</span>

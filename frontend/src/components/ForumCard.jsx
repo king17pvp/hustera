@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 const ForumCard = ({ thread }) => {
   const navigate = useNavigate();
@@ -21,8 +22,8 @@ const ForumCard = ({ thread }) => {
         </h3>
 
         {/* Description */}
-        <p className="text-gray-600 text-[18px] mt-2 line-clamp-3 h-22">
-          {thread.description}
+        <p className="text-gray-600 font-avant-medium text-[18px] mt-2 line-clamp-3 h-22">
+          <ReactMarkdown>{thread.description}</ReactMarkdown>
         </p>
 
         {/* Tags */}
@@ -43,10 +44,10 @@ const ForumCard = ({ thread }) => {
         <div className="flex justify-between items-center">
           {/* Stats */}
           <div className="flex space-x-4">
-            <div className="text-base font-avant-medium text-gray-600">
+            <div className="text-lg font-avant-medium text-gray-600">
               <span className="font-semibold text-gray-900">{thread.votes}</span> votes
             </div>
-            <div className="text-base font-avant-medium text-gray-600">
+            <div className="text-lg font-avant-medium text-gray-600">
               <span className="font-semibold text-gray-900">{thread.answers}</span> answers
             </div>
           </div>
@@ -58,7 +59,7 @@ const ForumCard = ({ thread }) => {
         </div>
         
         {/* Date */}
-        <div className="text-lg text-gray-400">
+        <div className="text-lg font-avant-medium text-gray-400">
           Asked on {new Date(thread.date).toLocaleString("en-US", {
             year: "numeric",
             month: "short",

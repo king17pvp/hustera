@@ -91,9 +91,9 @@ const Navbar = ({ currentState }) => {
 
             {/* User Avatar (Fixed Size) */}
             <img
-              src={user.user_info.avatar || "https://preview.redd.it/tralalero-tralala-v0-js5l752hvlke1.png?width=640&crop=smart&auto=webp&s=29563222d72bedb05ff0bd2e624c51d0e898762b"}
+              src={user.user_info.avatar || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png"}
               alt="User Avatar"
-              className="w-15 h-15 rounded-full border border-gray-300 flex-shrink-0"
+              className="w-15 h-15 rounded-full border border-gray-300 flex-shrink-0 object-cover"
             />
 
             {/* Dropdown Arrow (Fixed Size Container to Prevent Jiggling) */}

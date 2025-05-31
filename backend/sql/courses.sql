@@ -1,447 +1,447 @@
--- Now let's insert some courses
+-- Updated courses to match their assigned categories
 INSERT INTO courses (instructor_ID, title, description, category, thumbnail_url, price, duration, level) VALUES
--- Course 1: Web Development Fundamentals
-(1, 'Web Development Fundamentals', 'Learn the basics of HTML, CSS, and JavaScript to build responsive websites from scratch.', 'art-&-creativity', 'https://res.cloudinary.com/jerrick/image/upload/d_642250b563292b35f27461a7.png,f_jpg,fl_progressive,q_auto,w_1024/6806526c0f0de1001d6f7143.jpg', 49.99, 4, 'Beginner'),
+-- Course 1: Digital Art & Creative Design (art-&-creativity)
+(1, 'Digital Art & Creative Design', 'Master digital painting, illustration, and creative design using industry-standard tools like Photoshop and Illustrator.', 'art-&-creativity', 'https://sadesign.vn/pictures/picfullsizes/2024/10/22/kgw1729586996.jpg', 49.99, 4, 'Beginner'),
 
--- Course 2: Advanced JavaScript Programming
-(1, 'Advanced JavaScript Programming', 'Master advanced JavaScript concepts including closures, promises, async/await, and design patterns.', 'computer-science', 'https://i.ytimg.com/vi/dkGyBlibvRw/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBnBZiTLyOwkKU3wmwP0dssmlPiMg', 79.99, 4, 'Intermediate'),
+-- Course 2: Advanced Programming Concepts (computer-science)
+(1, 'Advanced Programming Concepts', 'Master advanced programming concepts including algorithms, data structures, design patterns, and software architecture.', 'computer-science', 'https://www.wgu.edu/career-guide/information-technology/computer-programmer-career/_jcr_content/root/columncontrol_179318_806819045/column-1/container_765818955/image_copy_copy.coreimg.85.800.jpeg/1730781666158/ts-cybersecurity-650x433.jpeg', 79.99, 4, 'Intermediate'),
 
--- Course 3: Python for Data Science
-(2, 'Python for Data Science', 'Learn how to use Python for data analysis, visualization, and building machine learning models.', 'communication', 'https://cdn-0001.qstv.on.epicgames.com/DeWFZjGciBtKpknWZf/image/landscape_comp.jpeg', 69.99, 4, 'Intermediate'),
+-- Course 3: Public Speaking & Presentation Skills (communication)
+(2, 'Public Speaking & Presentation Skills', 'Learn how to communicate effectively, deliver compelling presentations, and build confidence in public speaking.', 'communication', 'https://masterclass.ted.com/static/4e0259cab6c475896ac72170adaefb98/596f3/Tips-to-make-a-great-presentation_1200x627.jpg', 69.99, 4, 'Intermediate'),
 
--- Course 4: UI/UX Design Principles
-(2, 'UI/UX Design Principles', 'Understand the fundamentals of user interface and user experience design to create engaging digital products.', 'graphic-design', 'https://i.ytimg.com/vi/WgQz60kndvM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLASJh-OyJtvRkey6q_TE5ZYpBg2yA', 59.99, 4, 'Beginner'),
+-- Course 4: Graphic Design Fundamentals (graphic-design)
+(3, 'Graphic Design Fundamentals', 'Understand the fundamentals of graphic design including typography, color theory, layout, and visual communication principles.', 'graphic-design', 'https://blog-frontend.envato.com/cdn-cgi/image/width=1200,quality=75,format=auto,fit=crop,height=630/uploads/sites/2/2023/02/Tuts_Roundup__Top_Graphic_Design_Courses.jpeg', 59.99, 4, 'Beginner'),
 
--- Course 5: Database Management Systems
-(3, 'Database Management Systems', 'Learn how to design, implement, and manage databases using SQL and NoSQL technologies.', 'physics', 'https://media.sketchfab.com/models/f0f6ed43c05142dd82bceea3061f4103/thumbnails/f44c93e7ad4e43e08ccd69ddc977d25b/4c0db96c306d4280ad43d3a650f62c75.jpeg', 89.99, 4, 'Intermediate'),
+-- Course 5: Physics for Engineers (physics)
+(4, 'Physics for Engineers', 'Learn fundamental physics concepts including mechanics, thermodynamics, electromagnetism, and their engineering applications.', 'physics', 'https://www.chalmers.se/_next/image/?url=https%3A%2F%2Fcms.www.chalmers.se%2FMedia%2Fpzzltzq3%2F4592.jpg%3Fwidth%3D1920%26height%3D1080%26v%3D1d9001978fae030%26quality%3D60%26format%3Dwebp&w=3840&q=90', 89.99, 4, 'Intermediate'),
 
--- Course 6: Mobile App Development with React Native
-(3, 'Mobile App Development with React Native', 'Build cross-platform mobile applications using React Native framework.', 'media-studies', 'https://i1.sndcdn.com/artworks-QnCy3K6Fkn46EbpI-xvgwXQ-t1080x1080.png', 99.99, 4, 'Intermediate'),
+-- Course 6: Documentary Filmmaking (media-studies)
+(3, 'Documentary Filmmaking', 'Create compelling documentaries from concept to completion, covering storytelling, cinematography, and post-production.', 'media-studies', 'https://res.cloudinary.com/jerrick/image/upload/d_642250b563292b35f27461a7.png,f_jpg,fl_progressive,q_auto,w_1024/63f9f7be3abad9001c86c281.png', 99.99, 4, 'Intermediate'),
 
--- Course 7: Machine Learning Fundamentals
-(4, 'Machine Learning Fundamentals', 'Introduction to machine learning algorithms, techniques, and their practical applications.', 'linguistic', 'https://images.genius.com/a3e0a0feb6afd4f19c0c68817ee75238.718x718x1.png', 129.99, 4, 'Intermediate'),
+-- Course 7: Language Learning & Linguistics (linguistic)
+(4, 'Language Learning & Linguistics', 'Explore language structure, phonetics, syntax, and effective methods for learning and teaching languages.', 'linguistic', 'https://www.cal.org/wp-content/uploads/2022/07/GettyImages-1361844238-1024x683.jpg', 129.99, 4, 'Intermediate'),
 
--- Course 8: Cybersecurity Essentials
-(4, 'Cybersecurity Essentials', 'Learn the core concepts of cybersecurity and how to protect digital assets from threats.', 'finance', 'https://i1.sndcdn.com/artworks-pbzi7PgzBNvTxuXN-4OPpkw-t500x500.png', 109.99, 4, 'Beginner'),
+-- Course 8: Personal Finance & Investment (finance)
+(4, 'Personal Finance & Investment', 'Learn the core concepts of personal finance, budgeting, investing, and building long-term wealth.', 'finance', 'https://compote.slate.com/images/926e5009-c10a-48fe-b90e-fa0760f82fcd.png?crop=680%2C453%2Cx0%2Cy0', 109.99, 4, 'Beginner'),
 
--- Course 9: Cloud Computing with AWS
-(5, 'Cloud Computing with AWS', 'Master Amazon Web Services to deploy scalable and resilient applications in the cloud.', 'sociology', 'https://i.kym-cdn.com/entries/icons/original/000/053/745/trippi_tropi.jpg', 119.99, 4, 'Intermediate'),
+-- Course 9: Social Psychology & Human Behavior (sociology)
+(5, 'Social Psychology & Human Behavior', 'Understand how social factors influence individual behavior, group dynamics, and societal structures.', 'sociology', 'https://assets.entrepreneur.com/content/3x2/2000/20181018192022-GettyImages-935941772-crop.jpeg', 119.99, 4, 'Intermediate'),
 
--- Course 10: Blockchain Development
-(5, 'Blockchain Development', 'Learn how to build decentralized applications using blockchain technology and smart contracts.', 'marketing', 'https://i.ytimg.com/vi/NF6aeyzYyCA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBHZ2u6iGxEBRTc9OSWsxz255nGjg', 149.99, 4, 'Advanced');
+-- Course 10: Digital Marketing Strategy (marketing)
+(5, 'Digital Marketing Strategy', 'Learn how to build effective marketing campaigns using social media, content marketing, SEO, and analytics.', 'marketing', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-l7o2SyBF3hBeQK8RWMXGLDgrzP8R_2JFsg&s', 149.99, 4, 'Advanced');
 
--- Add tags to courses
--- Web Development Fundamentals tags
-INSERT INTO course_tags (course_ID, tag_ID) VALUES (1, 6), (1, 1);
--- Advanced JavaScript Programming tags
-INSERT INTO course_tags (course_ID, tag_ID) VALUES (2, 1), (2, 6);
--- Python for Data Science tags
-INSERT INTO course_tags (course_ID, tag_ID) VALUES (3, 1), (3, 5), (3, 10);
--- UI/UX Design Principles tags
+-- Add tags to courses (updated to match new course content)
+-- Digital Art & Creative Design tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (1, 2), (1, 14);
+-- Advanced Programming Concepts tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (2, 1), (2, 9);
+-- Public Speaking & Presentation Skills tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (3, 3), (3, 4);
+-- Graphic Design Fundamentals tags
 INSERT INTO course_tags (course_ID, tag_ID) VALUES (4, 2), (4, 14);
--- Database Management Systems tags
-INSERT INTO course_tags (course_ID, tag_ID) VALUES (5, 12), (5, 1);
--- Mobile App Development with React Native tags
-INSERT INTO course_tags (course_ID, tag_ID) VALUES (6, 7), (6, 1), (6, 6);
--- Machine Learning Fundamentals tags
-INSERT INTO course_tags (course_ID, tag_ID) VALUES (7, 10), (7, 9), (7, 5);
--- Cybersecurity Essentials tags
-INSERT INTO course_tags (course_ID, tag_ID) VALUES (8, 11);
--- Cloud Computing with AWS tags
-INSERT INTO course_tags (course_ID, tag_ID) VALUES (9, 8), (9, 13);
--- Blockchain Development tags
-INSERT INTO course_tags (course_ID, tag_ID) VALUES (10, 15), (10, 1);
+-- Physics for Engineers tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (5, 9), (5, 13);
+-- Documentary Filmmaking tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (6, 7), (6, 4);
+-- Language Learning & Linguistics tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (7, 4), (7, 3);
+-- Personal Finance & Investment tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (8, 12);
+-- Social Psychology & Human Behavior tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (9, 3), (9, 4);
+-- Digital Marketing Strategy tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (10, 12), (10, 6);
 
--- Now let's add weeks for each course
--- Weeks for Course 1: Web Development Fundamentals
+-- Updated weeks for each course to match new content
+-- Weeks for Course 1: Digital Art & Creative Design
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(1, 1, 'HTML Basics'),
-(1, 2, 'CSS Styling and Layout'),
-(1, 3, 'JavaScript Fundamentals'),
-(1, 4, 'Building Responsive Websites');
+(1, 1, 'Digital Art Fundamentals'),
+(1, 2, 'Color Theory and Composition'),
+(1, 3, 'Digital Painting Techniques'),
+(1, 4, 'Creative Portfolio Development');
 
--- Weeks for Course 2: Advanced JavaScript Programming
+-- Weeks for Course 2: Advanced Programming Concepts
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(2, 1, 'JavaScript Advanced Concepts'),
-(2, 2, 'Asynchronous Programming'),
-(2, 3, 'Design Patterns in JavaScript'),
-(2, 4, 'Building a Full JavaScript Application');
+(2, 1, 'Data Structures and Algorithms'),
+(2, 2, 'Object-Oriented Programming'),
+(2, 3, 'Design Patterns and Architecture'),
+(2, 4, 'Software Testing and Debugging');
 
--- Weeks for Course 3: Python for Data Science
+-- Weeks for Course 3: Public Speaking & Presentation Skills
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(3, 1, 'Python Fundamentals for Data Science'),
-(3, 2, 'Data Manipulation with NumPy and Pandas'),
-(3, 3, 'Data Visualization with Matplotlib and Seaborn'),
-(3, 4, 'Introduction to Machine Learning with Scikit-Learn');
+(3, 1, 'Overcoming Speaking Anxiety'),
+(3, 2, 'Structuring Effective Presentations'),
+(3, 3, 'Voice and Body Language'),
+(3, 4, 'Engaging Your Audience');
 
--- Weeks for Course 4: UI/UX Design Principles
+-- Weeks for Course 4: Graphic Design Fundamentals
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(4, 1, 'Introduction to UI/UX Design'),
-(4, 2, 'User Research and Personas'),
-(4, 3, 'Wireframing and Prototyping'),
-(4, 4, 'Design Systems and Accessibility');
+(4, 1, 'Design Principles and Elements'),
+(4, 2, 'Typography and Layout'),
+(4, 3, 'Brand Identity Design'),
+(4, 4, 'Print and Digital Design');
 
--- Weeks for Course 5: Database Management Systems
+-- Weeks for Course 5: Physics for Engineers
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(5, 1, 'Relational Database Fundamentals'),
-(5, 2, 'Advanced SQL Queries'),
-(5, 3, 'NoSQL Databases'),
-(5, 4, 'Database Performance and Optimization');
+(5, 1, 'Classical Mechanics'),
+(5, 2, 'Thermodynamics and Heat Transfer'),
+(5, 3, 'Electromagnetism and Circuits'),
+(5, 4, 'Wave Physics and Optics');
 
--- Weeks for Course 6: Mobile App Development with React Native
+-- Weeks for Course 6: Documentary Filmmaking
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(6, 1, 'React Native Basics'),
-(6, 2, 'Navigation and State Management'),
-(6, 3, 'Working with APIs and Data'),
-(6, 4, 'Publishing and Optimizing Mobile Apps');
+(6, 1, 'Documentary Storytelling'),
+(6, 2, 'Camera Work and Cinematography'),
+(6, 3, 'Audio Recording and Sound Design'),
+(6, 4, 'Editing and Post-Production');
 
--- Weeks for Course 7: Machine Learning Fundamentals
+-- Weeks for Course 7: Language Learning & Linguistics
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(7, 1, 'Introduction to Machine Learning'),
-(7, 2, 'Supervised Learning Algorithms'),
-(7, 3, 'Unsupervised Learning Algorithms'),
-(7, 4, 'Model Evaluation and Deployment');
+(7, 1, 'Phonetics and Phonology'),
+(7, 2, 'Grammar and Syntax'),
+(7, 3, 'Language Acquisition Theory'),
+(7, 4, 'Teaching Methodologies');
 
--- Weeks for Course 8: Cybersecurity Essentials
+-- Weeks for Course 8: Personal Finance & Investment
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(8, 1, 'Cybersecurity Fundamentals'),
-(8, 2, 'Threat Detection and Prevention'),
-(8, 3, 'Network Security'),
-(8, 4, 'Security Best Practices and Compliance');
+(8, 1, 'Budgeting and Money Management'),
+(8, 2, 'Understanding Credit and Debt'),
+(8, 3, 'Investment Fundamentals'),
+(8, 4, 'Retirement and Long-term Planning');
 
--- Weeks for Course 9: Cloud Computing with AWS
+-- Weeks for Course 9: Social Psychology & Human Behavior
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(9, 1, 'AWS Fundamentals'),
-(9, 2, 'Compute and Storage Services'),
-(9, 3, 'Networking and Security on AWS'),
-(9, 4, 'AWS DevOps and Automation');
+(9, 1, 'Social Influence and Persuasion'),
+(9, 2, 'Group Dynamics and Leadership'),
+(9, 3, 'Prejudice and Stereotyping'),
+(9, 4, 'Social Identity and Culture');
 
--- Weeks for Course 10: Blockchain Development
+-- Weeks for Course 10: Digital Marketing Strategy
 INSERT INTO weeks (course_ID, week_number, title) VALUES
-(10, 1, 'Blockchain Fundamentals'),
-(10, 2, 'Smart Contract Development'),
-(10, 3, 'Decentralized Application Architecture'),
-(10, 4, 'Security and Best Practices in Blockchain');
+(10, 1, 'Marketing Fundamentals and Strategy'),
+(10, 2, 'Social Media Marketing'),
+(10, 3, 'Content Marketing and SEO'),
+(10, 4, 'Analytics and Campaign Optimization');
 
--- Now let's add videos for each week
--- Videos for Course 1, Week 1: HTML Basics
+-- Updated videos for each week to match new course content
+-- Videos for Course 1, Week 1: Digital Art Fundamentals
 INSERT INTO videos (week_ID, title, url) VALUES
-(1, 'Introduction to HTML', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(1, 'HTML Document Structure', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(1, 'Working with Text and Links', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(1, 'Images and Multimedia', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(1, 'HTML Forms', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor');
+(1, 'Introduction to Digital Art', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(1, 'Choosing Your Digital Art Tools', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(1, 'Understanding Digital Canvas', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(1, 'Basic Drawing Techniques', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(1, 'Digital Brushes and Textures', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor');
 
--- Videos for Course 1, Week 2: CSS Styling and Layout
+-- Videos for Course 1, Week 2: Color Theory and Composition
 INSERT INTO videos (week_ID, title, url) VALUES
-(2, 'Introduction to CSS', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(2, 'CSS Selectors and Properties', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(2, 'CSS Box Model', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(2, 'Flexbox Layout', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(2, 'CSS Grid Layout', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor');
+(2, 'Understanding Color Theory', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(2, 'Color Harmony and Palettes', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(2, 'Composition Rules and Guidelines', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(2, 'Visual Balance and Hierarchy', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(2, 'Creating Mood with Color', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor');
 
--- Videos for Course 1, Week 3: JavaScript Fundamentals
+-- Videos for Course 1, Week 3: Digital Painting Techniques
 INSERT INTO videos (week_ID, title, url) VALUES
-(3, 'Introduction to JavaScript', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(3, 'Variables and Data Types', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(3, 'Functions and Control Flow', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(3, 'DOM Manipulation', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(3, 'Events and Event Handling', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor');
+(3, 'Light and Shadow Fundamentals', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(3, 'Digital Painting Workflow', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(3, 'Blending and Rendering', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(3, 'Creating Texture and Detail', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(3, 'Character and Environment Art', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor');
 
--- Videos for Course 1, Week 4: Building Responsive Websites
+-- Videos for Course 1, Week 4: Creative Portfolio Development
 INSERT INTO videos (week_ID, title, url) VALUES
-(4, 'Responsive Design Principles', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(4, 'Media Queries', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
-(4, 'Mobile-First Approach', 'https://hustera.com/videos/mobile-first'),
-(4, 'Creating a Responsive Navigation', 'https://hustera.com/videos/responsive-nav'),
-(4, 'Building a Complete Responsive Website', 'https://hustera.com/videos/complete-responsive');
+(4, 'Building Your Art Portfolio', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(4, 'Presenting Your Work Online', 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor'),
+(4, 'Professional Art Critique', 'https://hustera.com/videos/art-critique'),
+(4, 'Finding Your Artistic Style', 'https://hustera.com/videos/artistic-style'),
+(4, 'Building an Art Career', 'https://hustera.com/videos/art-career');
 
--- Videos for Course 2, Week 1: JavaScript Advanced Concepts
+-- Videos for Course 2, Week 1: Data Structures and Algorithms
 INSERT INTO videos (week_ID, title, url) VALUES
-(5, 'Scope and Closures', 'https://hustera.com/videos/js-scope-closures'),
-(5, 'This Keyword and Binding', 'https://hustera.com/videos/js-this-binding'),
-(5, 'Prototypes and Inheritance', 'https://hustera.com/videos/js-prototypes'),
-(5, 'ES6+ Features', 'https://hustera.com/videos/js-es6'),
-(5, 'Functional Programming in JavaScript', 'https://hustera.com/videos/js-functional');
+(5, 'Introduction to Data Structures', 'https://hustera.com/videos/data-structures-intro'),
+(5, 'Arrays and Linked Lists', 'https://hustera.com/videos/arrays-linkedlists'),
+(5, 'Stacks and Queues', 'https://hustera.com/videos/stacks-queues'),
+(5, 'Trees and Graphs', 'https://hustera.com/videos/trees-graphs'),
+(5, 'Algorithm Analysis and Big O', 'https://hustera.com/videos/big-o-analysis');
 
--- Videos for Course 2, Week 2: Asynchronous Programming
+-- Videos for Course 2, Week 2: Object-Oriented Programming
 INSERT INTO videos (week_ID, title, url) VALUES
-(6, 'Callbacks and Callback Hell', 'https://hustera.com/videos/js-callbacks'),
-(6, 'Promises', 'https://hustera.com/videos/js-promises'),
-(6, 'Async/Await', 'https://hustera.com/videos/js-async-await'),
-(6, 'Fetch API', 'https://hustera.com/videos/js-fetch'),
-(6, 'Error Handling in Asynchronous Code', 'https://hustera.com/videos/js-async-errors');
+(6, 'Classes and Objects', 'https://hustera.com/videos/classes-objects'),
+(6, 'Inheritance and Polymorphism', 'https://hustera.com/videos/inheritance-polymorphism'),
+(6, 'Encapsulation and Abstraction', 'https://hustera.com/videos/encapsulation-abstraction'),
+(6, 'Interfaces and Abstract Classes', 'https://hustera.com/videos/interfaces-abstract'),
+(6, 'OOP Best Practices', 'https://hustera.com/videos/oop-best-practices');
 
--- Videos for Course 2, Week 3: Design Patterns in JavaScript
+-- Videos for Course 2, Week 3: Design Patterns and Architecture
 INSERT INTO videos (week_ID, title, url) VALUES
-(7, 'Introduction to Design Patterns', 'https://hustera.com/videos/js-design-patterns-intro'),
-(7, 'Module Pattern', 'https://hustera.com/videos/js-module-pattern'),
-(7, 'Observer Pattern', 'https://hustera.com/videos/js-observer-pattern'),
-(7, 'Singleton Pattern', 'https://hustera.com/videos/js-singleton-pattern'),
-(7, 'Factory and Constructor Patterns', 'https://hustera.com/videos/js-factory-pattern');
+(7, 'Introduction to Design Patterns', 'https://hustera.com/videos/design-patterns-intro'),
+(7, 'Singleton and Factory Patterns', 'https://hustera.com/videos/singleton-factory'),
+(7, 'Observer and Strategy Patterns', 'https://hustera.com/videos/observer-strategy'),
+(7, 'MVC Architecture', 'https://hustera.com/videos/mvc-architecture'),
+(7, 'Clean Code Principles', 'https://hustera.com/videos/clean-code');
 
--- Videos for Course 2, Week 4: Building a Full JavaScript Application
+-- Videos for Course 2, Week 4: Software Testing and Debugging
 INSERT INTO videos (week_ID, title, url) VALUES
-(8, 'Application Planning and Architecture', 'https://hustera.com/videos/js-app-planning'),
-(8, 'State Management', 'https://hustera.com/videos/js-state-management'),
-(8, 'Building the UI', 'https://hustera.com/videos/js-building-ui'),
-(8, 'Data Fetching and API Integration', 'https://hustera.com/videos/js-api-integration'),
-(8, 'Testing and Deployment', 'https://hustera.com/videos/js-testing-deployment');
+(8, 'Testing Fundamentals', 'https://hustera.com/videos/testing-fundamentals'),
+(8, 'Unit Testing', 'https://hustera.com/videos/unit-testing'),
+(8, 'Integration Testing', 'https://hustera.com/videos/integration-testing'),
+(8, 'Debugging Techniques', 'https://hustera.com/videos/debugging-techniques'),
+(8, 'Code Review Process', 'https://hustera.com/videos/code-review');
 
--- Videos for Course 3, Week 1: Python Fundamentals for Data Science
+-- Videos for Course 3, Week 1: Overcoming Speaking Anxiety
 INSERT INTO videos (week_ID, title, url) VALUES
-(9, 'Python Basics for Data Science', 'https://hustera.com/videos/python-basics-ds'),
-(9, 'Working with Data Types', 'https://hustera.com/videos/python-data-types'),
-(9, 'Control Flow and Functions', 'https://hustera.com/videos/python-control-flow'),
-(9, 'File Operations in Python', 'https://hustera.com/videos/python-file-ops'),
-(9, 'Python Libraries for Data Science', 'https://hustera.com/videos/python-ds-libraries');
+(9, 'Understanding Speech Anxiety', 'https://hustera.com/videos/speech-anxiety'),
+(9, 'Breathing and Relaxation Techniques', 'https://hustera.com/videos/breathing-relaxation'),
+(9, 'Building Confidence', 'https://hustera.com/videos/building-confidence'),
+(9, 'Preparation Strategies', 'https://hustera.com/videos/preparation-strategies'),
+(9, 'Practice Exercises', 'https://hustera.com/videos/practice-exercises');
 
--- Videos for Course 3, Week 2: Data Manipulation with NumPy and Pandas
+-- Videos for Course 3, Week 2: Structuring Effective Presentations
 INSERT INTO videos (week_ID, title, url) VALUES
-(10, 'Introduction to NumPy', 'https://hustera.com/videos/numpy-intro'),
-(10, 'NumPy Arrays and Operations', 'https://hustera.com/videos/numpy-arrays'),
-(10, 'Introduction to Pandas', 'https://hustera.com/videos/pandas-intro'),
-(10, 'DataFrame Operations', 'https://hustera.com/videos/pandas-dataframes'),
-(10, 'Data Cleaning and Preprocessing', 'https://hustera.com/videos/data-cleaning');
+(10, 'Introduction and Hook Techniques', 'https://hustera.com/videos/introduction-hooks'),
+(10, 'Organizing Your Content', 'https://hustera.com/videos/organizing-content'),
+(10, 'Creating Compelling Stories', 'https://hustera.com/videos/compelling-stories'),
+(10, 'Conclusion and Call to Action', 'https://hustera.com/videos/conclusion-cta'),
+(10, 'Visual Aids and Slides', 'https://hustera.com/videos/visual-aids-slides');
 
--- Videos for Course 3, Week 3: Data Visualization with Matplotlib and Seaborn
+-- Videos for Course 3, Week 3: Voice and Body Language
 INSERT INTO videos (week_ID, title, url) VALUES
-(11, 'Introduction to Data Visualization', 'https://hustera.com/videos/data-viz-intro'),
-(11, 'Matplotlib Basics', 'https://hustera.com/videos/matplotlib-basics'),
-(11, 'Advanced Matplotlib', 'https://hustera.com/videos/matplotlib-advanced'),
-(11, 'Introduction to Seaborn', 'https://hustera.com/videos/seaborn-intro'),
-(11, 'Creating Complex Visualizations', 'https://hustera.com/videos/complex-viz');
+(11, 'Voice Projection and Clarity', 'https://hustera.com/videos/voice-projection'),
+(11, 'Pace and Intonation', 'https://hustera.com/videos/pace-intonation'),
+(11, 'Body Language Basics', 'https://hustera.com/videos/body-language-basics'),
+(11, 'Gestures and Movement', 'https://hustera.com/videos/gestures-movement'),
+(11, 'Eye Contact and Facial Expression', 'https://hustera.com/videos/eye-contact-expression');
 
--- Videos for Course 3, Week 4: Introduction to Machine Learning with Scikit-Learn
+-- Videos for Course 3, Week 4: Engaging Your Audience
 INSERT INTO videos (week_ID, title, url) VALUES
-(12, 'Introduction to Machine Learning', 'https://hustera.com/videos/ml-intro'),
-(12, 'Scikit-Learn Basics', 'https://hustera.com/videos/scikit-learn-basics'),
-(12, 'Regression Algorithms', 'https://hustera.com/videos/regression-algos'),
-(12, 'Classification Algorithms', 'https://hustera.com/videos/classification-algos'),
-(12, 'Model Evaluation', 'https://hustera.com/videos/model-evaluation');
+(12, 'Reading Your Audience', 'https://hustera.com/videos/reading-audience'),
+(12, 'Interactive Techniques', 'https://hustera.com/videos/interactive-techniques'),
+(12, 'Handling Questions and Objections', 'https://hustera.com/videos/handling-questions'),
+(12, 'Adapting to Different Audiences', 'https://hustera.com/videos/adapting-audiences'),
+(12, 'Building Rapport', 'https://hustera.com/videos/building-rapport');
 
--- Videos for Course 4, Week 1: Introduction to UI/UX Design
+-- Videos for Course 4, Week 1: Design Principles and Elements
 INSERT INTO videos (week_ID, title, url) VALUES
-(13, 'What is UI/UX Design', 'https://hustera.com/videos/uiux-intro'),
-(13, 'Design Principles', 'https://hustera.com/videos/design-principles'),
-(13, 'User-Centered Design Process', 'https://hustera.com/videos/user-centered-design'),
-(13, 'Information Architecture', 'https://hustera.com/videos/information-architecture'),
-(13, 'Design Tools Overview', 'https://hustera.com/videos/design-tools');
+(13, 'The Elements of Design', 'https://hustera.com/videos/design-elements'),
+(13, 'Principles of Composition', 'https://hustera.com/videos/composition-principles'),
+(13, 'Balance and Proportion', 'https://hustera.com/videos/balance-proportion'),
+(13, 'Contrast and Emphasis', 'https://hustera.com/videos/contrast-emphasis'),
+(13, 'Unity and Repetition', 'https://hustera.com/videos/unity-repetition');
 
--- Videos for Course 4, Week 2: User Research and Personas
+-- Videos for Course 4, Week 2: Typography and Layout
 INSERT INTO videos (week_ID, title, url) VALUES
-(14, 'Introduction to User Research', 'https://hustera.com/videos/user-research-intro'),
-(14, 'Research Methods', 'https://hustera.com/videos/research-methods'),
-(14, 'Creating User Personas', 'https://hustera.com/videos/user-personas'),
-(14, 'User Journey Mapping', 'https://hustera.com/videos/user-journey'),
-(14, 'Analyzing Research Data', 'https://hustera.com/videos/research-analysis');
+(14, 'Typography Fundamentals', 'https://hustera.com/videos/typography-fundamentals'),
+(14, 'Font Selection and Pairing', 'https://hustera.com/videos/font-selection'),
+(14, 'Hierarchy and Readability', 'https://hustera.com/videos/hierarchy-readability'),
+(14, 'Grid Systems', 'https://hustera.com/videos/grid-systems'),
+(14, 'White Space and Layout', 'https://hustera.com/videos/whitespace-layout');
 
--- Videos for Course 4, Week 3: Wireframing and Prototyping
+-- Videos for Course 4, Week 3: Brand Identity Design
 INSERT INTO videos (week_ID, title, url) VALUES
-(15, 'Introduction to Wireframing', 'https://hustera.com/videos/wireframing-intro'),
-(15, 'Low-Fidelity Wireframes', 'https://hustera.com/videos/low-fi-wireframes'),
-(15, 'High-Fidelity Wireframes', 'https://hustera.com/videos/high-fi-wireframes'),
-(15, 'Interactive Prototyping', 'https://hustera.com/videos/interactive-prototyping'),
-(15, 'User Testing with Prototypes', 'https://hustera.com/videos/prototype-testing');
+(15, 'Understanding Brand Identity', 'https://hustera.com/videos/brand-identity'),
+(15, 'Logo Design Process', 'https://hustera.com/videos/logo-design'),
+(15, 'Color Psychology in Branding', 'https://hustera.com/videos/color-psychology'),
+(15, 'Brand Style Guides', 'https://hustera.com/videos/brand-style-guides'),
+(15, 'Brand Application Design', 'https://hustera.com/videos/brand-applications');
 
--- Videos for Course 4, Week 4: Design Systems and Accessibility
+-- Videos for Course 4, Week 4: Print and Digital Design
 INSERT INTO videos (week_ID, title, url) VALUES
-(16, 'Introduction to Design Systems', 'https://hustera.com/videos/design-systems-intro'),
-(16, 'Creating Style Guides', 'https://hustera.com/videos/style-guides'),
-(16, 'Component Libraries', 'https://hustera.com/videos/component-libraries'),
-(16, 'Accessibility in Design', 'https://hustera.com/videos/accessibility-design'),
-(16, 'Implementing Design Systems', 'https://hustera.com/videos/implementing-design-systems');
+(16, 'Print Design Fundamentals', 'https://hustera.com/videos/print-design'),
+(16, 'Digital Design Best Practices', 'https://hustera.com/videos/digital-design'),
+(16, 'Packaging Design', 'https://hustera.com/videos/packaging-design'),
+(16, 'Web and Mobile UI Design', 'https://hustera.com/videos/ui-design'),
+(16, 'Portfolio Presentation', 'https://hustera.com/videos/portfolio-presentation');
 
--- Videos for Course 5, Week 1: Relational Database Fundamentals
+-- Videos for Course 5, Week 1: Classical Mechanics
 INSERT INTO videos (week_ID, title, url) VALUES
-(17, 'Introduction to Databases', 'https://hustera.com/videos/db-intro'),
-(17, 'Relational Database Concepts', 'https://hustera.com/videos/relational-concepts'),
-(17, 'Database Design and Normalization', 'https://hustera.com/videos/db-normalization'),
-(17, 'Introduction to SQL', 'https://hustera.com/videos/sql-intro'),
-(17, 'Creating and Manipulating Tables', 'https://hustera.com/videos/sql-tables');
+(17, 'Newton\'s Laws of Motion', 'https://hustera.com/videos/newtons-laws'),
+(17, 'Force and Acceleration', 'https://hustera.com/videos/force-acceleration'),
+(17, 'Work, Energy, and Power', 'https://hustera.com/videos/work-energy-power'),
+(17, 'Momentum and Collisions', 'https://hustera.com/videos/momentum-collisions'),
+(17, 'Rotational Motion', 'https://hustera.com/videos/rotational-motion');
 
--- Videos for Course 5, Week 2: Advanced SQL Queries
+-- Videos for Course 5, Week 2: Thermodynamics and Heat Transfer
 INSERT INTO videos (week_ID, title, url) VALUES
-(18, 'Complex SELECT Queries', 'https://hustera.com/videos/complex-select'),
-(18, 'Joins and Relationships', 'https://hustera.com/videos/sql-joins'),
-(18, 'Subqueries', 'https://hustera.com/videos/sql-subqueries'),
-(18, 'Aggregation and Group By', 'https://hustera.com/videos/sql-aggregation'),
-(18, 'Views and Stored Procedures', 'https://hustera.com/videos/sql-views-procedures');
+(18, 'Temperature and Heat', 'https://hustera.com/videos/temperature-heat'),
+(18, 'Laws of Thermodynamics', 'https://hustera.com/videos/thermodynamics-laws'),
+(18, 'Heat Transfer Mechanisms', 'https://hustera.com/videos/heat-transfer'),
+(18, 'Thermal Properties of Materials', 'https://hustera.com/videos/thermal-properties'),
+(18, 'Heat Engines and Efficiency', 'https://hustera.com/videos/heat-engines');
 
--- Videos for Course 5, Week 3: NoSQL Databases
+-- Videos for Course 5, Week 3: Electromagnetism and Circuits
 INSERT INTO videos (week_ID, title, url) VALUES
-(19, 'Introduction to NoSQL', 'https://hustera.com/videos/nosql-intro'),
-(19, 'Document Databases: MongoDB', 'https://hustera.com/videos/mongodb'),
-(19, 'Key-Value Stores: Redis', 'https://hustera.com/videos/redis'),
-(19, 'Column Databases: Cassandra', 'https://hustera.com/videos/cassandra'),
-(19, 'Graph Databases: Neo4j', 'https://hustera.com/videos/neo4j');
+(19, 'Electric Fields and Forces', 'https://hustera.com/videos/electric-fields'),
+(19, 'Magnetic Fields and Forces', 'https://hustera.com/videos/magnetic-fields'),
+(19, 'Electromagnetic Induction', 'https://hustera.com/videos/electromagnetic-induction'),
+(19, 'Circuit Analysis', 'https://hustera.com/videos/circuit-analysis'),
+(19, 'AC and DC Circuits', 'https://hustera.com/videos/ac-dc-circuits');
 
--- Videos for Course 5, Week 4: Database Performance and Optimization
+-- Videos for Course 5, Week 4: Wave Physics and Optics
 INSERT INTO videos (week_ID, title, url) VALUES
-(20, 'Database Indexing', 'https://hustera.com/videos/db-indexing'),
-(20, 'Query Optimization', 'https://hustera.com/videos/query-optimization'),
-(20, 'Database Scaling', 'https://hustera.com/videos/db-scaling'),
-(20, 'Database Security', 'https://hustera.com/videos/db-security'),
-(20, 'Backup and Recovery', 'https://hustera.com/videos/db-backup');
+(20, 'Wave Properties and Behavior', 'https://hustera.com/videos/wave-properties'),
+(20, 'Sound Waves and Acoustics', 'https://hustera.com/videos/sound-waves'),
+(20, 'Light and Optics', 'https://hustera.com/videos/light-optics'),
+(20, 'Interference and Diffraction', 'https://hustera.com/videos/interference-diffraction'),
+(20, 'Modern Physics Applications', 'https://hustera.com/videos/modern-physics');
 
--- Videos for Course 6, Week 1: React Native Basics
+-- Videos for Course 6, Week 1: Documentary Storytelling
 INSERT INTO videos (week_ID, title, url) VALUES
-(21, 'Introduction to React Native', 'https://hustera.com/videos/react-native-intro'),
-(21, 'Setting Up Development Environment', 'https://hustera.com/videos/rn-setup'),
-(21, 'JSX and Components', 'https://hustera.com/videos/rn-components'),
-(21, 'Props and State', 'https://hustera.com/videos/rn-props-state'),
-(21, 'Styling in React Native', 'https://hustera.com/videos/rn-styling');
+(21, 'Elements of Documentary Storytelling', 'https://hustera.com/videos/doc-storytelling'),
+(21, 'Finding Your Story', 'https://hustera.com/videos/finding-story'),
+(21, 'Research and Pre-Production', 'https://hustera.com/videos/research-preproduction'),
+(21, 'Interview Techniques', 'https://hustera.com/videos/interview-techniques'),
+(21, 'Narrative Structure', 'https://hustera.com/videos/narrative-structure');
 
--- Videos for Course 6, Week 2: Navigation and State Management
+-- Videos for Course 6, Week 2: Camera Work and Cinematography
 INSERT INTO videos (week_ID, title, url) VALUES
-(22, 'React Navigation', 'https://hustera.com/videos/react-navigation'),
-(22, 'Stack Navigation', 'https://hustera.com/videos/stack-navigation'),
-(22, 'Tab and Drawer Navigation', 'https://hustera.com/videos/tab-drawer-navigation'),
-(22, 'Context API', 'https://hustera.com/videos/context-api'),
-(22, 'Redux for State Management', 'https://hustera.com/videos/redux-rn');
+(22, 'Camera Basics and Settings', 'https://hustera.com/videos/camera-basics'),
+(22, 'Shot Composition and Framing', 'https://hustera.com/videos/shot-composition'),
+(22, 'Lighting for Documentary', 'https://hustera.com/videos/documentary-lighting'),
+(22, 'Camera Movement and Stability', 'https://hustera.com/videos/camera-movement'),
+(22, 'Color and Exposure', 'https://hustera.com/videos/color-exposure');
 
--- Videos for Course 6, Week 3: Working with APIs and Data
+-- Videos for Course 6, Week 3: Audio Recording and Sound Design
 INSERT INTO videos (week_ID, title, url) VALUES
-(23, 'Networking in React Native', 'https://hustera.com/videos/rn-networking'),
-(23, 'Fetch API and Axios', 'https://hustera.com/videos/fetch-axios'),
-(23, 'Handling API Responses', 'https://hustera.com/videos/api-responses'),
-(23, 'Local Storage with AsyncStorage', 'https://hustera.com/videos/async-storage'),
-(23, 'Working with Forms', 'https://hustera.com/videos/rn-forms');
+(23, 'Audio Fundamentals', 'https://hustera.com/videos/audio-fundamentals'),
+(23, 'Microphone Types and Placement', 'https://hustera.com/videos/microphone-placement'),
+(23, 'Recording Techniques', 'https://hustera.com/videos/recording-techniques'),
+(23, 'Sound Design and Music', 'https://hustera.com/videos/sound-design'),
+(23, 'Audio Post-Production', 'https://hustera.com/videos/audio-postproduction');
 
--- Videos for Course 6, Week 4: Publishing and Optimizing Mobile Apps
+-- Videos for Course 6, Week 4: Editing and Post-Production
 INSERT INTO videos (week_ID, title, url) VALUES
-(24, 'App Performance Optimization', 'https://hustera.com/videos/rn-performance'),
-(24, 'Testing React Native Apps', 'https://hustera.com/videos/rn-testing'),
-(24, 'Building for Android', 'https://hustera.com/videos/build-android'),
-(24, 'Building for iOS', 'https://hustera.com/videos/build-ios'),
-(24, 'App Store and Play Store Submission', 'https://hustera.com/videos/app-submission');
+(24, 'Editing Software and Workflow', 'https://hustera.com/videos/editing-workflow'),
+(24, 'Story Assembly and Pacing', 'https://hustera.com/videos/story-assembly'),
+(24, 'Color Correction and Grading', 'https://hustera.com/videos/color-correction'),
+(24, 'Graphics and Titles', 'https://hustera.com/videos/graphics-titles'),
+(24, 'Final Export and Distribution', 'https://hustera.com/videos/export-distribution');
 
--- Videos for Course 7, Week 1: Introduction to Machine Learning
+-- Videos for Course 7, Week 1: Phonetics and Phonology
 INSERT INTO videos (week_ID, title, url) VALUES
-(25, 'What is Machine Learning', 'https://hustera.com/videos/ml-what-is'),
-(25, 'Types of Machine Learning', 'https://hustera.com/videos/ml-types'),
-(25, 'Machine Learning Workflow', 'https://hustera.com/videos/ml-workflow'),
-(25, 'Data Preparation for ML', 'https://hustera.com/videos/ml-data-prep'),
-(25, 'Feature Engineering', 'https://hustera.com/videos/feature-engineering');
+(25, 'Introduction to Phonetics', 'https://hustera.com/videos/phonetics-intro'),
+(25, 'Articulatory Phonetics', 'https://hustera.com/videos/articulatory-phonetics'),
+(25, 'Acoustic Phonetics', 'https://hustera.com/videos/acoustic-phonetics'),
+(25, 'Phonological Systems', 'https://hustera.com/videos/phonological-systems'),
+(25, 'Sound Change and Variation', 'https://hustera.com/videos/sound-change');
 
--- Videos for Course 7, Week 2: Supervised Learning Algorithms
+-- Videos for Course 7, Week 2: Grammar and Syntax
 INSERT INTO videos (week_ID, title, url) VALUES
-(26, 'Linear Regression', 'https://hustera.com/videos/linear-regression'),
-(26, 'Logistic Regression', 'https://hustera.com/videos/logistic-regression'),
-(26, 'Decision Trees', 'https://hustera.com/videos/decision-trees'),
-(26, 'Random Forests', 'https://hustera.com/videos/random-forests'),
-(26, 'Support Vector Machines', 'https://hustera.com/videos/svm');
+(26, 'Morphology and Word Formation', 'https://hustera.com/videos/morphology'),
+(26, 'Syntactic Structures', 'https://hustera.com/videos/syntactic-structures'),
+(26, 'Parts of Speech', 'https://hustera.com/videos/parts-of-speech'),
+(26, 'Sentence Types and Complexity', 'https://hustera.com/videos/sentence-types'),
+(26, 'Cross-Linguistic Grammar', 'https://hustera.com/videos/cross-linguistic-grammar');
 
--- Videos for Course 7, Week 3: Unsupervised Learning Algorithms
+-- Videos for Course 7, Week 3: Language Acquisition Theory
 INSERT INTO videos (week_ID, title, url) VALUES
-(27, 'Introduction to Unsupervised Learning', 'https://hustera.com/videos/unsupervised-intro'),
-(27, 'K-Means Clustering', 'https://hustera.com/videos/kmeans'),
-(27, 'Hierarchical Clustering', 'https://hustera.com/videos/hierarchical-clustering'),
-(27, 'Principal Component Analysis', 'https://hustera.com/videos/pca'),
-(27, 'Dimensionality Reduction', 'https://hustera.com/videos/dimensionality-reduction');
+(27, 'First Language Acquisition', 'https://hustera.com/videos/first-language-acquisition'),
+(27, 'Second Language Acquisition', 'https://hustera.com/videos/second-language-acquisition'),
+(27, 'Critical Period Hypothesis', 'https://hustera.com/videos/critical-period'),
+(27, 'Input and Interaction Theories', 'https://hustera.com/videos/input-interaction'),
+(27, 'Individual Differences in Learning', 'https://hustera.com/videos/individual-differences');
 
--- Videos for Course 7, Week 4: Model Evaluation and Deployment
+-- Videos for Course 7, Week 4: Teaching Methodologies
 INSERT INTO videos (week_ID, title, url) VALUES
-(28, 'Training and Test Sets', 'https://hustera.com/videos/train-test'),
-(28, 'Cross-Validation', 'https://hustera.com/videos/cross-validation'),
-(28, 'Hyperparameter Tuning', 'https://hustera.com/videos/hyperparameter-tuning'),
-(28, 'Model Deployment', 'https://hustera.com/videos/model-deployment'),
-(28, 'ML in Production', 'https://hustera.com/videos/ml-production');
+(28, 'Communicative Language Teaching', 'https://hustera.com/videos/communicative-teaching'),
+(28, 'Task-Based Learning', 'https://hustera.com/videos/task-based-learning'),
+(28, 'Technology in Language Teaching', 'https://hustera.com/videos/technology-teaching'),
+(28, 'Assessment and Evaluation', 'https://hustera.com/videos/assessment-evaluation'),
+(28, 'Classroom Management', 'https://hustera.com/videos/classroom-management');
 
--- Videos for Course 8, Week 1: Cybersecurity Fundamentals
+-- Videos for Course 8, Week 1: Budgeting and Money Management
 INSERT INTO videos (week_ID, title, url) VALUES
-(29, 'Introduction to Cybersecurity', 'https://hustera.com/videos/cybersec-intro'),
-(29, 'Types of Cyber Threats', 'https://hustera.com/videos/cyber-threats'),
-(29, 'Security Principles', 'https://hustera.com/videos/security-principles'),
-(29, 'Risk Assessment', 'https://hustera.com/videos/risk-assessment'),
-(29, 'Security Controls', 'https://hustera.com/videos/security-controls');
+(29, 'Creating a Personal Budget', 'https://hustera.com/videos/personal-budget'),
+(29, 'Tracking Income and Expenses', 'https://hustera.com/videos/tracking-expenses'),
+(29, 'Emergency Fund Planning', 'https://hustera.com/videos/emergency-fund'),
+(29, 'Banking and Account Management', 'https://hustera.com/videos/banking-accounts'),
+(29, 'Money Management Apps and Tools', 'https://hustera.com/videos/money-management-tools');
 
--- Videos for Course 8, Week 2: Threat Detection and Prevention
+-- Videos for Course 8, Week 2: Understanding Credit and Debt
 INSERT INTO videos (week_ID, title, url) VALUES
-(30, 'Security Monitoring', 'https://hustera.com/videos/security-monitoring'),
-(30, 'Intrusion Detection Systems', 'https://hustera.com/videos/ids'),
-(30, 'Malware Analysis', 'https://hustera.com/videos/malware-analysis'),
-(30, 'Security Information and Event Management', 'https://hustera.com/videos/siem'),
-(30, 'Incident Response', 'https://hustera.com/videos/incident-response');
+(30, 'Credit Scores and Reports', 'https://hustera.com/videos/credit-scores'),
+(30, 'Types of Credit and Loans', 'https://hustera.com/videos/types-credit'),
+(30, 'Debt Management Strategies', 'https://hustera.com/videos/debt-management'),
+(30, 'Avoiding Common Credit Mistakes', 'https://hustera.com/videos/credit-mistakes'),
+(30, 'Building Good Credit', 'https://hustera.com/videos/building-credit');
 
--- Videos for Course 8, Week 3: Network Security
+-- Videos for Course 8, Week 3: Investment Fundamentals
 INSERT INTO videos (week_ID, title, url) VALUES
-(31, 'Network Security Fundamentals', 'https://hustera.com/videos/network-security'),
-(31, 'Firewalls and Proxies', 'https://hustera.com/videos/firewalls'),
-(31, 'VPNs and Encryption', 'https://hustera.com/videos/vpn-encryption'),
-(31, 'Wireless Network Security', 'https://hustera.com/videos/wireless-security'),
-(31, 'Network Penetration Testing', 'https://hustera.com/videos/network-pentest');
+(31, 'Introduction to Investing', 'https://hustera.com/videos/investing-intro'),
+(31, 'Risk and Return Concepts', 'https://hustera.com/videos/risk-return'),
+(31, 'Stocks, Bonds, and Mutual Funds', 'https://hustera.com/videos/investment-types'),
+(31, 'Diversification Strategies', 'https://hustera.com/videos/diversification'),
+(31, 'Investment Platforms and Brokers', 'https://hustera.com/videos/investment-platforms');
 
--- Videos for Course 8, Week 4: Security Best Practices and Compliance
+-- Videos for Course 8, Week 4: Retirement and Long-term Planning
 INSERT INTO videos (week_ID, title, url) VALUES
-(32, 'Security Policies and Procedures', 'https://hustera.com/videos/security-policies'),
-(32, 'Compliance Frameworks', 'https://hustera.com/videos/compliance'),
-(32, 'Security Awareness Training', 'https://hustera.com/videos/security-awareness'),
-(32, 'Disaster Recovery and Business Continuity', 'https://hustera.com/videos/disaster-recovery'),
-(32, 'Security Auditing', 'https://hustera.com/videos/security-auditing');
+(32, 'Retirement Planning Basics', 'https://hustera.com/videos/retirement-planning'),
+(32, '401k and IRA Accounts', 'https://hustera.com/videos/401k-ira'),
+(32, 'Social Security and Pensions', 'https://hustera.com/videos/social-security'),
+(32, 'Insurance and Risk Management', 'https://hustera.com/videos/insurance-risk'),
+(32, 'Estate Planning Fundamentals', 'https://hustera.com/videos/estate-planning');
 
--- Videos for Course 9, Week 1: AWS Fundamentals
+-- Videos for Course 9, Week 1: Social Influence and Persuasion
 INSERT INTO videos (week_ID, title, url) VALUES
-(33, 'Introduction to AWS', 'https://hustera.com/videos/aws-intro'),
-(33, 'AWS Global Infrastructure', 'https://hustera.com/videos/aws-infrastructure'),
-(33, 'AWS Management Console', 'https://hustera.com/videos/aws-console'),
-(33, 'Identity and Access Management', 'https://hustera.com/videos/aws-iam'),
-(33, 'AWS Pricing and Support', 'https://hustera.com/videos/aws-pricing');
+(33, 'Psychology of Persuasion', 'https://hustera.com/videos/psychology-persuasion'),
+(33, 'Conformity and Social Pressure', 'https://hustera.com/videos/conformity-pressure'),
+(33, 'Authority and Obedience', 'https://hustera.com/videos/authority-obedience'),
+(33, 'Cognitive Dissonance', 'https://hustera.com/videos/cognitive-dissonance'),
+(33, 'Social Proof and Influence', 'https://hustera.com/videos/social-proof');
 
--- Videos for Course 9, Week 2: Compute and Storage Services (continuing from where it was cut off)
+-- Videos for Course 9, Week 2: Group Dynamics and Leadership
 INSERT INTO videos (week_ID, title, url) VALUES
-(34, 'Amazon EC2', 'https://hustera.com/videos/aws-ec2'),
-(34, 'Amazon S3', 'https://hustera.com/videos/aws-s3'),
-(34, 'Amazon RDS', 'https://hustera.com/videos/aws-rds'),
-(34, 'Amazon DynamoDB', 'https://hustera.com/videos/aws-dynamodb'),
-(34, 'AWS Lambda', 'https://hustera.com/videos/aws-lambda');
+(34, 'Group Formation and Development', 'https://hustera.com/videos/group-formation'),
+(34, 'Leadership Styles and Effectiveness', 'https://hustera.com/videos/leadership-styles'),
+(34, 'Team Communication', 'https://hustera.com/videos/team-communication'),
+(34, 'Conflict Resolution', 'https://hustera.com/videos/conflict-resolution'),
+(34, 'Group Decision Making', 'https://hustera.com/videos/group-decisions');
 
--- Videos for Course 9, Week 3: Networking and Security on AWS
+-- Videos for Course 9, Week 3: Prejudice and Stereotyping
 INSERT INTO videos (week_ID, title, url) VALUES
-(35, 'Amazon VPC', 'https://hustera.com/videos/aws-vpc'),
-(35, 'Security Groups and NACLs', 'https://hustera.com/videos/aws-security-groups'),
-(35, 'AWS WAF and Shield', 'https://hustera.com/videos/aws-waf-shield'),
-(35, 'AWS CloudFront', 'https://hustera.com/videos/aws-cloudfront'),
-(35, 'AWS Direct Connect', 'https://hustera.com/videos/aws-direct-connect');
+(35, 'Origins of Prejudice', 'https://hustera.com/videos/origins-prejudice'),
+(35, 'Stereotyping and Bias', 'https://hustera.com/videos/stereotyping-bias'),
+(35, 'Discrimination and Its Effects', 'https://hustera.com/videos/discrimination-effects'),
+(35, 'Reducing Prejudice', 'https://hustera.com/videos/reducing-prejudice'),
+(35, 'Inclusive Behavior and Allyship', 'https://hustera.com/videos/inclusive-behavior');
 
--- Videos for Course 9, Week 4: AWS DevOps and Automation
+-- Videos for Course 9, Week 4: Social Identity and Culture
 INSERT INTO videos (week_ID, title, url) VALUES
-(36, 'AWS CloudFormation', 'https://hustera.com/videos/aws-cloudformation'),
-(36, 'AWS CodePipeline', 'https://hustera.com/videos/aws-codepipeline'),
-(36, 'AWS CodeBuild and CodeDeploy', 'https://hustera.com/videos/aws-codebuild-deploy'),
-(36, 'AWS CloudWatch', 'https://hustera.com/videos/aws-cloudwatch'),
-(36, 'AWS Systems Manager', 'https://hustera.com/videos/aws-systems-manager');
+(36, 'Social Identity Theory', 'https://hustera.com/videos/social-identity'),
+(36, 'Cultural Influences on Behavior', 'https://hustera.com/videos/cultural-influences'),
+(36, 'Cross-Cultural Psychology', 'https://hustera.com/videos/cross-cultural'),
+(36, 'Socialization and Development', 'https://hustera.com/videos/socialization'),
+(36, 'Social Change and Movements', 'https://hustera.com/videos/social-movements');
 
--- Videos for Course 10, Week 1: Blockchain Fundamentals
+-- Videos for Course 10, Week 1: Marketing Fundamentals and Strategy
 INSERT INTO videos (week_ID, title, url) VALUES
-(37, 'Introduction to Blockchain Technology', 'https://hustera.com/videos/blockchain-intro'),
-(37, 'Blockchain Architecture', 'https://hustera.com/videos/blockchain-architecture'),
-(37, 'Consensus Mechanisms', 'https://hustera.com/videos/consensus-mechanisms'),
-(37, 'Cryptography in Blockchain', 'https://hustera.com/videos/blockchain-cryptography'),
-(37, 'Public and Private Blockchains', 'https://hustera.com/videos/public-private-blockchains');
+(37, 'Introduction to Digital Marketing', 'https://hustera.com/videos/digital-marketing-intro'),
+(37, 'Target Audience and Personas', 'https://hustera.com/videos/target-audience'),
+(37, 'Marketing Mix and 4Ps', 'https://hustera.com/videos/marketing-mix'),
+(37, 'Digital Marketing Channels', 'https://hustera.com/videos/marketing-channels'),
+(37, 'Setting Marketing Goals', 'https://hustera.com/videos/marketing-goals');
 
--- Videos for Course 10, Week 2: Smart Contract Development
+-- Videos for Course 10, Week 2: Social Media Marketing
 INSERT INTO videos (week_ID, title, url) VALUES
-(38, 'Introduction to Smart Contracts', 'https://hustera.com/videos/smart-contracts-intro'),
-(38, 'Solidity Programming Language', 'https://hustera.com/videos/solidity-intro'),
-(38, 'Smart Contract Development Tools', 'https://hustera.com/videos/smart-contract-tools'),
-(38, 'Testing Smart Contracts', 'https://hustera.com/videos/smart-contract-testing'),
-(38, 'Smart Contract Security', 'https://hustera.com/videos/smart-contract-security');
+(38, 'Social Media Strategy', 'https://hustera.com/videos/social-media-strategy'),
+(38, 'Platform-Specific Marketing', 'https://hustera.com/videos/platform-marketing'),
+(38, 'Content Creation and Curation', 'https://hustera.com/videos/content-creation'),
+(38, 'Social Media Advertising', 'https://hustera.com/videos/social-media-ads'),
+(38, 'Community Management', 'https://hustera.com/videos/community-management');
 
--- Videos for Course 10, Week 3: Decentralized Application Architecture
+-- Videos for Course 10, Week 3: Content Marketing and SEO
 INSERT INTO videos (week_ID, title, url) VALUES
-(39, 'Introduction to DApps', 'https://hustera.com/videos/dapps-intro'),
-(39, 'Web3.js and Ethers.js', 'https://hustera.com/videos/web3-ethers'),
-(39, 'DApp Frontend Development', 'https://hustera.com/videos/dapp-frontend'),
-(39, 'IPFS and Decentralized Storage', 'https://hustera.com/videos/ipfs-storage'),
-(39, 'DApp User Experience', 'https://hustera.com/videos/dapp-ux');
+(39, 'Content Marketing Strategy', 'https://hustera.com/videos/content-marketing-strategy'),
+(39, 'SEO Fundamentals', 'https://hustera.com/videos/seo-fundamentals'),
+(39, 'Keyword Research and Optimization', 'https://hustera.com/videos/keyword-research'),
+(39, 'Link Building and Authority', 'https://hustera.com/videos/link-building'),
+(39, 'Content Distribution Channels', 'https://hustera.com/videos/content-distribution');
 
--- Videos for Course 10, Week 4: Security and Best Practices in Blockchain
+-- Videos for Course 10, Week 4: Analytics and Campaign Optimization
 INSERT INTO videos (week_ID, title, url) VALUES
-(40, 'Blockchain Security Threats', 'https://hustera.com/videos/blockchain-threats'),
-(40, 'Secure Development Workflow', 'https://hustera.com/videos/blockchain-dev-workflow'),
-(40, 'Auditing and Verification', 'https://hustera.com/videos/blockchain-auditing'),
-(40, 'Gas Optimization', 'https://hustera.com/videos/gas-optimization'),
-(40, 'Blockchain Governance', 'https://hustera.com/videos/blockchain-governance');
+(40, 'Marketing Analytics Fundamentals', 'https://hustera.com/videos/marketing-analytics'),
+(40, 'Google Analytics and Tools', 'https://hustera.com/videos/google-analytics'),
+(40, 'A/B Testing and Optimization', 'https://hustera.com/videos/ab-testing'),
+(40, 'ROI and Performance Metrics', 'https://hustera.com/videos/roi-metrics'),
+(40, 'Campaign Reporting and Insights', 'https://hustera.com/videos/campaign-reporting');
 
 UPDATE videos SET url = 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor' WHERE video_ID > 1;

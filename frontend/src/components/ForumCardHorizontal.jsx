@@ -1,4 +1,5 @@
 import React from "react";
+import ReactMarkdown from "react-markdown";
 
 const ForumCardHorizontal = ({
   title,
@@ -38,8 +39,8 @@ const ForumCardHorizontal = ({
         </h3>
 
         {/* Description */}
-        <p className="text-gray-600 text-xl mt-1 line-clamp-2 h-14 flex">
-          {description}
+        <p className="text-gray-500 text-xl font-avant-medium mt-1 line-clamp-2 h-14 flex">
+          <ReactMarkdown>{description}</ReactMarkdown>
         </p>
 
         {/* Tags + Author */}
@@ -57,7 +58,7 @@ const ForumCardHorizontal = ({
           </div>
 
           {/* Author Info */}
-          <div className="text-[18px] text-gray-500">
+          <div className="text-[18px] font-avant-medium text-gray-500">
             <span className="font-avant-medium text-blue-500 group-hover:text-blue-800">{author}</span>{" "}
             asked on {new Date(date).toLocaleString("en-US", {
               year: "numeric",
