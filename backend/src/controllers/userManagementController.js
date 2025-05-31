@@ -8,11 +8,13 @@ exports.getAllUsers = async (req, res) => {
         // Pass the correct numeric user.user_ID to the service functions
         const enrolledCourses = await userManagementService.getUserCourses(user.user_ID);
         const threads = await userManagementService.getUserThreads(user.user_ID);
+        const replies = await userManagementService.getUserReplies(user.user_ID);
 
         return {
             ...user,
             enrolledCourses: enrolledCourses,
-            threads: threads
+            threads: threads,
+            replies: replies
         };
     }));
 

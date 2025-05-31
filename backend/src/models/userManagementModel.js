@@ -79,7 +79,39 @@ exports.getUserThreads = async (userId) => {
     upvotes: thread.upvotes,
     downvotes: thread.downvotes,
     answers: thread.answers,
-    replies: []
+  }));
+};
+
+exports.getUserReplies = async (userId) => {
+  const query = `
+    SELECT
+      ta.answer_ID,
+      ta.thread_ID,
+      t.title AS thread_title,
+      ta.content,
+      ta.created_at,
+      ta.accepted,
+      (SELECT COUNT(*) FROM thread_answer_votes tav WHERE tav.answer_ID = ta.answer_ID AND tav.vote_type = 'upvote') AS upvotes,
+      (SELECT COUNT(*) FROM thread_answer_votes tav WHERE tav.answer_ID = ta.answer_ID AND tav.vote_type = 'downvote') AS downvotes
+    FROM
+      thread_answers ta
+    JOIN
+      threads t ON ta.thread_ID = t.thread_ID
+    WHERE
+      ta.author_ID = ?
+    ORDER BY
+      ta.created_at DESC
+  `;
+  const [rows] = await db.query(query, [userId]);
+  return rows.map(reply => ({
+    answer_id: reply.answer_ID,
+    thread_id: reply.thread_ID,
+    thread_title: reply.thread_title,
+    content: reply.content,
+    created_at: reply.created_at,
+    accepted: reply.accepted === 'true',
+    upvotes: reply.upvotes,
+    downvotes: reply.downvotes,
   }));
 };
 
@@ -103,9 +135,8 @@ exports.removeUserThread = async (userId, threadId) => {
 
 exports.removeUserReply = async (userId, threadId, replyId) => {
   const query = `
-    DELETE ta FROM thread_answers ta
-    JOIN threads t ON ta.thread_ID = t.thread_ID
-    WHERE ta.answer_ID = ? AND t.thread_ID = ? AND t.author_ID = ?
+    DELETE FROM thread_answers
+    WHERE answer_ID = ? AND thread_ID = ? AND author_ID = ?
   `;
   const [result] = await db.query(query, [replyId, threadId, userId]);
   return result;

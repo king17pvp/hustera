@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/BreadCrumb";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -31,6 +32,7 @@ const UserManagement = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/admin/user-management`); // GET /
+        console.log("rssreseef:", response);
         if (response.data && response.data.success && Array.isArray(response.data.users)) {
           setUsers(response.data.users);
         } else {
@@ -123,30 +125,37 @@ const UserManagement = () => {
   };
 
   const handleRemoveReply = async (userId, threadId, replyId) => {
+    setError(null);
+    if (!window.confirm(`Remove reply ${replyId} from thread ${threadId} for user ID ${userId}?`)) return;
     try {
-      await axios.delete("/api/users/remove-reply", { data: { user_ID: userId, thread_id: threadId, reply_id: replyId } });
-      setUsers((prev) =>
-        prev.map((u) => {
-          if (u.user_ID === userId) {
-            const updatedThreads = u.threads.map((t) => {
-              if (t.thread_id === threadId) {
-                return {
-                  ...t,
-                  replies: t.replies.filter((r) => r.reply_id !== replyId)
-                };
-              }
-              return t;
-            });
-            return { ...u, threads: updatedThreads };
+      await axios.delete("http://localhost:5000/admin/user-management/remove-reply", {
+        data: { user_id: userId, thread_id: threadId, reply_id: replyId }
+      });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => {
+          if (user.user_ID === userId) {
+            return {
+              ...user,
+              replies: user.replies?.filter((reply) => reply.answer_id !== replyId),
+              threads: user.threads?.map((thread) =>
+                thread.thread_id === threadId
+                  ? {
+                    ...thread,
+                    replies: thread.replies?.filter((reply) => reply.reply_id !== replyId),
+                  }
+                  : thread
+              ),
+            };
           }
-          return u;
+          return user;
         })
       );
     } catch (err) {
       console.error("Failed to remove reply", err);
+      setError(`Failed to remove reply: ${err.response?.data?.message || err.message}`);
     }
   };
-
+  
   // Render star rating
   const renderStars = (rating) => {
     if (rating === null) return "Not rated";
@@ -543,27 +552,49 @@ const UserManagement = () => {
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {user.threads.some(thread => thread.replies && thread.replies.length > 0) ? (
-                                          user.threads.flatMap(thread =>
-                                            thread.replies && thread.replies.length > 0
-                                              ? thread.replies.map(reply => (
-                                                <tr key={reply.reply_id} className="border-b bg-gray-100 text-lg text-gray-700 border-gray-300">
-                                                  <td className="py-2 px-4 w-[30%]">{thread.title}</td>
-                                                  <td className="py-2 px-4 w-[40%]">{reply.content}</td>
-                                                  <td className="py-2 px-4 w-[10%] text-center">{reply.upvotes}</td>
-                                                  <td className="py-2 px-4 w-[10%] text-center">{reply.downvotes}</td>
-                                                  <td className="py-2 px-4 text-right w-[10%]">
-                                                    <button
-                                                      className="px-4 py-1 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-700"
-                                                      onClick={() => handleRemoveReply(user.user_ID, thread.thread_id, reply.reply_id)}
-                                                    >
-                                                      Remove
-                                                    </button>
-                                                  </td>
-                                                </tr>
-                                              ))
-                                              : []
-                                          )
+                                        {user.replies && user.replies.length > 0 ? (
+                                          user.replies.map(reply => (
+                                            <tr key={reply.answer_id} className="border-b bg-gray-100 text-lg text-gray-700 border-gray-300">
+                                              <td className="py-2 px-4 w-[30%]">
+                                                <div
+                                                  style={{
+                                                    display: "-webkit-box",
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: "vertical",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "normal",
+                                                  }}
+                                                >
+                                                  {reply.thread_title}
+                                                </div>
+                                              </td>
+                                              <td className="py-2 px-4 w-[40%]">
+                                                <div
+                                                  style={{
+                                                    display: "-webkit-box",
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: "vertical",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "normal",
+                                                  }}
+                                                >
+                                                  <ReactMarkdown>{reply.content}</ReactMarkdown>
+                                                </div>
+                                              </td>
+                                              <td className="py-2 px-4 w-[10%] text-center">{reply.upvotes}</td>
+                                              <td className="py-2 px-4 w-[10%] text-center">{reply.downvotes}</td>
+                                              <td className="py-2 px-4 text-right w-[10%]">
+                                                <button
+                                                  className="px-4 py-1 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-700"
+                                                  onClick={() => handleRemoveReply(user.user_ID, reply.thread_id, reply.answer_id)}
+                                                >
+                                                  Remove
+                                                </button>
+                                              </td>
+                                            </tr>
+                                          ))
                                         ) : (
                                           <tr>
                                             <td colSpan={5} className="py-2 px-4 text-gray-400">

@@ -232,7 +232,7 @@ const CourseManagement = () => {
               >
                 <colgroup>
                   <col style={{ width: "150px" }} />
-                  <col style={{ width: "560px" }} />
+                  <col style={{ width: "540px" }} />
                   <col style={{ width: "250px" }} />
                   <col style={{ width: "250px" }} />
                   <col style={{ width: "200px" }} />

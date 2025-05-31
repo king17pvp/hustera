@@ -22,6 +22,15 @@ exports.getUserThreads = async (userId) => {
   return await userManagementModel.getUserThreads(parseInt(userId));
 };
 
+exports.getUserReplies = async (userId) => {
+  // Ensure userId is the numeric ID expected by the model
+  if (isNaN(parseInt(userId))) {
+      console.error("Service: Invalid userId passed to getUserReplies:", userId);
+      return []; // Return empty array or throw error for invalid ID
+  }
+  return await userManagementModel.getUserReplies(parseInt(userId));
+};
+
 // --- Delete/Remove Functions ---
 // Pass numeric IDs directly to the model. Parsing happens in controller or here.
 

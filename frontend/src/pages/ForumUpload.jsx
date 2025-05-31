@@ -398,7 +398,7 @@ const ForumUpload = () => {
                       <div
                         className="flex flex-wrap gap-3"
                         style={{
-                          maxHeight: "500px",
+                          maxHeight: "350px",
                           overflowY: "auto",
                         }}
                       >
