@@ -42,3 +42,10 @@ INSERT INTO course_reviews (course_ID, reviewer_ID, rating, review) VALUES
 (5, 2, 2, 'The course description promised more advanced content than what was delivered.'),
 (5, 3, 3, 'Decent course but needed more updates to stay current with industry standards.'),
 (5, 7, 4, 'Good balance of theory and practice. Would have liked more downloadable resources.');
+
+INSERT INTO course_reviews (course_ID, reviewer_ID, rating, review) VALUES
+(11, 1, 5, 'Outstanding course! The advanced topics were explained very clearly.'),
+(11, 4, 4, 'Challenging but rewarding. I learned a lot from the assignments.'),
+(11, 6, 3, 'Good content, but some sections could be more detailed.'),
+(11, 8, 5, 'Highly recommended for anyone looking to deepen their knowledge.'),
+(11, 10, 4, 'Well-structured and up-to-date with current trends.');

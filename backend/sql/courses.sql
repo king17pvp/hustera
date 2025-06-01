@@ -28,7 +28,10 @@ INSERT INTO courses (instructor_ID, title, description, category, thumbnail_url,
 (5, 'Social Psychology & Human Behavior', 'Understand how social factors influence individual behavior, group dynamics, and societal structures.', 'sociology', 'https://assets.entrepreneur.com/content/3x2/2000/20181018192022-GettyImages-935941772-crop.jpeg', 119.99, 4, 'Intermediate'),
 
 -- Course 10: Digital Marketing Strategy (marketing)
-(5, 'Digital Marketing Strategy', 'Learn how to build effective marketing campaigns using social media, content marketing, SEO, and analytics.', 'marketing', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-l7o2SyBF3hBeQK8RWMXGLDgrzP8R_2JFsg&s', 149.99, 4, 'Advanced');
+(5, 'Digital Marketing Strategy', 'Learn how to build effective marketing campaigns using social media, content marketing, SEO, and analytics.', 'marketing', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-l7o2SyBF3hBeQK8RWMXGLDgrzP8R_2JFsg&s', 149.99, 4, 'Advanced'),
+
+-- Course 11: Digital Art & Creative Design (art-&-creativity)
+(6, 'Neural Networks and Deep Learning', 'The Deep Learning Specialization is our foundational program that will help you understand the capabilities, challenges, and consequences of deep learning and prepare you to participate in the development of leading-edge AI technology. It provides a pathway for you to gain the knowledge and skills to apply machine learning to your work, level up your technical career, and take the definitive step in the world of AI.', 'computer-science', 'https://www.imsl.com/sites/default/files/image/2021-01/social-blog-neural-networks-november.jpg', 49.99, 4, 'Beginner');
 
 -- Add tags to courses (updated to match new course content)
 -- Digital Art & Creative Design tags
@@ -51,8 +54,11 @@ INSERT INTO course_tags (course_ID, tag_ID) VALUES (8, 12);
 INSERT INTO course_tags (course_ID, tag_ID) VALUES (9, 3), (9, 4);
 -- Digital Marketing Strategy tags
 INSERT INTO course_tags (course_ID, tag_ID) VALUES (10, 12), (10, 6);
+-- Neural Networks and Deep Learning tags
+INSERT INTO course_tags (course_ID, tag_ID) VALUES (11, 12), (11, 6);
 
 -- Updated weeks for each course to match new content
+
 -- Weeks for Course 1: Digital Art & Creative Design
 INSERT INTO weeks (course_ID, week_number, title) VALUES
 (1, 1, 'Digital Art Fundamentals'),
@@ -122,6 +128,13 @@ INSERT INTO weeks (course_ID, week_number, title) VALUES
 (10, 2, 'Social Media Marketing'),
 (10, 3, 'Content Marketing and SEO'),
 (10, 4, 'Analytics and Campaign Optimization');
+
+-- Weeks for Course 11: Neural Networks and Deep Learning
+INSERT INTO weeks (course_ID, week_number, title) VALUES
+(11, 1, 'Introduction to Deep Learning'),
+(11, 2, 'Neural Network Basics'),
+(11, 3, 'Shallow Neural Networks'),
+(11, 4, 'Deep Neural Networks');
 
 -- Updated videos for each week to match new course content
 -- Videos for Course 1, Week 1: Digital Art Fundamentals
@@ -445,3 +458,58 @@ INSERT INTO videos (week_ID, title, url) VALUES
 (40, 'Campaign Reporting and Insights', 'https://hustera.com/videos/campaign-reporting');
 
 UPDATE videos SET url = 'https://youtu.be/xvFZjo5PgG0?si=_aQPhWgpfFeBeeor' WHERE video_ID > 1;
+
+-- Videos for Course 11, Week 1: Introduction to Deep Learning
+INSERT INTO videos (week_ID, title, url) VALUES
+(41, 'Welcome', 'https://youtu.be/CS4cs9xVecg?si=qcBx9RV4QoA0kq25'),
+(41, 'What is a Neural Network?', 'https://youtu.be/n1l-9lIMW7E?si=69W717jtCjF-IHYX'),
+(41, 'Supervised Learning with a Neural Network', 'https://youtu.be/BYGpKPY9pO0?si=ziADuRY0qAT3kfj2'),
+(41, 'Why is deep learning taking off?', 'https://youtu.be/xflCLdJh0n0?si=1goinAeQBzPnw3d9'),
+(41, 'About this course', 'https://youtu.be/ysnIDax71yY?si=wmslZ6mnLfnFtNKw'),
+(41, 'Course Resources', 'https://youtu.be/7AZjh2VXD6E?si=1NV5QQn1KE_gorJh');
+
+-- Videos for Course 11, Week 2: Neural Network Basics
+INSERT INTO videos (week_ID, title, url) VALUES
+(42, 'Binary Classification', 'https://youtu.be/eqEc66RFY0I?si=fBDppE-VtRnm7-Kn'),
+(42, 'Logistic Regression', 'https://youtu.be/hjrYrynGWGA?si=hGsGBpKNz3bPFS_H'),
+(42, 'Logistic Regression Cost Function', 'https://youtu.be/SHEPb1JHw5o?si=Dmfn9aNsEYrbESjn'),
+(42, 'Gradient Descent', 'https://youtu.be/uJryes5Vk1o?si=034EfZuUZDypV5EB'),
+(42, 'Derivatives', 'https://youtu.be/GzphoJOVEcE?si=Bou2H5DcIf_PefiU'),
+(42, 'More Derivative Examples', 'https://youtu.be/5H7M5Vd3-pk?si=Y7qnVpIrHoi3cXVw'),
+(42, 'Computation Graph', 'https://youtu.be/GzphoJOVEcE?si=Bou2H5DcIf_PefiU'),
+(42, 'Derivatives With Computation Graphs', 'https://youtu.be/nJyUyKN-XBQ?si=t0Rkamn4GvB3doeB'),
+(42, 'Logistic Regression Gradient Descent', 'https://youtu.be/z_xiwjEdAC4?si=th7dEiKYEKCBkgkx'),
+(42, 'Gradient Descent on m Examples', 'https://youtu.be/KKfZLXcF-aE?si=RK3GRaDYmkT-q08g'),
+(42, 'Vectorization', 'https://youtu.be/qsIrQi0fzbY?si=H_qRZu_1eb8N2GbR'),
+(42, 'More Vectorization Examples', 'https://youtu.be/pYWASRauTzs?si=D4M_pdw2f_Q6L1uZ'),
+(42, 'Vectorizing Logistic Regression', 'https://youtu.be/okpqeEUdEkY?si=XMkeaXDWScLzphzm'),
+(42, 'Vectorizing Logistic Regression Gradient Computation', 'https://youtu.be/2BkqApHKwn0?si=ilFopG9r2eyNjOeI'),
+(42, 'Broadcasting in Python', 'https://youtu.be/tKcLaGdvabM?si=ZRsU8H-NZy-_q667'),
+(42, 'A Note on Python/Numpy Vectors', 'https://youtu.be/V2QlTmh6P2Y?si=ROO34C3xPR6vtmOf'),
+(42, 'Quick Tour of Jupyter/iPython Notebooks', 'https://youtu.be/0S9c7nHoDws?si=sW1WPzZivHDyHMTA'),
+(42, 'Explanation of Logistic Regression Cost Function', 'https://youtu.be/k_S5fnKjO-4?si=7oIqxG8ugNBoNWGI');
+
+-- Videos for Course 11, Week 3: Shallow Neural Networks
+INSERT INTO videos (week_ID, title, url) VALUES
+(43, 'Neural Network Overview', 'https://youtu.be/fXOsFF95ifk?si=nOL-mUoKfObl9jaz'),
+(43, 'Neural Network Representations', 'https://youtu.be/CcRkHl75Z-Y?si=OvPRzBLov6fO8ZMq'),
+(43, 'Computing Neural Network Output', 'https://youtu.be/rMOdrD61IoU?si=H1HalXXIhdb11IR_'),
+(43, 'Vectorizing Across Multiple Examples', 'https://youtu.be/xy5MOQpx3aQ?si=gz_Q6AyEOLQt4uQG'),
+(43, 'Explanation For Vectorized Implementation', 'https://youtu.be/kkWRbIb42Ms?si=mfteNa_GT7ZdYO3w'),
+(43, 'Activation Functions', 'https://youtu.be/Xvg00QnyaIY?si=2_gvkItWN3tdIyyX'),
+(43, 'Why Non-linear Activation  Functions', 'https://youtu.be/NkOv_k7r6no?si=LDGtDUpiJAbsf8Q1'),
+(43, 'Derivatives Of Activation Functions', 'https://youtu.be/P7_jFxTtJEo?si=rTBZdQkX-HdiC0dl'),
+(43, 'Gradient Descent For Neural Networks', 'https://youtu.be/7bLEWDZng_M?si=pSoOmZOkoaAofHnM'),
+(43, 'Backpropagation Intuition', 'https://youtu.be/yXcQ4B-YSjQ?si=Ds92fOmVmKrlQqj1'),
+(43, 'Random Initialization', 'https://youtu.be/6by6Xas_Kho?si=Fl3bR3S_IY4qagQB');
+
+-- Videos for Course 11, Week 4: Deep Neural Networks
+INSERT INTO videos (week_ID, title, url) VALUES
+(44, 'Deep L-Layer Neural Network', 'https://youtu.be/2gw5tE2ziqA?si=kZ9t9PnrWgy9wnTQ'),
+(44, 'Forward Propagation in a Deep Network', 'https://youtu.be/a8i2eJin0lY?si=QGLEkKZJGLx_NcqR'),
+(44, 'Getting Matrix Dimensions Right', 'https://youtu.be/yslMo3hSbqE?si=Urk9j7zeEd6jbyjP'),
+(44, 'Why Deep Representations?', 'https://youtu.be/5dWp1mw_XNk?si=XNO9FtUChxShq2Sn'),
+(44, 'Building Blocks of a Deep Neural Network', 'https://youtu.be/B7-iPbddhsw?si=F2wMRIoMjoZHzv1a'),
+(44, 'Forward and Backward Propagation', 'https://youtu.be/qzPQ8cEsVK8?si=omeDsWCk_5j6RCjd'),
+(44, 'Parameters and Hyperparameters', 'https://youtu.be/VTE2KlfoO3Q?si=TFOis4Xuoo05qJ9m'),
+(44, 'What does this have to do with the brain?', 'https://youtu.be/2zgon7XfN4I?si=3N4VIAh37RdP8YS9');

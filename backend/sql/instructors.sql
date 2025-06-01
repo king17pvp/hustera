@@ -3,7 +3,8 @@ INSERT INTO user_auth (email, password, role, created_at) VALUES
 ('lisa.johnson@hustera.com', '$2a$10$abcdefghijklmnopqrstuuVwxyzAbCdEfGhIjKlMnOpQrStUvWxYz', 'instructor', '2024-01-20 10:45:00'),
 ('michael.chen@hustera.com', '$2a$10$abcdefghijklmnopqrstuuVwxyzAbCdEfGhIjKlMnOpQrStUvWxYz', 'instructor', '2024-02-05 14:20:00'),
 ('sarah.patel@hustera.com', '$2a$10$abcdefghijklmnopqrstuuVwxyzAbCdEfGhIjKlMnOpQrStUvWxYz', 'instructor', '2024-02-12 11:15:00'),
-('david.kim@hustera.com', '$2a$10$abcdefghijklmnopqrstuuVwxyzAbCdEfGhIjKlMnOpQrStUvWxYz', 'instructor', '2024-03-01 08:50:00');
+('david.kim@hustera.com', '$2a$10$abcdefghijklmnopqrstuuVwxyzAbCdEfGhIjKlMnOpQrStUvWxYz', 'instructor', '2024-03-01 08:50:00'),
+('andrew.ng@hustera.com', '$2a$10$abcdefghijklmnopqrstuuVwxyzAbCdEfGhIjKlMnOpQrStUvWxYz', 'instructor', '2024-05-01 08:50:00');
 
 UPDATE user_info
 SET name = 'John Smith', 
@@ -38,3 +39,10 @@ SET name = 'David Kim',
     dob = '1987-07-04', 
     gender = 'male'
 WHERE user_ID = (SELECT user_ID FROM user_auth WHERE email = 'david.kim@hustera.com');
+
+-- Update Andrew Ng's profile
+UPDATE user_info
+SET name = 'Andrew Ng', 
+    dob = '1990-05-01', 
+    gender = 'male'
+WHERE user_ID = (SELECT user_ID FROM user_auth WHERE email = 'andrew.ng@hustera.com');

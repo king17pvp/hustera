@@ -154,3 +154,11 @@ INSERT INTO course_enroll (student_ID, course_ID, enroll_date) VALUES
 (@james_id, 10, '2025-04-18 09:15:00'),  -- James also enrolled in Blockchain
 (@sophia_id, 3, '2025-04-25 16:50:00'),  -- Sophia also enrolled in Python for Data Science
 (@ethan_id, 1, '2025-04-30 11:45:00');   -- Ethan also enrolled in Web Development
+
+-- Additional enrollments for course_ID = 11
+INSERT INTO course_enroll (student_ID, course_ID, enroll_date) VALUES
+(@alex_id, 11, '2025-05-01 09:00:00'),
+(@maria_id, 11, '2025-05-02 10:15:00'),
+(@noah_id, 11, '2025-05-03 11:30:00'),
+(@emma_id, 11, '2025-05-04 14:45:00'),
+(@ava_id, 11, '2025-05-05 16:00:00');
