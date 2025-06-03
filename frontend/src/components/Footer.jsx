@@ -1,56 +1,94 @@
 import React from "react";
-import logo from "../assets/logo2.png"; // Import correct logo
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import logo from "../assets/logo2.png";
 
 const Footer = () => {
+  const navigate = useNavigate(); // Initialize navigate
+
   return (
     <footer className="flex-col justify-center bg-gray-100 py-12">
-      <div className="mx-auto px-20 flex justify-center text-gray-600 space-x-20">
+      <div className="mx-auto max-w-[1690px] flex justify-center text-gray-600 space-x-43">
         {/* Left Section - Enlarged Logo & Description */}
         <div className="w-1/5 flex-col">
           <img src={logo} alt="Hustera Logo" className="h-20 mb-2" /> {/* Increased size */}
           <p className="text-lg leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Hustera is a comprehensive e-learning platform designed to provide high-quality courses and a collaborative community for learners.
+            Explore a variety of subjects, engage in discussions, and enhance your skills at your own pace.
           </p>
         </div>
 
         {/* Middle Section - Links */}
-        <div className="flex space-x-30">
+        <div className="flex space-x-40">
           {/* Get Help */}
           <div>
-            <h3 className="font-bold text-xl text-gray-900">GET HELP</h3>
+            <h3 className="font-avant-medium font-bold text-2xl text-gray-900">GET HELP</h3>
             <ul className="mt-2 space-y-2 text-sm">
-              <li><a href="#" className="hover:text-blue-600 text-lg transition">Contact Us</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-lg transition">Latest Articles</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-lg transition">FAQs</a></li>
+              <li><button onClick={() => navigate("/forum")} className="hover:text-blue-600 text-xl transition cursor-pointer">Latest Threads</button></li>
+              <li><button onClick={() => navigate("/faqs")} className="hover:text-blue-600 text-xl transition cursor-pointer">FAQs</button></li>
             </ul>
           </div>
 
           {/* Programs */}
           <div>
-            <h3 className="font-bold text-xl text-gray-900">PROGRAMS</h3>
+            <h3 className="font-avant-medium font-bold text-2xl text-gray-900">PROGRAMS</h3>
             <ul className="mt-2 space-y-2 text-sm">
-              <li><a href="#" className="hover:text-blue-600 text-lg transition">Art & Design</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-lg transition">Business</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-lg transition">IT & Software</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-lg transition">Languages</a></li>
-              <li><a href="#" className="hover:text-blue-600 text-lg transition">Programming</a></li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=art-%26-creativity")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Art & Creativity
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=communication")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Communication
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=sociology")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Sociology
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=finance")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Finance
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/courses?category=marketing")}
+                  className="hover:text-blue-600 text-xl transition cursor-pointer"
+                >
+                  Marketing
+                </button>
+              </li>
             </ul>
           </div>
 
           {/* Contact Us */}
           <div>
-            <h3 className="font-bold text-xl text-gray-900">CONTACT US</h3>
-            <p className="mt-2 text-lg">
+            <h3 className="font-avant-medium font-bold text-2xl text-gray-900">CONTACT US</h3>
+            <p className="mt-2 text-xl">
               Address: 1 Dai Co Viet, Bach Khoa, Hai Ba Trung, Ha Noi, Viet Nam
             </p>
-            <p className="mt-2 text-lg">Tel: + (84) 911674187</p>
-            <p className="mt-1 text-lg">Mail: khue.nvn225519@sis.hust.edu.vn</p>
+            <p className="mt-2 text-xl">Tel: + (84) 911674187</p>
+            <p className="mt-1 text-xl">Mail: khue.nvn225504@sis.hust.edu.vn</p>
           </div>
         </div>
       </div>
 
       {/* Bottom Copyright */}
-      <div className="w-4/5 mx-auto justify-center text-center text-lg text-gray-500 mt-10 border-t-2 border-zinc-300 pt-5">
+      <div className="max-w-[1680px] mx-auto justify-center text-center text-lg text-gray-500 mt-10 border-t-2 border-zinc-300 pt-5">
         Copyright © 2025 HUSTera | Powered by HQKDA
       </div>
     </footer>
