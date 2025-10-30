@@ -32,7 +32,7 @@ const LoginBox = () => {
     e.preventDefault();
     try {
       setAttemptedLogin(false);
-      const response = await axios.post('http://localhost:5000/auth', form);
+      const response = await axios.post('http://localhost:5001/auth', form);
       dispatch(login(response.data.user));
       navigate('/');
     } catch (err) {

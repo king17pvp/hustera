@@ -361,7 +361,7 @@ const CourseListing = () => {
         if (filters.level) params.append("level", filters.level);
         if (filters.price) params.append("price", filters.price);
 
-        const endpoint = `http://localhost:5000/courses?${params.toString()}`;
+        const endpoint = `http://localhost:5001/courses?${params.toString()}`;
 
         const response = await axios.get(endpoint);
         const data = response.data;
@@ -387,7 +387,7 @@ const CourseListing = () => {
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/courses/filters");
+        const response = await axios.get("http://localhost:5001/courses/filters");
         const data = response.data;
         console.log("Fetched filter data:", data);
 

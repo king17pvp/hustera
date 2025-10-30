@@ -36,7 +36,7 @@ const ThreadListing = () => {
           filters.tags.forEach(tag => params.append("tags", tag));
         }
         console.log("Params: ", params.toString());
-        endpoint = `http://localhost:5000/forum?${params.toString()}`;
+        endpoint = `http://localhost:5001/forum?${params.toString()}`;
         const response = await fetch(endpoint);
         const data = await response.json();
         console.log("Fetched threads data:", data);
@@ -61,7 +61,7 @@ const ThreadListing = () => {
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const response = await fetch("http://localhost:5000/forum/filters");
+        const response = await fetch("http://localhost:5001/forum/filters");
         const data = await response.json();
         // console.log("Fetched filter data:", data);
         if (data.success) {

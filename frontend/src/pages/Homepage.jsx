@@ -30,7 +30,7 @@ const Homepage = () => {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/homepage/categories');
+        const response = await axios.get('http://localhost:5001/homepage/categories');
         console.log('Categories response:', response);
 
         if (response.data.success) {
@@ -52,7 +52,7 @@ const Homepage = () => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/homepage/courses');
+        const response = await axios.get('http://localhost:5001/homepage/courses');
         console.log('Courses response:', response);
   
         if (response.data.success) {
@@ -74,7 +74,7 @@ const Homepage = () => {
     const fetchThreads = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/homepage/threads');
+        const response = await axios.get('http://localhost:5001/homepage/threads');
         console.log('Threads response:', response);
   
         if (response.data.success) {

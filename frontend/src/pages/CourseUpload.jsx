@@ -91,7 +91,7 @@ const CourseUpload = () => {
     // Fetch all tags from backend
     const fetchTags = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/courses/get-tags");
+        const response = await axios.get("http://localhost:5001/courses/get-tags");
         console.log("Tags response:", response.data.success, response.data.tags);
         if (response.data.success) {
           setAllTags(response.data.tags);
@@ -223,7 +223,7 @@ const CourseUpload = () => {
     console.log("Data", data);
 
     try {
-      const response = await axios.post("http://localhost:5000/courses/upload", data);
+      const response = await axios.post("http://localhost:5001/courses/upload", data);
 
       if (response.status === 201) {
         alert("Course submitted successfully!");

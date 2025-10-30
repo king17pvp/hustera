@@ -30,7 +30,7 @@ const CourseManagement = () => {
     setError(null);
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/admin/course-management`); // GET /admin/course-management/
+        const response = await axios.get(`http://localhost:5001/admin/course-management`); // GET /admin/course-management/
         if (response.data && response.data.success && Array.isArray(response.data.courses)) {
           setCourses(response.data.courses);
           const categories = Array.from(new Set(response.data.courses.map(course => course.category).filter(Boolean)));
@@ -65,7 +65,7 @@ const CourseManagement = () => {
     }
     try {
       // Controller expects `courseId` in body
-      await axios.delete(`http://localhost:5000/admin/course-management/delete-course`, { data: { courseId: courseIdToDelete } });
+      await axios.delete(`http://localhost:5001/admin/course-management/delete-course`, { data: { courseId: courseIdToDelete } });
       setCourses((prev) => prev.filter((c) => c.course_ID !== courseIdToDelete));
       if (expanded === courseIdToDelete) setExpanded(null);
     } catch (err) {
@@ -82,7 +82,7 @@ const CourseManagement = () => {
     }
     try {
       // Controller expects `videoId` in body
-      await axios.delete(`http://localhost:5000/admin/course-management/remove-video`, { data: { videoId: videoIdToRemove } });
+      await axios.delete(`http://localhost:5001/admin/course-management/remove-video`, { data: { videoId: videoIdToRemove } });
       setCourses((prev) =>
         prev.map((c) =>
           c.course_ID === courseId
@@ -111,7 +111,7 @@ const CourseManagement = () => {
     }
     try {
       // Controller expects `courseId` and `userId` in body
-      await axios.delete(`http://localhost:5000/admin/course-management/remove-student`, { data: { courseId: courseId, userId: userIdToRemove } });
+      await axios.delete(`http://localhost:5001/admin/course-management/remove-student`, { data: { courseId: courseId, userId: userIdToRemove } });
       setCourses((prev) =>
         prev.map((c) =>
           c.course_ID === courseId
@@ -132,7 +132,7 @@ const CourseManagement = () => {
     }
     try {
       // Controller expects `reviewId` in body
-      await axios.delete(`http://localhost:5000/admin/course-management/remove-review`, { data: { reviewId: reviewIdToRemove } });
+      await axios.delete(`http://localhost:5001/admin/course-management/remove-review`, { data: { reviewId: reviewIdToRemove } });
       setCourses((prev) =>
         prev.map((c) =>
           c.course_ID === courseId

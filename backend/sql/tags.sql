@@ -1,5 +1,3 @@
-USE hustera_db;
-
 -- Accounting tags
 INSERT INTO tags (tag_name) VALUES 
 ('financial-accounting'),

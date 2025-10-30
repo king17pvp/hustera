@@ -29,7 +29,7 @@ const CourseSingleHeader = ({ course }) => {
 
     if (isFree) {
       try {
-        await axios.post(`http://localhost:5000/courses/enroll-course`, {
+        await axios.post(`http://localhost:5001/courses/enroll-course`, {
           user_id: user?.id,
           course_id: course.course_id,
         });
@@ -51,7 +51,7 @@ const CourseSingleHeader = ({ course }) => {
 
   const handleEnrollAfterPayment = async () => {
     try {
-      await axios.post(`http://localhost:5000/courses/enroll-course`, {
+      await axios.post(`http://localhost:5001/courses/enroll-course`, {
         user_id: user?.id,
         course_id: course.course_id,
       });

@@ -22,9 +22,9 @@ const ForumCard = ({ thread }) => {
         </h3>
 
         {/* Description */}
-        <p className="text-gray-600 font-avant-medium text-[18px] mt-2 line-clamp-3 h-22">
-          <ReactMarkdown>{thread.description}</ReactMarkdown>
-        </p>
+        <div className="text-gray-600 font-avant-medium text-[18px] mt-2 line-clamp-3 h-22">
+          <ReactMarkdown>{thread.content}</ReactMarkdown>
+        </div>
 
         {/* Tags */}
         <div className="flex font-avant-medium flex-wrap gap-2 mt-4">

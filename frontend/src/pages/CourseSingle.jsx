@@ -17,7 +17,7 @@ const CourseSingle = () => {
     const fetchCourse = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:5000/courses/${courseID}`);
+        const response = await axios.get(`http://localhost:5001/courses/${courseID}`);
         console.log("Course data:", response.data);
         setCourse(response.data);
       } catch (err) {

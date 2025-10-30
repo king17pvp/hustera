@@ -71,7 +71,7 @@ const ForumUpload = () => {
     // Fetch all tags from backend
     const fetchTags = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/courses/get-tags");
+        const response = await axios.get("http://localhost:5001/courses/get-tags");
         console.log("Tags response:", response.data.success, response.data.tags);
         if (response.data.success) {
           setAllTags(response.data.tags);
@@ -166,7 +166,7 @@ const ForumUpload = () => {
 
     try {
       // Step 2: Send the data to the backend using Axios
-      const response = await axios.post("http://localhost:5000/forum/uploadForum", {
+      const response = await axios.post("http://localhost:5001/forum/uploadForum", {
         ...data,            // hoặc title, body, tags, attachments...
         user_ID: user?.id,  // truyền kèm user_ID nếu không dùng token
       }, {

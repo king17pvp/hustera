@@ -1,8 +1,3 @@
-CREATE DATABASE hustera_db;
-
--- Step 2: Use the Database
-USE hustera_db;
-
 -- Step 3: Create the Users Table
 CREATE TABLE user_auth (
     user_ID INT AUTO_INCREMENT PRIMARY KEY,

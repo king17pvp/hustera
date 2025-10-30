@@ -31,7 +31,7 @@ const UserManagement = () => {
     setError(null);
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/admin/user-management`); // GET /
+        const response = await axios.get(`http://localhost:5001/admin/user-management`); // GET /
         console.log("rssreseef:", response);
         if (response.data && response.data.success && Array.isArray(response.data.users)) {
           setUsers(response.data.users);
@@ -62,7 +62,7 @@ const UserManagement = () => {
     }
     try {
       // Backend expects { user_id: ... }
-      await axios.delete(`http://localhost:5000/admin/user-management/delete`, { data: { user_id: userIdToDelete } });
+      await axios.delete(`http://localhost:5001/admin/user-management/delete`, { data: { user_id: userIdToDelete } });
       setUsers((prev) => prev.filter((u) => u.user_ID !== userIdToDelete));
       if (expandedUserId === userIdToDelete) setExpandedUserId(null);
     } catch (err) {
@@ -77,7 +77,7 @@ const UserManagement = () => {
 
     try {
       // Backend expects { user_id: ..., course_id: ... }
-      await axios.delete(`http://localhost:5000/admin/user-management/remove-course`, { data: { user_id: userId, course_id: courseId } });
+      await axios.delete(`http://localhost:5001/admin/user-management/remove-course`, { data: { user_id: userId, course_id: courseId } });
       // Update local state to reflect removal
       setUsers((prevUsers) =>
         prevUsers.map((user) => {
@@ -103,7 +103,7 @@ const UserManagement = () => {
     if (!window.confirm(`Remove thread ${threadId} created by user ID ${userId}?`)) return;
     try {
       // Backend expects { user_id: ..., thread_id: ... }
-      await axios.delete(`http://localhost:5000/admin/user-management/remove-thread`, { data: { user_id: userId, thread_id: threadId } });
+      await axios.delete(`http://localhost:5001/admin/user-management/remove-thread`, { data: { user_id: userId, thread_id: threadId } });
       // Update local state
       setUsers((prevUsers) =>
         prevUsers.map((user) => {
@@ -128,7 +128,7 @@ const UserManagement = () => {
     setError(null);
     if (!window.confirm(`Remove reply ${replyId} from thread ${threadId} for user ID ${userId}?`)) return;
     try {
-      await axios.delete("http://localhost:5000/admin/user-management/remove-reply", {
+      await axios.delete("http://localhost:5001/admin/user-management/remove-reply", {
         data: { user_id: userId, thread_id: threadId, reply_id: replyId }
       });
       setUsers((prevUsers) =>
