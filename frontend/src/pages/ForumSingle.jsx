@@ -24,7 +24,7 @@ const ForumSingle = () => {
     const fetchThread = async () => {
       try {
         console.log("🚀 Fetching thread...");
-        const res = await fetch(`http://localhost:5000/forum/${threadId}`);
+        const res = await fetch(`http://localhost:5001/forum/${threadId}`);
         const data = await res.json();
         if (data.success) {
           setThread(data.thread);
@@ -77,7 +77,7 @@ const ForumSingle = () => {
                 <ForumReplyCard
                   onSubmit={async (content) => {
                     try {
-                      const res = await fetch(`http://localhost:5000/forum/${threadId}/answers`, {
+                      const res = await fetch(`http://localhost:5001/forum/${threadId}/answers`, {
                         method: "POST",
                         headers: {
                           "Content-Type": "application/json",

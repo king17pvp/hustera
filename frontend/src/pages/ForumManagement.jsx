@@ -34,7 +34,7 @@ const ForumManagement = () => {
     setError(null);
     const fetchThreads = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/admin/forum-management/`);
+        const response = await axios.get(`http://localhost:5001/admin/forum-management/`);
         if (response.data && Array.isArray(response.data.threads)) {
           setThreads(response.data.threads);
         } else {
@@ -64,7 +64,7 @@ const ForumManagement = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:5000/admin/forum-management/delete-thread`, { data: { thread_id: id } });
+      await axios.delete(`http://localhost:5001/admin/forum-management/delete-thread`, { data: { thread_id: id } });
       setThreads((prev) => prev.filter((t) => t.id !== id));
       if (expanded === id) setExpanded(null);
       setError(null);
@@ -80,7 +80,7 @@ const ForumManagement = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:5000/admin/forum-management/delete-answer`, { data: { thread_id: threadId, answer_id: answerId } });
+      await axios.delete(`http://localhost:5001/admin/forum-management/delete-answer`, { data: { thread_id: threadId, answer_id: answerId } });
       setThreads((prev) =>
         prev.map((t) =>
           t.id === threadId

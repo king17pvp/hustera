@@ -67,7 +67,7 @@ const UserSettings = () => {
     }
     try {
       // Send user data to backend (no dynamic route)
-      const response = await axios.post("http://localhost:5000/auth/settings/user-info", {
+      const response = await axios.post("http://localhost:5001/auth/settings/user-info", {
         userId: user.id,
         name: userData.fullName,
         dob: userData.dob,

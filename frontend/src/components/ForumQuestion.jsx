@@ -14,7 +14,7 @@ const ForumQuestion = ({ thread }) => {
     const fetchUserVote = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/forum/${threadId}/getVote/${user?.id}`, // Adjust the URL based on your backend route
+          `http://localhost:5001/forum/${threadId}/getVote/${user?.id}`, // Adjust the URL based on your backend route
         );
 
         if (response.data.success) {
@@ -31,7 +31,7 @@ const ForumQuestion = ({ thread }) => {
   }, [threadId]);
   const sendVote = async (voteType) => {
     try {
-      const res = await fetch(`http://localhost:5000/forum/${threadId}/vote`, {
+      const res = await fetch(`http://localhost:5001/forum/${threadId}/vote`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

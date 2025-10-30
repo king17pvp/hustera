@@ -18,7 +18,7 @@ const AnswerCard = ({ answer, threadId }) => {
       try {
         console.log(`CALLING with answerID of ${answerId} and userId of ${user_ID}!!!!`);
         const response = await axios.get(
-          `http://localhost:5000/forum/${answerId}/getVote/${user_ID}`, // Adjust the URL based on your backend route
+          `http://localhost:5001/forum/${answerId}/getVote/${user_ID}`, // Adjust the URL based on your backend route
         );
         
         if (response.data.success) {
@@ -35,7 +35,7 @@ const AnswerCard = ({ answer, threadId }) => {
   }, [answerId, user_ID]);
   const sendVote = async (voteType) => {
     try {
-      const res = await fetch(`http://localhost:5000/forum/${threadId}/answers/${answer.answer_id}/vote`, {
+      const res = await fetch(`http://localhost:5001/forum/${threadId}/answers/${answer.answer_id}/vote`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

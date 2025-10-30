@@ -7,7 +7,7 @@ exports.login = async (email, password) => {
         throw new Error('Incorrect email');
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = password === user.password;
 
     if (!isMatch) {
         throw new Error('Incorrect password');

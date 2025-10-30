@@ -7,7 +7,7 @@ exports.register = async (email, password, role) => {
         throw new Error('Email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = password;
 
     const newUser = await userModel.createUser(email, hashedPassword, role);
 

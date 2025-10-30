@@ -41,7 +41,7 @@ const RegisterBox = () => {
     e.preventDefault();
     try {
       setAttemptedRegister(false);
-      const response = await axios.post('http://localhost:5000/register', form);
+      const response = await axios.post('http://localhost:5001/register', form);
       console.log(response.data.user);
       navigate('/settings');
     } catch (err) {

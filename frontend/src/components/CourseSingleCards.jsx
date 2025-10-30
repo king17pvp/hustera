@@ -216,7 +216,7 @@ const CourseSingleCards = ({ course }) => {
       video_id: video.video_id,
     };
     try {
-      await axios.post("http://localhost:5000/courses/watch-video", payload);
+      await axios.post("http://localhost:5001/courses/watch-video", payload);
       // Optionally handle response or show a notification
     } catch (err) {
       console.error("Failed to update watched video", err);
@@ -225,7 +225,7 @@ const CourseSingleCards = ({ course }) => {
 
   const fetchReviews = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/courses/${course.course_id}/reviews`);
+      const response = await axios.get(`http://localhost:5001/courses/${course.course_id}/reviews`);
       const updatedReviews = response.data.reviews;
       course.reviews = updatedReviews;    // <- directly update course.reviews
       setCurrentPage(1);                  // optional: go back to page 1 after posting
@@ -273,7 +273,7 @@ const CourseSingleCards = ({ course }) => {
     };
     try {
       console.log("Posting review:", payload);
-      await axios.post("http://localhost:5000/courses/post-review", payload);
+      await axios.post("http://localhost:5001/courses/post-review", payload);
       setComment("");
       setRating(0);
       setHovered(0);
