@@ -22,8 +22,8 @@ const ForumCard = ({ thread }) => {
         </h3>
 
         {/* Description */}
-        <div className="text-gray-600 font-avant-medium text-[18px] mt-2 line-clamp-3 h-22">
-          <ReactMarkdown>{thread.content}</ReactMarkdown>
+        <div className="text-gray-600 font-avant-medium text-[18px] mt-2 line-clamp-3 h-30">
+          <ReactMarkdown>{thread.description?.substring(0, 160) + "..."}</ReactMarkdown>
         </div>
 
         {/* Tags */}
